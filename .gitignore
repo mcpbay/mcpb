@@ -1,0 +1,8 @@
+.claude
+context_modules
+dist
+logs
+.mcp.json
+mcp-config.json
+opencode.jsonc
+.env.mcpbay
