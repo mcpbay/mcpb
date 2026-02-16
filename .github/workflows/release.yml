@@ -114,7 +114,10 @@ jobs:
 
           $checksumUrl = "$baseUrl/$checksumFile"
           $checksums = Invoke-WebRequest -Uri $checksumUrl -UseBasicParsing
-          $line = ($checksums.Content -split "`n" | Where-Object { $_ -match $file })
+
+          # Normalizar saltos de línea y espacios
+          $lines = $checksums.Content -split "(`r)?`n" | ForEach-Object { $_.Trim() }
+          $line = $lines | Where-Object { $_ -match [regex]::Escape($file) }
 
           if (-not $line) {
               Write-Error "Checksum entry not found."
@@ -136,6 +139,7 @@ jobs:
               exit 1
           }
 
+          # Agregar al PATH si no está
           $currentPath = [Environment]::GetEnvironmentVariable("PATH", "User")
           if ($currentPath -notlike "*$installDir*") {
               [Environment]::SetEnvironmentVariable("PATH", "$currentPath;$installDir", "User")
