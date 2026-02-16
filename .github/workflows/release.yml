@@ -66,39 +66,126 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
 
+      # ------------------------
+      # Generate SHA256 checksums
+      # ------------------------
+      - name: Generate SHA256
+        run: |
+          for dir in mcpb-*; do
+            if [ -d "$dir" ]; then
+              file=$(find "$dir" -type f)
+              sha256sum "$file" >> checksums.txt
+            fi
+          done
+
+      # ------------------------
+      # Generate PowerShell Installer
+      # ------------------------
       - name: Generate install.ps1
         run: |
           cat << 'EOF' > install.ps1
           $ErrorActionPreference = "Stop"
 
+          Write-Host ""
+          Write-Host "MCPB Installer"
+          Write-Host "=============="
+          Write-Host ""
+
           $repo = "${{ github.repository }}"
           $version = "${{ github.ref_name }}"
           $baseUrl = "https://github.com/$repo/releases/download/$version"
 
-          $arch = (Get-CimInstance Win32_Processor).Architecture
           $file = "mcpb-windows.exe"
+          $checksumFile = "checksums.txt"
 
           $installDir = "$env:LOCALAPPDATA\Programs\mcpb"
+          $output = "$installDir\mcpb.exe"
+
           New-Item -ItemType Directory -Force -Path $installDir | Out-Null
 
           $url = "$baseUrl/$file"
-          $output = "$installDir\mcpb.exe"
+          $checksumUrl = "$baseUrl/$checksumFile"
 
-          Invoke-WebRequest $url -OutFile $output
+          Write-Host "Downloading checksum file..."
+          $checksums = Invoke-WebRequest -Uri $checksumUrl -UseBasicParsing
+          $expectedHash = ($checksums.Content -split "`n" | Where-Object { $_ -match $file }).Split(" ")[0]
+
+          Write-Host "Downloading binary..."
+
+          $request = [System.Net.HttpWebRequest]::Create($url)
+          $response = $request.GetResponse()
+
+          $totalBytes = $response.ContentLength
+          $stream = $response.GetResponseStream()
+          $buffer = New-Object byte[] 8192
+          $fileStream = [System.IO.File]::Create($output)
+
+          $totalRead = 0
+          $startTime = Get-Date
+
+          try {
+              while (($read = $stream.Read($buffer, 0, $buffer.Length)) -gt 0) {
+                  $fileStream.Write($buffer, 0, $read)
+                  $totalRead += $read
+
+                  $elapsed = (Get-Date) - $startTime
+                  $speed = if ($elapsed.TotalSeconds -gt 0) { ($totalRead / 1MB) / $elapsed.TotalSeconds } else { 0 }
+                  $percent = [math]::Round(($totalRead / $totalBytes) * 100, 2)
+                  $remainingBytes = $totalBytes - $totalRead
+                  $eta = if ($speed -gt 0) { $remainingBytes / 1MB / $speed } else { 0 }
+
+                  Write-Progress `
+                      -Activity "Downloading MCPB..." `
+                      -Status ("{0}% | {1:N2} MB of {2:N2} MB | {3:N2} MB/s | ETA {4:N1}s" -f `
+                          $percent,
+                          ($totalRead/1MB),
+                          ($totalBytes/1MB),
+                          $speed,
+                          $eta) `
+                      -PercentComplete $percent
+              }
+          }
+          finally {
+              $fileStream.Close()
+              $stream.Close()
+              $response.Close()
+          }
+
+          Write-Progress -Activity "Downloading MCPB..." -Completed
+
+          Write-Host "Verifying checksum..."
+          $actualHash = (Get-FileHash $output -Algorithm SHA256).Hash.ToLower()
+
+          if ($actualHash -ne $expectedHash.ToLower()) {
+              Remove-Item $output
+              Write-Error "Checksum verification failed. Installation aborted."
+              exit 1
+          }
 
           $currentPath = [Environment]::GetEnvironmentVariable("PATH", "User")
           if ($currentPath -notlike "*$installDir*") {
               [Environment]::SetEnvironmentVariable("PATH", "$currentPath;$installDir", "User")
           }
 
-          Write-Host "MCPB instalado correctamente. Reinicia la terminal y ejecuta: mcpb"
+          Write-Host ""
+          Write-Host "Installation completed successfully."
+          Write-Host "Restart your terminal and run: mcpb"
+          Write-Host ""
           EOF
 
+      # ------------------------
+      # Generate Bash Installer
+      # ------------------------
       - name: Generate install.sh
         run: |
           cat << 'EOF' > install.sh
           #!/usr/bin/env bash
           set -e
+
+          echo ""
+          echo "MCPB Installer"
+          echo "=============="
+          echo ""
 
           REPO="${{ github.repository }}"
           VERSION="${{ github.ref_name }}"
@@ -108,30 +195,44 @@ jobs:
           ARCH="$(uname -m)"
 
           if [[ "$OS" == "Linux" ]]; then
-            if [[ "$ARCH" == "x86_64" ]]; then
-              FILE="mcpb-linux-intel"
-            else
-              FILE="mcpb-linux-arm"
-            fi
+            [[ "$ARCH" == "x86_64" ]] && FILE="mcpb-linux-intel" || FILE="mcpb-linux-arm"
           elif [[ "$OS" == "Darwin" ]]; then
-            if [[ "$ARCH" == "x86_64" ]]; then
-              FILE="mcpb-mac-intel"
-            else
-              FILE="mcpb-mac-arm"
-            fi
+            [[ "$ARCH" == "x86_64" ]] && FILE="mcpb-mac-intel" || FILE="mcpb-mac-arm"
           else
-            echo "Sistema no soportado"
+            echo "Unsupported OS"
             exit 1
           fi
 
           INSTALL_DIR="$HOME/.local/bin"
           mkdir -p "$INSTALL_DIR"
 
-          curl -L "$BASE_URL/$FILE" -o "$INSTALL_DIR/mcpb"
+          echo "Downloading checksum file..."
+          curl -sL "$BASE_URL/checksums.txt" -o /tmp/mcpb_checksums.txt
+          EXPECTED_HASH=$(grep "$FILE" /tmp/mcpb_checksums.txt | awk '{print $1}')
+
+          echo ""
+          echo "Downloading $FILE"
+          echo ""
+
+          curl -L --progress-bar "$BASE_URL/$FILE" -o "$INSTALL_DIR/mcpb"
+
+          echo ""
+          echo "Verifying checksum..."
+
+          ACTUAL_HASH=$(sha256sum "$INSTALL_DIR/mcpb" | awk '{print $1}')
+
+          if [[ "$ACTUAL_HASH" != "$EXPECTED_HASH" ]]; then
+            rm "$INSTALL_DIR/mcpb"
+            echo "Checksum verification failed. Installation aborted."
+            exit 1
+          fi
+
           chmod +x "$INSTALL_DIR/mcpb"
 
-          echo "MCPB instalado correctamente."
-          echo "Asegúrate de que $HOME/.local/bin esté en tu PATH."
+          echo ""
+          echo "Installation completed successfully."
+          echo "Ensure $HOME/.local/bin is in your PATH."
+          echo ""
           EOF
 
       - name: Make install.sh executable
@@ -146,5 +247,6 @@ jobs:
             mcpb-linux-arm/mcpb-linux-arm
             mcpb-mac-intel/mcpb-mac-intel
             mcpb-mac-arm/mcpb-mac-arm
+            checksums.txt
             install.ps1
             install.sh
