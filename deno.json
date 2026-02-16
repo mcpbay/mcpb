@@ -1,5 +1,5 @@
 {
-  "version": "1.0.6",
+  "version": "1.0.7",
   "tasks": {
     "build:generic": {
       "description": "Used as common structure for all build commands.",

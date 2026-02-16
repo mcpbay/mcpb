@@ -116,7 +116,7 @@ jobs:
 
           $baseUrl = "https://github.com/$repo/releases/download/$version"
           $file = "mcpb-windows.exe"
-          $checksumFile = "checksums.txt"
+          $checksumFile = "checksums.json"
 
           $installDir = "$env:LOCALAPPDATA\Programs\mcpb"
           $output = "$installDir\mcpb.exe"
