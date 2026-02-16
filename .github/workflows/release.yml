@@ -1,0 +1,150 @@
+name: Build and Release MCPB
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+env:
+  APP_NAME: mcpb
+
+jobs:
+  build:
+    name: Build ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        include:
+          - name: Windows
+            os: windows-latest
+            task: build:windows
+            artifact: mcpb-windows.exe
+
+          - name: Linux Intel
+            os: ubuntu-latest
+            task: build:linux-intel
+            artifact: mcpb-linux-intel
+
+          - name: Linux ARM
+            os: ubuntu-latest
+            task: build:linux-arm
+            artifact: mcpb-linux-arm
+
+          - name: Mac Intel
+            os: macos-latest
+            task: build:mac-intel
+            artifact: mcpb-mac-intel
+
+          - name: Mac ARM
+            os: macos-latest
+            task: build:mac-arm
+            artifact: mcpb-mac-arm
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - run: deno task ${{ matrix.task }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: dist/${{ matrix.artifact }}
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v4
+
+      - name: Generate install.ps1
+        run: |
+          cat << 'EOF' > install.ps1
+          $ErrorActionPreference = "Stop"
+
+          $repo = "${{ github.repository }}"
+          $version = "${{ github.ref_name }}"
+          $baseUrl = "https://github.com/$repo/releases/download/$version"
+
+          $arch = (Get-CimInstance Win32_Processor).Architecture
+          $file = "mcpb-windows.exe"
+
+          $installDir = "$env:LOCALAPPDATA\Programs\mcpb"
+          New-Item -ItemType Directory -Force -Path $installDir | Out-Null
+
+          $url = "$baseUrl/$file"
+          $output = "$installDir\mcpb.exe"
+
+          Invoke-WebRequest $url -OutFile $output
+
+          $currentPath = [Environment]::GetEnvironmentVariable("PATH", "User")
+          if ($currentPath -notlike "*$installDir*") {
+              [Environment]::SetEnvironmentVariable("PATH", "$currentPath;$installDir", "User")
+          }
+
+          Write-Host "MCPB instalado correctamente. Reinicia la terminal y ejecuta: mcpb"
+          EOF
+
+      - name: Generate install.sh
+        run: |
+          cat << 'EOF' > install.sh
+          #!/usr/bin/env bash
+          set -e
+
+          REPO="${{ github.repository }}"
+          VERSION="${{ github.ref_name }}"
+          BASE_URL="https://github.com/$REPO/releases/download/$VERSION"
+
+          OS="$(uname -s)"
+          ARCH="$(uname -m)"
+
+          if [[ "$OS" == "Linux" ]]; then
+            if [[ "$ARCH" == "x86_64" ]]; then
+              FILE="mcpb-linux-intel"
+            else
+              FILE="mcpb-linux-arm"
+            fi
+          elif [[ "$OS" == "Darwin" ]]; then
+            if [[ "$ARCH" == "x86_64" ]]; then
+              FILE="mcpb-mac-intel"
+            else
+              FILE="mcpb-mac-arm"
+            fi
+          else
+            echo "Sistema no soportado"
+            exit 1
+          fi
+
+          INSTALL_DIR="$HOME/.local/bin"
+          mkdir -p "$INSTALL_DIR"
+
+          curl -L "$BASE_URL/$FILE" -o "$INSTALL_DIR/mcpb"
+          chmod +x "$INSTALL_DIR/mcpb"
+
+          echo "MCPB instalado correctamente."
+          echo "Asegúrate de que $HOME/.local/bin esté en tu PATH."
+          EOF
+
+      - name: Make install.sh executable
+        run: chmod +x install.sh
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            mcpb-windows.exe/mcpb-windows.exe
+            mcpb-linux-intel/mcpb-linux-intel
+            mcpb-linux-arm/mcpb-linux-arm
+            mcpb-mac-intel/mcpb-mac-intel
+            mcpb-mac-arm/mcpb-mac-arm
+            install.ps1
+            install.sh
