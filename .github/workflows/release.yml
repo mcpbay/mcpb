@@ -92,7 +92,8 @@ jobs:
           param(
               [switch]$Silent,
               [switch]$Latest,
-              [switch]$Debug
+              [switch]$Debug,
+              [switch]$Force
           )
 
           $ErrorActionPreference = "Stop"
@@ -100,6 +101,97 @@ jobs:
           function Write-DebugLog {
               param([string]$Message)
               if ($Debug) { Write-Host "[DEBUG] $Message" }
+          }
+
+          function Format-FileSize {
+              param([long]$Bytes)
+              if ($Bytes -ge 1GB) {
+                  return "{0:N2} GB" -f ($Bytes / 1GB)
+              } elseif ($Bytes -ge 1MB) {
+                  return "{0:N2} MB" -f ($Bytes / 1MB)
+              } elseif ($Bytes -ge 1KB) {
+                  return "{0:N2} KB" -f ($Bytes / 1KB)
+              } else {
+                  return "$Bytes bytes"
+              }
+          }
+
+          function Download-FileWithProgress {
+              param(
+                  [string]$Url,
+                  [string]$OutputPath
+              )
+              
+              try {
+                  $uri = New-Object System.Uri($Url)
+                  $request = [System.Net.HttpWebRequest]::Create($uri)
+                  $request.set_Timeout(15000)
+                  
+                  $response = $request.GetResponse()
+                  $totalLength = [long]$response.get_ContentLength()
+                  $responseStream = $response.GetResponseStream()
+                  
+                  $targetStream = New-Object System.IO.FileStream($OutputPath, [System.IO.FileMode]::Create)
+                  
+                  $buffer = New-Object byte[] 10KB
+                  $count = $responseStream.Read($buffer, 0, $buffer.length)
+                  $downloadedBytes = $count
+                  $startTime = Get-Date
+                  
+                  Write-Host ""
+                  Write-Host "Total size: $(Format-FileSize $totalLength)"
+                  Write-Host "Press CTRL+C to cancel"
+                  Write-Host ""
+                  
+                  while ($count -gt 0) {
+                      $targetStream.Write($buffer, 0, $count)
+                      $count = $responseStream.Read($buffer, 0, $buffer.length)
+                      $downloadedBytes = $downloadedBytes + $count
+                      
+                      $percentComplete = [int](($downloadedBytes / $totalLength) * 100)
+                      $downloaded = Format-FileSize $downloadedBytes
+                      $total = Format-FileSize $totalLength
+                      
+                      # Calculate speed
+                      $elapsed = ((Get-Date) - $startTime).TotalSeconds
+                      if ($elapsed -gt 0) {
+                          $speed = $downloadedBytes / $elapsed
+                          $speedStr = Format-FileSize $speed
+                      } else {
+                          $speedStr = "0 bytes"
+                      }
+                      
+                      # Progress bar
+                      $barLength = 40
+                      $completed = [int](($percentComplete / 100) * $barLength)
+                      $remaining = $barLength - $completed
+                      if ($remaining -gt 0) {
+                          $bar = "[" + ("=" * $completed) + ">" + (" " * ($remaining - 1)) + "]"
+                      } else {
+                          $bar = "[" + ("=" * $barLength) + "]"
+                      }
+                      
+                      # Show progress
+                      $status = "$bar $percentComplete% | $downloaded / $total | $speedStr/s"
+                      Write-Host "`r$status" -NoNewline
+                  }
+                  
+                  Write-Host ""
+                  Write-Host ""
+                  Write-Host "Download completed successfully."
+                  
+                  $targetStream.Flush()
+                  $targetStream.Close()
+                  $targetStream.Dispose()
+                  $responseStream.Dispose()
+                  
+              } catch {
+                  Write-Error "Download error: $_"
+                  if (Test-Path $OutputPath) {
+                      Remove-Item $OutputPath -Force
+                  }
+                  exit 1
+              }
           }
 
           $repo = "${{ github.repository }}"
@@ -125,6 +217,37 @@ jobs:
 
           New-Item -ItemType Directory -Force -Path $installDir | Out-Null
 
+          # Check if already installed
+          if ((Test-Path $output) -and -not $Force) {
+              try {
+                  $installedVersion = & $output --version 2>$null
+                  Write-DebugLog "Installed version output: $installedVersion"
+                  
+                  # Extract version number (handle different formats)
+                  if ($installedVersion -match '(\d+\.\d+\.\d+)') {
+                      $installedVersion = $matches[1]
+                  }
+                  
+                  # Clean version strings for comparison
+                  $targetVersion = $version -replace '^v', ''
+                  $installedVersion = $installedVersion -replace '^v', ''
+                  
+                  Write-DebugLog "Target version: $targetVersion"
+                  Write-DebugLog "Installed version: $installedVersion"
+                  
+                  if ($installedVersion -eq $targetVersion) {
+                      Write-Host "MCPB $version is already installed."
+                      Write-Host "Use -Force to reinstall."
+                      exit 0
+                  } else {
+                      Write-Host "Upgrading from version $installedVersion to $version..."
+                  }
+              } catch {
+                  Write-DebugLog "Could not determine installed version: $_"
+                  Write-Host "Existing installation found. Proceeding with installation..."
+              }
+          }
+
           # Detect running process
           $running = Get-Process -Name "mcpb" -ErrorAction SilentlyContinue
           if ($running) {
@@ -135,7 +258,7 @@ jobs:
           $checksumUrl = "$baseUrl/$checksumFile"
           Write-DebugLog "Downloading checksums from $checksumUrl"
           $checksumsContent = Invoke-WebRequest -Uri $checksumUrl -UseBasicParsing
-          $checksumsJson = $checksumsContent.Content | ConvertFrom-Json
+          $checksumsJson = $checksumsContent | ConvertFrom-Json
 
           if (-not $checksumsJson.PSObject.Properties.Name.Contains($file)) {
               Write-Error "Checksum entry for $file not found."
@@ -147,10 +270,20 @@ jobs:
 
           Write-DebugLog "Expected hash: $expectedHash"
 
-          if (-not $Silent -or $Debug) { Write-Host "Downloading $version from $url..." }
+          if (-not $Silent -or $Debug) { 
+              Write-Host "Downloading $version from $url..."
+          }
 
-          Invoke-WebRequest -Uri $url -OutFile $output
+          # Download with progress
+          Download-FileWithProgress -Url $url -OutputPath $output
 
+          # Verify file exists
+          if (-not (Test-Path $output)) {
+              Write-Host "Download did not complete."
+              exit 0
+          }
+
+          Write-Host "Verifying file integrity..."
           $actualHash = (Get-FileHash $output -Algorithm SHA256).Hash.ToLower()
           Write-DebugLog "Expected hash: $expectedHash"
           Write-DebugLog "Actual hash:   $actualHash"
@@ -161,7 +294,9 @@ jobs:
               exit 1
           }
 
-          # Agregar al PATH si no está
+          Write-Host "Verification successful."
+
+          # Add to PATH if not present
           $currentPath = [Environment]::GetEnvironmentVariable("PATH", "User")
           if ($currentPath -notlike "*$installDir*") {
               [Environment]::SetEnvironmentVariable("PATH", "$currentPath;$installDir", "User")
@@ -185,12 +320,14 @@ jobs:
           SILENT=false
           LATEST=false
           DEBUG=false
+          FORCE=false
 
           for arg in "$@"; do
             case $arg in
               --silent) SILENT=true ;;
               --latest) LATEST=true ;;
               --debug) DEBUG=true ;;
+              --force) FORCE=true ;;
             esac
           done
 
@@ -233,6 +370,27 @@ jobs:
           fi
 
           TARGET="$INSTALL_DIR/mcpb"
+
+          # Check if already installed
+          if [ -f "$TARGET" ] && [ "$FORCE" = false ]; then
+            INSTALLED_VERSION=$($TARGET --version 2>/dev/null || echo "unknown")
+            debug_log "Installed version output: $INSTALLED_VERSION"
+            
+            # Extract version number
+            INSTALLED_VERSION=$(echo "$INSTALLED_VERSION" | grep -oP '\d+\.\d+\.\d+' || echo "unknown")
+            TARGET_VERSION=$(echo "$VERSION" | sed 's/^v//')
+            
+            debug_log "Target version: $TARGET_VERSION"
+            debug_log "Installed version: $INSTALLED_VERSION"
+            
+            if [ "$INSTALLED_VERSION" = "$TARGET_VERSION" ]; then
+              echo "MCPB $VERSION is already installed."
+              echo "Use --force to reinstall."
+              exit 0
+            else
+              echo "Upgrading from version $INSTALLED_VERSION to $VERSION..."
+            fi
+          fi
 
           # Detect running binary
           if command -v lsof >/dev/null 2>&1; then
