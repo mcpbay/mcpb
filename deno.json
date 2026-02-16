@@ -1,11 +1,11 @@
 {
-  "version": "1.0.1",
+  "version": "1.0.2",
   "tasks": {
     "build:generic": {
       "description": "Used as common structure for all build commands.",
-      "command": "deno compile --allow-net --allow-read --allow-write --allow-env --icon icon.ico"
+      "command": "deno compile --allow-net --allow-read --allow-write --allow-env"
     },
-    "build:windows": "deno run build:generic --target x86_64-pc-windows-msvc --output ./dist/mcpb-windows main.ts",
+    "build:windows": "deno run build:generic --target x86_64-pc-windows-msvc --icon icon.ico --output ./dist/mcpb-windows main.ts",
     "build:linux-arm": "deno run build:generic --target aarch64-unknown-linux-gnu --output ./dist/mcpb-linux-arm main.ts",
     "build:linux-intel": "deno run build:generic --target x86_64-unknown-linux-gnu --output ./dist/mcpb-linux-intel main.ts",
     "build:mac-arm": "deno run build:generic --target aarch64-apple-darwin --output ./dist/mcpb-mac-arm main.ts",
