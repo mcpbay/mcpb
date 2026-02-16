@@ -65,15 +65,23 @@ jobs:
 
       - name: Generate SHA256
         run: |
-          > checksums.txt
+          > checksums.json
+          echo "{" > checksums.json
+          first=true
           for dir in mcpb-*; do
             if [ -d "$dir" ]; then
               file=$(find "$dir" -type f)
               filename=$(basename "$file")
               hash=$(sha256sum "$file" | awk '{print $1}')
-              echo "$hash  $filename" >> checksums.txt
+              if [ "$first" = true ]; then
+                first=false
+              else
+                echo "," >> checksums.json
+              fi
+              echo "  \"${filename}\": \"${hash}\"" >> checksums.json
             fi
           done
+          echo "}" >> checksums.json
 
       # ------------------------
       # PowerShell Installer
@@ -83,17 +91,27 @@ jobs:
           cat << 'EOF' > install.ps1
           param(
               [switch]$Silent,
-              [switch]$Latest
+              [switch]$Latest,
+              [switch]$Debug
           )
 
           $ErrorActionPreference = "Stop"
 
+          function Write-DebugLog {
+              param([string]$Message)
+              if ($Debug) { Write-Host "[DEBUG] $Message" }
+          }
+
           $repo = "${{ github.repository }}"
           $version = "${{ github.ref_name }}"
 
+          Write-DebugLog "Repo: $repo, Version: $version"
+
           if ($Latest) {
+              Write-DebugLog "Fetching latest release info..."
               $release = Invoke-RestMethod "https://api.github.com/repos/$repo/releases/latest"
               $version = $release.tag_name
+              Write-DebugLog "Latest version: $version"
           }
 
           $baseUrl = "https://github.com/$repo/releases/download/$version"
@@ -102,6 +120,8 @@ jobs:
 
           $installDir = "$env:LOCALAPPDATA\Programs\mcpb"
           $output = "$installDir\mcpb.exe"
+
+          Write-DebugLog "Install dir: $installDir, Output: $output"
 
           New-Item -ItemType Directory -Force -Path $installDir | Out-Null
 
@@ -113,25 +133,27 @@ jobs:
           }
 
           $checksumUrl = "$baseUrl/$checksumFile"
-          $checksums = Invoke-WebRequest -Uri $checksumUrl -UseBasicParsing
+          Write-DebugLog "Downloading checksums from $checksumUrl"
+          $checksumsContent = Invoke-WebRequest -Uri $checksumUrl -UseBasicParsing
+          $checksumsJson = $checksumsContent.Content | ConvertFrom-Json
 
-          # Normalizar saltos de línea y espacios
-          $lines = $checksums.Content -split "(`r)?`n" | ForEach-Object { $_.Trim() }
-          $line = $lines | Where-Object { $_ -match [regex]::Escape($file) }
-
-          if (-not $line) {
-              Write-Error "Checksum entry not found."
+          if (-not $checksumsJson.PSObject.Properties.Name.Contains($file)) {
+              Write-Error "Checksum entry for $file not found."
               exit 1
           }
 
-          $expectedHash = ($line -split "\s+")[0]
+          $expectedHash = $checksumsJson.$file
           $url = "$baseUrl/$file"
 
-          if (-not $Silent) { Write-Host "Downloading $version..." }
+          Write-DebugLog "Expected hash: $expectedHash"
+
+          if (-not $Silent -or $Debug) { Write-Host "Downloading $version from $url..." }
 
           Invoke-WebRequest -Uri $url -OutFile $output
 
           $actualHash = (Get-FileHash $output -Algorithm SHA256).Hash.ToLower()
+          Write-DebugLog "Expected hash: $expectedHash"
+          Write-DebugLog "Actual hash:   $actualHash"
 
           if ($actualHash -ne $expectedHash.ToLower()) {
               Remove-Item $output
@@ -143,9 +165,10 @@ jobs:
           $currentPath = [Environment]::GetEnvironmentVariable("PATH", "User")
           if ($currentPath -notlike "*$installDir*") {
               [Environment]::SetEnvironmentVariable("PATH", "$currentPath;$installDir", "User")
+              Write-DebugLog "Added $installDir to PATH"
           }
 
-          if (-not $Silent) {
+          if (-not $Silent -or $Debug) {
               Write-Host "Installation completed."
           }
           EOF
@@ -161,25 +184,38 @@ jobs:
 
           SILENT=false
           LATEST=false
+          DEBUG=false
 
           for arg in "$@"; do
             case $arg in
               --silent) SILENT=true ;;
               --latest) LATEST=true ;;
+              --debug) DEBUG=true ;;
             esac
           done
+
+          function debug_log {
+            if [ "$DEBUG" = true ]; then
+              echo "[DEBUG] $1"
+            fi
+          }
 
           REPO="${{ github.repository }}"
           VERSION="${{ github.ref_name }}"
 
+          debug_log "Repo: $REPO, Version: $VERSION"
+
           if [ "$LATEST" = true ]; then
+            debug_log "Fetching latest release info..."
             VERSION=$(curl -s https://api.github.com/repos/$REPO/releases/latest | grep tag_name | cut -d '"' -f4)
+            debug_log "Latest version: $VERSION"
           fi
 
           BASE_URL="https://github.com/$REPO/releases/download/$VERSION"
 
           OS="$(uname -s)"
           ARCH="$(uname -m)"
+          debug_log "OS: $OS, ARCH: $ARCH"
 
           if [[ "$OS" == "Linux" ]]; then
             [[ "$ARCH" == "x86_64" ]] && FILE="mcpb-linux-intel" || FILE="mcpb-linux-arm"
@@ -208,14 +244,23 @@ jobs:
 
           mkdir -p "$INSTALL_DIR"
 
-          curl -sL "$BASE_URL/checksums.txt" -o /tmp/mcpb_checksums.txt
-          EXPECTED_HASH=$(grep "$FILE" /tmp/mcpb_checksums.txt | awk '{print $1}')
+          debug_log "Downloading checksums..."
+          curl -sL "$BASE_URL/checksums.json" -o /tmp/mcpb_checksums.json
+          EXPECTED_HASH=$(jq -r --arg file "$FILE" '.[$file]' /tmp/mcpb_checksums.json)
+
+          if [ -z "$EXPECTED_HASH" ]; then
+            echo "Checksum entry for $FILE not found."
+            exit 1
+          fi
 
           [ "$SILENT" = false ] && echo "Downloading $VERSION..."
+          debug_log "File: $FILE"
+          debug_log "Expected hash: $EXPECTED_HASH"
 
           curl -sL "$BASE_URL/$FILE" -o "$TARGET"
 
           ACTUAL_HASH=$(sha256sum "$TARGET" | awk '{print $1}')
+          debug_log "Actual hash:   $ACTUAL_HASH"
 
           if [[ "$ACTUAL_HASH" != "$EXPECTED_HASH" ]]; then
             rm "$TARGET"
@@ -226,6 +271,7 @@ jobs:
           chmod +x "$TARGET"
 
           [ "$SILENT" = false ] && echo "Installation completed."
+          debug_log "Installation path: $TARGET"
           EOF
 
       - name: Make install.sh executable
@@ -240,6 +286,6 @@ jobs:
             mcpb-linux-arm/mcpb-linux-arm
             mcpb-mac-intel/mcpb-mac-intel
             mcpb-mac-arm/mcpb-mac-arm
-            checksums.txt
+            checksums.json
             install.ps1
             install.sh
