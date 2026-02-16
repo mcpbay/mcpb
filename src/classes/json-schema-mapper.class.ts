@@ -1,5 +1,8 @@
 import { crashIfNot } from "@mcpbay/easy-mcp-server/utils";
-import { IObjectJsonSchema, isObjectJsonSchema } from "../validators/is-object-json-schema.validator.ts";
+import {
+  IObjectJsonSchema,
+  isObjectJsonSchema,
+} from "../validators/is-object-json-schema.validator.ts";
 import { INTERNAL_ERROR } from "@mcpbay/easy-mcp-server/constants";
 
 const ARGS_PATTERN = /\{\{arg\.([\w_]+)\}\}/g;
@@ -30,7 +33,6 @@ function convertByType(type: string, value: string) {
 }
 
 export class JsonSchemaMapper {
-
   private readonly argumentNames!: string[];
 
   constructor(
@@ -42,7 +44,7 @@ export class JsonSchemaMapper {
 
     crashIfNot(isJsonObjectSchema, {
       code: INTERNAL_ERROR,
-      message: "Invalid json schema."
+      message: "Invalid json schema.",
     });
 
     this.argumentNames = Object.keys(this.schema.properties);
@@ -58,7 +60,7 @@ export class JsonSchemaMapper {
 
     crashIfNot(typeof arg !== "undefined", {
       code: INTERNAL_ERROR,
-      message: `Invalid argument name: ${name}.`
+      message: `Invalid argument name: ${name}.`,
     });
 
     const argSchema = this.mapSchema[name];
@@ -79,7 +81,10 @@ export class JsonSchemaMapper {
 
     // More than 1 args means the value is an string.
 
-    return argSchema.replace(ARGS_PATTERN, (_, placeholder) => String(this.objectReference[placeholder] ?? ""));
+    return argSchema.replace(
+      ARGS_PATTERN,
+      (_, placeholder) => String(this.objectReference[placeholder] ?? ""),
+    );
   }
 
   getOutput() {

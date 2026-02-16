@@ -121,39 +121,39 @@ jobs:
                   [string]$Url,
                   [string]$OutputPath
               )
-              
+
               try {
                   $uri = New-Object System.Uri($Url)
                   $request = [System.Net.HttpWebRequest]::Create($uri)
                   $request.set_Timeout(15000)
                   $request.AllowAutoRedirect = $true
                   $request.MaximumAutomaticRedirections = 5
-                  
+
                   $response = $request.GetResponse()
                   $totalLength = [long]$response.get_ContentLength()
                   $responseStream = $response.GetResponseStream()
-                  
+
                   $targetStream = New-Object System.IO.FileStream($OutputPath, [System.IO.FileMode]::Create)
-                  
+
                   $buffer = New-Object byte[] 65536
                   $count = $responseStream.Read($buffer, 0, $buffer.length)
                   $downloadedBytes = $count
                   $startTime = Get-Date
-                  
+
                   Write-Host ""
                   Write-Host "Total size: $(Format-FileSize $totalLength)"
                   Write-Host "Press CTRL+C to cancel"
                   Write-Host ""
-                  
+
                   while ($count -gt 0) {
                       $targetStream.Write($buffer, 0, $count)
                       $count = $responseStream.Read($buffer, 0, $buffer.length)
                       $downloadedBytes = $downloadedBytes + $count
-                      
+
                       $percentComplete = [int](($downloadedBytes / $totalLength) * 100)
                       $downloaded = Format-FileSize $downloadedBytes
                       $total = Format-FileSize $totalLength
-                      
+
                       # Calculate speed
                       $elapsed = ((Get-Date) - $startTime).TotalSeconds
                       if ($elapsed -gt 0) {
@@ -162,7 +162,7 @@ jobs:
                       } else {
                           $speedStr = "0 bytes"
                       }
-                      
+
                       # Progress bar
                       $barLength = 40
                       $completed = [int](($percentComplete / 100) * $barLength)
@@ -172,22 +172,22 @@ jobs:
                       } else {
                           $bar = "[" + ("=" * $barLength) + "]"
                       }
-                      
+
                       # Show progress
                       $status = "$bar $percentComplete% | $downloaded / $total | $speedStr/s"
                       Write-Host "`r$status" -NoNewline
                   }
-                  
+
                   Write-Host ""
                   Write-Host ""
                   Write-Host "Download completed successfully."
-                  
+
                   $targetStream.Flush()
                   $targetStream.Close()
                   $targetStream.Dispose()
                   $responseStream.Dispose()
                   $response.Close()
-                  
+
               } catch {
                   Write-Error "Download error: $_"
                   if (Test-Path $OutputPath) {
@@ -225,19 +225,19 @@ jobs:
               try {
                   $installedVersion = & $output --version 2>$null
                   Write-DebugLog "Installed version output: $installedVersion"
-                  
+
                   # Extract version number (handle different formats)
                   if ($installedVersion -match '(\d+\.\d+\.\d+)') {
                       $installedVersion = $matches[1]
                   }
-                  
+
                   # Clean version strings for comparison
                   $targetVersion = $version -replace '^v', ''
                   $installedVersion = $installedVersion -replace '^v', ''
-                  
+
                   Write-DebugLog "Target version: $targetVersion"
                   Write-DebugLog "Installed version: $installedVersion"
-                  
+
                   if ($installedVersion -eq $targetVersion) {
                       Write-Host "MCPB $version is already installed."
                       Write-Host "Use -Force to reinstall."
@@ -273,7 +273,7 @@ jobs:
 
           Write-DebugLog "Expected hash: $expectedHash"
 
-          if (-not $Silent -or $Debug) { 
+          if (-not $Silent -or $Debug) {
               Write-Host "Downloading $version from $url..."
           }
 
@@ -378,14 +378,14 @@ jobs:
           if [ -f "$TARGET" ] && [ "$FORCE" = false ]; then
             INSTALLED_VERSION=$($TARGET --version 2>/dev/null || echo "unknown")
             debug_log "Installed version output: $INSTALLED_VERSION"
-            
+
             # Extract version number
             INSTALLED_VERSION=$(echo "$INSTALLED_VERSION" | grep -oP '\d+\.\d+\.\d+' || echo "unknown")
             TARGET_VERSION=$(echo "$VERSION" | sed 's/^v//')
-            
+
             debug_log "Target version: $TARGET_VERSION"
             debug_log "Installed version: $INSTALLED_VERSION"
-            
+
             if [ "$INSTALLED_VERSION" = "$TARGET_VERSION" ]; then
               echo "MCPB $VERSION is already installed."
               echo "Use --force to reinstall."

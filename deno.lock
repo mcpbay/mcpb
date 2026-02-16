@@ -82,6 +82,7 @@
       "jsr:@online/get-string-uid@^1.0.1",
       "jsr:@std/assert@^1.0.18",
       "jsr:@std/fs@^1.0.22",
+      "jsr:@std/path@^1.1.4",
       "jsr:@std/testing@^1.0.17",
       "npm:commander@^14.0.3"
     ]

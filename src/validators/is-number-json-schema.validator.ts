@@ -10,5 +10,6 @@ export interface INumberJsonSchema {
 }
 
 export function isNumberJsonSchema(value: unknown): value is INumberJsonSchema {
-  return typeof value === "object" && value !== null && "type" in value && checkTypeInJsonShema(value.type, "number");
+  return typeof value === "object" && value !== null && "type" in value &&
+    checkTypeInJsonShema(value.type, "number");
 }

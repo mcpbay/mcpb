@@ -1,4 +1,7 @@
-export function crashIfNot(condition: unknown, message: string): asserts condition {
+export function crashIfNot(
+  condition: unknown,
+  message: string,
+): asserts condition {
   if (!condition) {
     throw new Error(message);
   }

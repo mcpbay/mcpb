@@ -9,6 +9,9 @@ export interface IIntegerJsonSchema {
   exclusiveMaximum?: boolean;
 }
 
-export function isIntegerJsonSchema(value: unknown): value is IIntegerJsonSchema {
-  return typeof value === "object" && value !== null && "type" in value && checkTypeInJsonShema(value.type, "integer");
+export function isIntegerJsonSchema(
+  value: unknown,
+): value is IIntegerJsonSchema {
+  return typeof value === "object" && value !== null && "type" in value &&
+    checkTypeInJsonShema(value.type, "integer");
 }

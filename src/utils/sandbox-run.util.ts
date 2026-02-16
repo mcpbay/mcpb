@@ -18,8 +18,12 @@ export interface ISandboxRunOptions {
   projectPath: string;
 }
 
-export function sandboxRun(command: string, options: Partial<ISandboxRunOptions> = {}) {
-  const { network = "none", memory = 128, projectPath = ".", shell = "bash" } = options;
+export function sandboxRun(
+  command: string,
+  options: Partial<ISandboxRunOptions> = {},
+) {
+  const { network = "none", memory = 128, projectPath = ".", shell = "bash" } =
+    options;
   const cmd = `
   docker run --rm -i \
   --network ${network} \

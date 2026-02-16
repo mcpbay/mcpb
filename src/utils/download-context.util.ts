@@ -2,7 +2,7 @@ import { MCPBAY_HOST } from "../constants/mcpbay-host.constant.ts";
 import { ContextVersion } from "../types/context-version.type.ts";
 import { crashIfNot } from "./crash-if-not.util.ts";
 
-const API_KEY = Deno.env.get('MCPBAY_API_KEY');
+const API_KEY = Deno.env.get("MCPBAY_API_KEY");
 
 export async function downloadContext(slug: string): Promise<ContextVersion> {
   const init: RequestInit = {
@@ -15,7 +15,10 @@ export async function downloadContext(slug: string): Promise<ContextVersion> {
   if (!request.ok) {
     const response = await request.text();
 
-    crashIfNot(false, `Failed to download context (${request.status}): ${response}`);
+    crashIfNot(
+      false,
+      `Failed to download context (${request.status}): ${response}`,
+    );
   }
 
   const response = await request.json();
