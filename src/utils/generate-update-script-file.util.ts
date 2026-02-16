@@ -51,7 +51,7 @@ if not exist "%UPDATE%" (
     pause
     exit /b 1
 )
-rename "%UPDATE%" "%ORIGINAL%"
+move "%UPDATE%" "%ORIGINAL%"
 if errorlevel 1 (
     echo ERROR: Could not rename %UPDATE%
     pause
