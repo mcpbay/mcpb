@@ -11,5 +11,6 @@ export interface IStringJsonSchema {
 }
 
 export function isStringJsonSchema(value: unknown): value is IStringJsonSchema {
-  return typeof value === "object" && value !== null && "type" in value && checkTypeInJsonShema(value.type, "string");
+  return typeof value === "object" && value !== null && "type" in value &&
+    checkTypeInJsonShema(value.type, "string");
 }

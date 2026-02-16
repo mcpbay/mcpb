@@ -1,1 +1,2 @@
-1. Always list the resources to check if you need to read some of them for the task.
+1. Always list the resources to check if you need to read some of them for the
+   task.

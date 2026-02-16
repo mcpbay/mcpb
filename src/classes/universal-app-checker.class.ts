@@ -22,7 +22,7 @@ export class UniversalAppChecker {
       });
       const { success, stdout } = await whereCmd.output();
       if (success) {
-        return new TextDecoder().decode(stdout).trim().split('\n')[0];
+        return new TextDecoder().decode(stdout).trim().split("\n")[0];
       }
     } catch {
     }
@@ -37,7 +37,7 @@ export class UniversalAppChecker {
         });
         const { success, stdout } = await whereExtCmd.output();
         if (success) {
-          return new TextDecoder().decode(stdout).trim().split('\n')[0];
+          return new TextDecoder().decode(stdout).trim().split("\n")[0];
         }
       } catch {
         continue;
@@ -78,9 +78,9 @@ export class UniversalAppChecker {
 
     const macPaths = [
       `/usr/local/bin/${app}`,
-      `/opt/homebrew/bin/${app}`,      // Homebrew en Apple Silicon
+      `/opt/homebrew/bin/${app}`, // Homebrew en Apple Silicon
       `/usr/local/opt/${app}/bin/${app}`, // Enlaces de Homebrew
-      `/opt/local/bin/${app}`,         // MacPorts
+      `/opt/local/bin/${app}`, // MacPorts
       `/usr/bin/${app}`,
       `/bin/${app}`,
       `/Applications/${app}/Contents/MacOS/${app}`, // Apps GUI
@@ -143,7 +143,7 @@ export class UniversalAppChecker {
       const { success, stdout } = await whereisCmd.output();
       if (success) {
         const output = new TextDecoder().decode(stdout).trim();
-        const paths = output.split(' ');
+        const paths = output.split(" ");
         if (paths.length > 1) return paths[1];
       }
     } catch {
@@ -157,14 +157,14 @@ export class UniversalAppChecker {
   }
 
   private detectMacInstallMethod(path: string): string {
-    if (path.includes('homebrew') || path.includes('brew')) {
-      return 'Homebrew';
-    } else if (path.includes('macports')) {
-      return 'MacPorts';
-    } else if (path.includes('Applications')) {
-      return 'Application Bundle';
+    if (path.includes("homebrew") || path.includes("brew")) {
+      return "Homebrew";
+    } else if (path.includes("macports")) {
+      return "MacPorts";
+    } else if (path.includes("Applications")) {
+      return "Application Bundle";
     } else {
-      return 'System';
+      return "System";
     }
   }
 
@@ -180,7 +180,7 @@ export class UniversalAppChecker {
   }
 
   async getAppVersion(app: string, path?: string): Promise<string | undefined> {
-    const versionFlags = ['--version', '-v', '-V', 'version'];
+    const versionFlags = ["--version", "-v", "-V", "version"];
 
     for (const flag of versionFlags) {
       try {
@@ -193,18 +193,19 @@ export class UniversalAppChecker {
         const { success, stdout } = await versionCmd.output();
         if (success) {
           const version = new TextDecoder().decode(stdout).trim();
-          if (version) return version.split('\n')[0];
+          if (version) return version.split("\n")[0];
         }
       } catch {
         continue;
       }
     }
 
-    if (this.os === "darwin" && path?.includes('.app/')) {
+    if (this.os === "darwin" && path?.includes(".app/")) {
       try {
-        const plistPath = path.substring(0, path.indexOf('.app/') + 4) + '/Contents/Info.plist';
-        const plistCmd = new Deno.Command('defaults', {
-          args: ['read', plistPath, 'CFBundleShortVersionString'],
+        const plistPath = path.substring(0, path.indexOf(".app/") + 4) +
+          "/Contents/Info.plist";
+        const plistCmd = new Deno.Command("defaults", {
+          args: ["read", plistPath, "CFBundleShortVersionString"],
           stdout: "piped",
           stderr: "piped",
         });
@@ -250,7 +251,7 @@ export class UniversalAppChecker {
       const result = await this.checkApp(app);
       results.push(result);
 
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 10));
     }
 
     return results;
@@ -258,10 +259,14 @@ export class UniversalAppChecker {
 
   getOSType(): string {
     switch (this.os) {
-      case "windows": return "Windows";
-      case "darwin": return "macOS";
-      case "linux": return "Linux";
-      default: return this.os;
+      case "windows":
+        return "Windows";
+      case "darwin":
+        return "macOS";
+      case "linux":
+        return "Linux";
+      default:
+        return this.os;
     }
   }
 }

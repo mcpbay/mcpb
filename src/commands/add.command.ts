@@ -15,8 +15,8 @@ export async function addCommand(source: string) {
   if (slugContainsVersion) {
     const [slug, version] = source.split("@");
 
-    crashIfNot(slug, 'Invalid slug format.');
-    crashIfNot(version, 'Invalid slug version.');
+    crashIfNot(slug, "Invalid slug format.");
+    crashIfNot(version, "Invalid slug version.");
 
     config.imports[slug] = version;
     contextSlug = [slug, version];
@@ -34,12 +34,12 @@ export async function addCommand(source: string) {
 
   const contextFolderName = contextVersion.context.slug;
   const contextFolderPath = `${contextModulesPath}/${contextFolderName}`;
-  const contextVersionPath = `${contextFolderPath}/${contextVersion.version}.json`;
+  const contextVersionPath =
+    `${contextFolderPath}/${contextVersion.version}.json`;
 
   config.imports[contextSlug[0]] = contextVersion.version;
 
   if (existsSync(contextFolderPath)) {
-
     if (existsSync(contextVersionPath)) {
       return console.log(`Context "${source}" already exists.`);
     }

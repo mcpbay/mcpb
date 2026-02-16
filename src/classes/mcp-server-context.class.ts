@@ -1,17 +1,18 @@
 import {
+  CrashIfNotArguments,
   IContextModel,
   IContextModelOptions,
   IPrompt,
-  IServerClientInformation, IResource,
+  IPromptMessage,
+  IResource,
   IResourceContent,
+  IServerClientInformation,
   ITool,
   IToolContextModelOptions,
   IToolsCallResponse,
-  IPromptMessage,
-  ToolCallResponse,
+  PromptsGetResponse,
   ResourcesListResponse,
-  CrashIfNotArguments,
-  PromptsGetResponse
+  ToolCallResponse,
 } from "@mcpbay/easy-mcp-server/types";
 import { Role } from "@mcpbay/easy-mcp-server/enums";
 import { ContextVersion } from "../types/context-version.type.ts";
@@ -20,7 +21,10 @@ import { Resource } from "../types/resource.type.ts";
 import { Tool } from "../types/tool.type.ts";
 import { Prompt } from "../types/prompt.type.ts";
 import { crashIfNot } from "@mcpbay/easy-mcp-server/utils";
-import { INTERNAL_ERROR, INVALID_PARAMS } from "@mcpbay/easy-mcp-server/constants";
+import {
+  INTERNAL_ERROR,
+  INVALID_PARAMS,
+} from "@mcpbay/easy-mcp-server/constants";
 import * as os from "node:os";
 import { components } from "../api/schema.d.ts";
 import { getStringUid } from "@online/get-string-uid";
@@ -51,7 +55,7 @@ export enum ToolLocalWorkingDirectoryType {
   PROJECT_ROOT = "project_root",
 }
 
-type LocalResource = IResource & { id: string; };
+type LocalResource = IResource & { id: string };
 
 export class McpServerContext implements IContextModel {
   private serverInformation!: IServerClientInformation;
@@ -80,9 +84,18 @@ export class McpServerContext implements IContextModel {
 
     this.placeholders.set(ToolLocalWorkingDirectoryType.TEMP, os.tmpdir());
     this.placeholders.set(ToolLocalWorkingDirectoryType.CWD, process.cwd());
-    this.placeholders.set(ToolLocalWorkingDirectoryType.PROJECT_ROOT, Deno.env.get("PROJECT_ROOT") ?? process.cwd());
-    this.placeholders.set(ToolLocalWorkingDirectoryType.WORKSPACE, Deno.env.get("WORKSPACE") ?? process.cwd());
-    this.placeholders.set(ToolLocalWorkingDirectoryType.REPO_ROOT, Deno.env.get("REPO_ROOT") ?? process.cwd());
+    this.placeholders.set(
+      ToolLocalWorkingDirectoryType.PROJECT_ROOT,
+      Deno.env.get("PROJECT_ROOT") ?? process.cwd(),
+    );
+    this.placeholders.set(
+      ToolLocalWorkingDirectoryType.WORKSPACE,
+      Deno.env.get("WORKSPACE") ?? process.cwd(),
+    );
+    this.placeholders.set(
+      ToolLocalWorkingDirectoryType.REPO_ROOT,
+      Deno.env.get("REPO_ROOT") ?? process.cwd(),
+    );
   }
 
   async onInitialize() {
@@ -110,7 +123,8 @@ export class McpServerContext implements IContextModel {
 
           crashIfNot(value, {
             code: INVALID_PARAMS,
-            message: `Missing required environment variable "${variable.name}": ${variable.description}.`,
+            message:
+              `Missing required environment variable "${variable.name}": ${variable.description}.`,
             catch: catchLogs,
           });
 
@@ -129,12 +143,15 @@ export class McpServerContext implements IContextModel {
     return this.serverInformation;
   }
 
-
   async onClientListPrompts(options: IContextModelOptions) {
     writeLog(`EVENT: onClientListPrompts`);
 
     const prompts = this.prompts.map((prompt) => {
-      return objectPick(prompt, ["name", "description", "arguments"]) as IPrompt;
+      return objectPick(prompt, [
+        "name",
+        "description",
+        "arguments",
+      ]) as IPrompt;
     });
 
     writeLog(`EVENT [onClientListPrompts] Response`);
@@ -143,7 +160,11 @@ export class McpServerContext implements IContextModel {
     return prompts;
   }
 
-  async onClientGetPrompt(prompt: IPrompt, args: Record<string, unknown>, options: IContextModelOptions): Promise<PromptsGetResponse> {
+  async onClientGetPrompt(
+    prompt: IPrompt,
+    args: Record<string, unknown>,
+    options: IContextModelOptions,
+  ): Promise<PromptsGetResponse> {
     writeLog(`EVENT: onClientGetPrompt`);
 
     const _prompt = this.prompts.find((p) => p.name === prompt.name)!;
@@ -152,11 +173,17 @@ export class McpServerContext implements IContextModel {
     writeLog(_prompt);
 
     const messages = _prompt.messages.map((message) => {
-      if (message.content.type !== 'text') {
+      if (message.content.type !== "text") {
         return message;
       }
 
-      message.content = { ...message.content, text: this.applyArgsPlaceholders(this.applyPathPlaceholders(message.content.text!), args) };
+      message.content = {
+        ...message.content,
+        text: this.applyArgsPlaceholders(
+          this.applyPathPlaceholders(message.content.text!),
+          args,
+        ),
+      };
 
       return message;
     });
@@ -164,14 +191,27 @@ export class McpServerContext implements IContextModel {
     writeLog(`EVENT [onClientGetPrompt] Response`);
     writeLog(messages);
 
-    return { description: _prompt.description, messages: messages as unknown as IPromptMessage[] } satisfies PromptsGetResponse;
+    return {
+      description: _prompt.description,
+      messages: messages as unknown as IPromptMessage[],
+    } satisfies PromptsGetResponse;
   }
 
-  async onClientListResources(options: IContextModelOptions): Promise<ResourcesListResponse> {
+  async onClientListResources(
+    options: IContextModelOptions,
+  ): Promise<ResourcesListResponse> {
     writeLog(`EVENT: onClientListResources`);
 
     const resources = this.resources.map((resource) => {
-      return objectPick(resource, ["id", "uri", "name", "mimeType", "size", "description", "title"]) as LocalResource;
+      return objectPick(resource, [
+        "id",
+        "uri",
+        "name",
+        "mimeType",
+        "size",
+        "description",
+        "title",
+      ]) as LocalResource;
     });
 
     writeLog(`EVENT [onClientListResources] Response`);
@@ -180,11 +220,21 @@ export class McpServerContext implements IContextModel {
     return resources;
   }
 
-  async onClientReadResource(resourceUri: string, options: IContextModelOptions): Promise<IResourceContent[]> {
+  async onClientReadResource(
+    resourceUri: string,
+    options: IContextModelOptions,
+  ): Promise<IResourceContent[]> {
     writeLog(`EVENT: onClientReadResource`);
 
-    const resource = this.resources.find((resource) => resource.uri === resourceUri);
-    const response = [{ mimeType: resource?.mimeType, blob: resource?.blob ?? undefined, text: resource?.text ?? undefined, uri: resource?.uri }] as IResourceContent[];
+    const resource = this.resources.find((resource) =>
+      resource.uri === resourceUri
+    );
+    const response = [{
+      mimeType: resource?.mimeType,
+      blob: resource?.blob ?? undefined,
+      text: resource?.text ?? undefined,
+      uri: resource?.uri,
+    }] as IResourceContent[];
 
     writeLog(`EVENT [onClientReadResource] Response`);
     writeLog(response);
@@ -205,7 +255,11 @@ export class McpServerContext implements IContextModel {
     return tools;
   }
 
-  async onClientCallTool(tool: ITool, args: Record<string, unknown>, options: IToolContextModelOptions): Promise<ToolCallResponse> {
+  async onClientCallTool(
+    tool: ITool,
+    args: Record<string, unknown>,
+    options: IToolContextModelOptions,
+  ): Promise<ToolCallResponse> {
     writeLog(`EVENT: onClientCallTool`);
 
     const catchLogs = (_args: CrashIfNotArguments) => {
@@ -218,7 +272,7 @@ export class McpServerContext implements IContextModel {
     crashIfNot(_tool, {
       code: INVALID_PARAMS,
       message: "Tool not found",
-      catch: catchLogs
+      catch: catchLogs,
     });
 
     const { execution } = _tool;
@@ -229,11 +283,10 @@ export class McpServerContext implements IContextModel {
     crashIfNot(["darwin", "win32", "linux"].includes(platform), {
       code: INTERNAL_ERROR,
       message: `Invalid platform: ${platform}.`,
-      catch: catchLogs
+      catch: catchLogs,
     });
 
     for (const strategy of execution) {
-
       writeLog(`EVENT [onClientCallTool] Strategy: ${strategy.type}`);
 
       if (strategy.type === "local") {
@@ -246,16 +299,21 @@ export class McpServerContext implements IContextModel {
           const cachedResponse = this.getCachedResponse(args);
 
           if (cachedResponse) {
-            const response = cachedResponse as IToolsCallResponse["result"]["content"];
+            const response =
+              cachedResponse as IToolsCallResponse["result"]["content"];
 
-            writeLog(`EVENT [onClientCallTool] Response (deterministic|cached)`);
+            writeLog(
+              `EVENT [onClientCallTool] Response (deterministic|cached)`,
+            );
             writeLog(config);
 
             return response;
           }
         }
 
-        const requriedOs = config.environment.os.map((os) => os === "windows" ? "win32" : os);
+        const requriedOs = config.environment.os.map((os) =>
+          os === "windows" ? "win32" : os
+        );
 
         writeLog(`EVENT [onClientCallTool] Required OS: ${requriedOs}`);
 
@@ -263,22 +321,28 @@ export class McpServerContext implements IContextModel {
           continue;
         }
 
-        if (!requriedOs.includes(platform as unknown as typeof requriedOs[number])) {
+        if (
+          !requriedOs.includes(platform as unknown as typeof requriedOs[number])
+        ) {
           continue;
         }
 
-        const requiredAppsStatus = await this.appChecker.checkMultipleApps(config.environment.requires);
+        const requiredAppsStatus = await this.appChecker.checkMultipleApps(
+          config.environment.requires,
+        );
 
         writeLog(`EVENT [onClientCallTool] Required App Status`);
         writeLog(requiredAppsStatus);
 
         crashIfNot(requiredAppsStatus.every((status) => status.exists), {
           code: INTERNAL_ERROR,
-          message: `Required apps not found: ${requiredAppsStatus
-            .filter((status) => !status.exists)
-            .map((status) => status.name)
-            .join(", ")}`,
-          catch: catchLogs
+          message: `Required apps not found: ${
+            requiredAppsStatus
+              .filter((status) => !status.exists)
+              .map((status) => status.name)
+              .join(", ")
+          }`,
+          catch: catchLogs,
         });
 
         this.startCooldown(tool.name, config.cooldownMs);
@@ -295,24 +359,27 @@ export class McpServerContext implements IContextModel {
         writeLog(`EVENT [onClientCallTool] Before Execution`);
 
         const execution = await (async () => {
-          const workingDirectory = config.workingDirectory || this.placeholders.get(ToolLocalWorkingDirectoryType.CWD)!;
-          const command =
-            this.applyVariables(
-              this.applyArgsPlaceholders(
-                this.applyPathPlaceholders(config.commands[0]),
-                args
-              ),
-              this.contexts.find((c) => c.tools.some((t) => t.id === _tool.id))!.id
-            );
+          const workingDirectory = config.workingDirectory ||
+            this.placeholders.get(ToolLocalWorkingDirectoryType.CWD)!;
+          const command = this.applyVariables(
+            this.applyArgsPlaceholders(
+              this.applyPathPlaceholders(config.commands[0]),
+              args,
+            ),
+            this.contexts.find((c) => c.tools.some((t) => t.id === _tool.id))!
+              .id,
+          );
           const timeout = config.timeout ?? 1000 * 15;
 
           if (config.runInShell) {
-            const shellExists = await this.appChecker.checkApp(config.environment.shell);
+            const shellExists = await this.appChecker.checkApp(
+              config.environment.shell,
+            );
 
             crashIfNot(shellExists.exists, {
               code: INTERNAL_ERROR,
               message: `Shell not found: ${config.environment.shell}`,
-              catch: catchLogs
+              catch: catchLogs,
             });
 
             const shell = config.environment.shell;
@@ -341,17 +408,27 @@ export class McpServerContext implements IContextModel {
           writeLog(`EVENT [onClientCallTool] Success Criteria Present`);
 
           const { successCriteria } = config;
-          const { exitCode: criteriaSuccessCode, responseMatches, outputFormat } = successCriteria;
-          const outputFilePath = successCriteria.outputFilePath?.replaceAll("\\", "/");
+          const {
+            exitCode: criteriaSuccessCode,
+            responseMatches,
+            outputFormat,
+          } = successCriteria;
+          const outputFilePath = successCriteria.outputFilePath?.replaceAll(
+            "\\",
+            "/",
+          );
 
           if (outputFilePath) {
-            writeLog(`EVENT [onClientCallTool] Ouput file path: ${outputFilePath}`);
+            writeLog(
+              `EVENT [onClientCallTool] Ouput file path: ${outputFilePath}`,
+            );
           }
 
           crashIfNot(criteriaSuccessCode === code, {
             code: INTERNAL_ERROR,
-            message: `Invalid exit code: ${code}, expected ${criteriaSuccessCode}.`,
-            catch: catchLogs
+            message:
+              `Invalid exit code: ${code}, expected ${criteriaSuccessCode}.`,
+            catch: catchLogs,
           });
 
           if (responseMatches) {
@@ -361,7 +438,7 @@ export class McpServerContext implements IContextModel {
               crashIfNot(matchRegex.test(stdoutStr), {
                 code: INTERNAL_ERROR,
                 message: `Invalid response. expected to match ${match}.`,
-                catch: catchLogs
+                catch: catchLogs,
               });
             }
           }
@@ -370,7 +447,7 @@ export class McpServerContext implements IContextModel {
           const jsonOutput = (() => {
             try {
               return JSON.parse(stdoutStr) as object;
-            } catch { }
+            } catch {}
 
             return null;
           })();
@@ -385,13 +462,17 @@ export class McpServerContext implements IContextModel {
               crashIfNot(isJsonOutput, {
                 code: INTERNAL_ERROR,
                 message: `Invalid response. expected to be JSON.`,
-                catch: catchLogs
+                catch: catchLogs,
               });
 
               const structuredContent: Record<string, unknown> = {};
 
               if (tool.outputSchema) {
-                const jsonSchemaMapper = new JsonSchemaMapper(tool.outputSchema as IObjectJsonSchema, config.outputMapping!, jsonOutput as Record<string, unknown>);
+                const jsonSchemaMapper = new JsonSchemaMapper(
+                  tool.outputSchema as IObjectJsonSchema,
+                  config.outputMapping!,
+                  jsonOutput as Record<string, unknown>,
+                );
                 const output = jsonSchemaMapper.getOutput();
 
                 Object.assign(structuredContent, output);
@@ -404,11 +485,11 @@ export class McpServerContext implements IContextModel {
                 content: [{
                   role: Role.ASSISTANT,
                   content: {
-                    type: 'text',
-                    text: stdoutStr
-                  }
+                    type: "text",
+                    text: stdoutStr,
+                  },
                 }],
-                structuredContent
+                structuredContent,
               } satisfies ToolCallResponse;
 
               writeLog(`EVENT [onClientCallTool] Output JSON Response`);
@@ -418,18 +499,24 @@ export class McpServerContext implements IContextModel {
             } else if (outputFormat === "file") {
               crashIfNot(outputFilePath, {
                 code: INTERNAL_ERROR,
-                message: `Output file path not provided in tool success criteria.`,
-                catch: catchLogs
+                message:
+                  `Output file path not provided in tool success criteria.`,
+                catch: catchLogs,
               });
 
-              const patchedOutputFilePath = this.applyPathPlaceholders(outputFilePath);
+              const patchedOutputFilePath = this.applyPathPlaceholders(
+                outputFilePath,
+              );
 
-              writeLog(`EVENT [onClientCallTool] Patched Output File Path: ${patchedOutputFilePath}`);
+              writeLog(
+                `EVENT [onClientCallTool] Patched Output File Path: ${patchedOutputFilePath}`,
+              );
 
               crashIfNot(fileExists(patchedOutputFilePath), {
                 code: INTERNAL_ERROR,
-                message: `Invalid response. expected file does not exists: ${patchedOutputFilePath}.`,
-                catch: catchLogs
+                message:
+                  `Invalid response. expected file does not exists: ${patchedOutputFilePath}.`,
+                catch: catchLogs,
               });
 
               const fileName = basename(patchedOutputFilePath);
@@ -454,9 +541,9 @@ export class McpServerContext implements IContextModel {
           const response = [{
             role: Role.ASSISTANT,
             content: {
-              type: 'text',
-              text: stdoutStr
-            }
+              type: "text",
+              text: stdoutStr,
+            },
           }] satisfies ToolCallResponse;
 
           writeLog(`EVENT [onClientCallTool] Response`);
@@ -470,23 +557,36 @@ export class McpServerContext implements IContextModel {
     crashIfNot(false, {
       code: INTERNAL_ERROR,
       message: `Any strategy satisfied.`,
-      catch: catchLogs
+      catch: catchLogs,
     });
   }
 
   applyPathPlaceholders(text: string) {
-    return text.replace(/\{\{([\w_]+)\}\}/g, (_, placeholder) => this.placeholders.get(camelCaseToSnakeCase(placeholder)) ?? "");
+    return text.replace(
+      /\{\{([\w_]+)\}\}/g,
+      (_, placeholder) =>
+        this.placeholders.get(camelCaseToSnakeCase(placeholder)) ?? "",
+    );
   }
 
   applyArgsPlaceholders(text: string, args: Record<string, unknown>) {
-    return text.replace(/\{\{(arg\.[\w_]+)\}\}/g, (_, placeholder) => String(args[placeholder] ?? ""));
+    return text.replace(
+      /\{\{(arg\.[\w_]+)\}\}/g,
+      (_, placeholder) => String(args[placeholder] ?? ""),
+    );
   }
 
   applyVariables(text: string, contextId: number) {
-    return text.replace(/\{\{(env\.[\w_]+)\}\}/g, (_, variable) => this.variables[contextId][variable] ?? "");
+    return text.replace(
+      /\{\{(env\.[\w_]+)\}\}/g,
+      (_, variable) => this.variables[contextId][variable] ?? "",
+    );
   }
 
-  executeShellCommand(command: string, options?: Partial<IExecuteShellCommandOptions>) {
+  executeShellCommand(
+    command: string,
+    options?: Partial<IExecuteShellCommandOptions>,
+  ) {
     const shell = options?.shell || command;
     const args = (() => {
       if (shell === "powershell") {
@@ -532,7 +632,10 @@ export class McpServerContext implements IContextModel {
     });
   }
 
-  cacheResponse(args: Record<string, unknown>, response: IToolsCallResponse["result"]["content"]) {
+  cacheResponse(
+    args: Record<string, unknown>,
+    response: IToolsCallResponse["result"]["content"],
+  ) {
     this.cache.set(getStringUid(JSON.stringify(args)), response);
   }
 

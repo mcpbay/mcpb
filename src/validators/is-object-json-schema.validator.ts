@@ -5,7 +5,6 @@ export interface IJsonSchemaElement {
   default?: any;
 }
 
-
 export interface IObjectJsonSchema {
   type: "object";
   properties: Record<string, IJsonSchemaElement>;
@@ -13,5 +12,7 @@ export interface IObjectJsonSchema {
 }
 
 export function isObjectJsonSchema(value: unknown): value is IObjectJsonSchema {
-  return typeof value === "object" && value !== null && "type" in value && checkTypeInJsonShema(value.type, "object") && "properties" in value && typeof value.properties === "object";
+  return typeof value === "object" && value !== null && "type" in value &&
+    checkTypeInJsonShema(value.type, "object") && "properties" in value &&
+    typeof value.properties === "object";
 }

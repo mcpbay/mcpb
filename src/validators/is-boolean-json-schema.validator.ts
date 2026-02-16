@@ -6,6 +6,9 @@ export interface IBooleanJsonSchema {
   default?: boolean;
 }
 
-export function isBooleanJsonSchema(value: unknown): value is IBooleanJsonSchema {
-  return typeof value === "object" && value !== null && "type" in value && checkTypeInJsonShema(value.type, "boolean");
+export function isBooleanJsonSchema(
+  value: unknown,
+): value is IBooleanJsonSchema {
+  return typeof value === "object" && value !== null && "type" in value &&
+    checkTypeInJsonShema(value.type, "boolean");
 }

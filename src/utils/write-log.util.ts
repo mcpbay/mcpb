@@ -11,7 +11,9 @@ export enum LogType {
 
 function getYYYYDDMM(separator = "") {
   const date = new Date();
-  return `${date.getFullYear()}${separator}${date.getMonth() + 1}${separator}${date.getDate()}`;
+  return `${date.getFullYear()}${separator}${
+    date.getMonth() + 1
+  }${separator}${date.getDate()}`;
 }
 
 export function writeLog(line: string | object, type: LogType = LogType.INFO) {

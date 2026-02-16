@@ -13,7 +13,7 @@ const EXTENSION_MIME_MAP: Record<string, string> = {
   ".avif": "image/avif",
   ".heic": "image/heic",
   ".heif": "image/heif",
-  
+
   // Programming languages
   ".rs": "text/x-rust",
   ".py": "text/x-python",
@@ -46,7 +46,7 @@ const EXTENSION_MIME_MAP: Record<string, string> = {
   ".groovy": "text/x-groovy",
   ".asm": "text/x-assembly",
   ".s": "text/x-assembly",
-  
+
   // Web & Styles
   ".html": "text/html",
   ".htm": "text/html",
@@ -63,7 +63,7 @@ const EXTENSION_MIME_MAP: Record<string, string> = {
   ".handlebars": "text/html",
   ".pug": "text/x-pug",
   ".jade": "text/x-pug",
-  
+
   // JavaScript & TypeScript
   ".js": "application/javascript",
   ".mjs": "application/javascript",
@@ -72,7 +72,7 @@ const EXTENSION_MIME_MAP: Record<string, string> = {
   ".ts": "application/typescript",
   ".tsx": "application/typescript",
   ".d.ts": "application/typescript",
-  
+
   // Docs & Text
   ".txt": "text/plain",
   ".md": "text/markdown",
@@ -80,10 +80,11 @@ const EXTENSION_MIME_MAP: Record<string, string> = {
   ".rtf": "application/rtf",
   ".pdf": "application/pdf",
   ".doc": "application/msword",
-  ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  ".docx":
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   ".odt": "application/vnd.oasis.opendocument.text",
   ".tex": "application/x-tex",
-  
+
   // Data & Configuration
   ".json": "application/json",
   ".jsonc": "application/json",
@@ -102,7 +103,7 @@ const EXTENSION_MIME_MAP: Record<string, string> = {
   ".xslt": "application/xslt+xml",
   ".csv": "text/csv",
   ".tsv": "text/tab-separated-values",
-  
+
   // Compress & files
   ".zip": "application/zip",
   ".tar": "application/x-tar",
@@ -112,7 +113,7 @@ const EXTENSION_MIME_MAP: Record<string, string> = {
   ".7z": "application/x-7z-compressed",
   ".rar": "application/vnd.rar",
   ".xz": "application/x-xz",
-  
+
   // Executables & Libs
   ".exe": "application/vnd.microsoft.portable-executable",
   ".dll": "application/x-msdownload",
@@ -123,14 +124,14 @@ const EXTENSION_MIME_MAP: Record<string, string> = {
   ".wasm": "application/wasm",
   ".class": "application/x-java",
   ".jar": "application/java-archive",
-  
+
   // Fonts
   ".woff": "font/woff",
   ".woff2": "font/woff2",
   ".ttf": "font/ttf",
   ".otf": "font/otf",
   ".eot": "application/vnd.ms-fontobject",
-  
+
   // Audio
   ".mp3": "audio/mpeg",
   ".wav": "audio/wav",
@@ -139,7 +140,7 @@ const EXTENSION_MIME_MAP: Record<string, string> = {
   ".m4a": "audio/mp4",
   ".aac": "audio/aac",
   ".wma": "audio/x-ms-wma",
-  
+
   // Video
   ".mp4": "video/mp4",
   ".webm": "video/webm",
@@ -150,25 +151,26 @@ const EXTENSION_MIME_MAP: Record<string, string> = {
   ".wmv": "video/x-ms-wmv",
   ".m4v": "video/x-m4v",
   ".3gp": "video/3gpp",
-  
+
   // Database
   ".sql": "application/sql",
   ".db": "application/x-sqlite3",
   ".sqlite": "application/x-sqlite3",
   ".sqlite3": "application/x-sqlite3",
-  
+
   // Spreadsheets
   ".xls": "application/vnd.ms-excel",
   ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   ".ods": "application/vnd.oasis.opendocument.spreadsheet",
   ".numbers": "application/x-iwork-numbers-sffnumbers",
-  
+
   // Presentations
   ".ppt": "application/vnd.ms-powerpoint",
-  ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  ".pptx":
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
   ".odp": "application/vnd.oasis.opendocument.presentation",
   ".key": "application/x-iwork-keynote-sffkey",
-  
+
   // Other
   ".log": "text/plain",
   ".lock": "application/json",
@@ -180,7 +182,7 @@ const EXTENSION_MIME_MAP: Record<string, string> = {
   ".prettierrc": "application/json",
   ".babelrc": "application/json",
   ".npmrc": "text/plain",
-  ".yarnrc": "text/plain"
+  ".yarnrc": "text/plain",
 };
 
 export function fileNameToMime(fileName: string) {

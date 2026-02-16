@@ -43,11 +43,11 @@ Deno.test("UniversalAppChecker - Windows Tests", async (t) => {
   await t.step("checkMultipleApps handles mixed results", async () => {
     const nonExistent = "non_existent_" + crypto.randomUUID();
     const results = await checker.checkMultipleApps(["git", nonExistent]);
-    
+
     assertEquals(results.length, 2);
-    
-    const gitResult = results.find(r => r.name === "git");
-    const nonExistentResult = results.find(r => r.name === nonExistent);
+
+    const gitResult = results.find((r) => r.name === "git");
+    const nonExistentResult = results.find((r) => r.name === nonExistent);
 
     assertEquals(gitResult?.exists, true);
     assertEquals(nonExistentResult?.exists, false);
