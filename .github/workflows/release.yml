@@ -126,6 +126,8 @@ jobs:
                   $uri = New-Object System.Uri($Url)
                   $request = [System.Net.HttpWebRequest]::Create($uri)
                   $request.set_Timeout(15000)
+                  $request.AllowAutoRedirect = $true
+                  $request.MaximumAutomaticRedirections = 5
                   
                   $response = $request.GetResponse()
                   $totalLength = [long]$response.get_ContentLength()
@@ -133,7 +135,7 @@ jobs:
                   
                   $targetStream = New-Object System.IO.FileStream($OutputPath, [System.IO.FileMode]::Create)
                   
-                  $buffer = New-Object byte[] 10KB
+                  $buffer = New-Object byte[] 65536
                   $count = $responseStream.Read($buffer, 0, $buffer.length)
                   $downloadedBytes = $count
                   $startTime = Get-Date
@@ -184,6 +186,7 @@ jobs:
                   $targetStream.Close()
                   $targetStream.Dispose()
                   $responseStream.Dispose()
+                  $response.Close()
                   
               } catch {
                   Write-Error "Download error: $_"
