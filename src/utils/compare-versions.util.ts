@@ -11,8 +11,9 @@ interface ICompareVersionsArguments {
 // - -1 if current is newer than latest
 export function compareVersions(args: ICompareVersionsArguments) {
   const { current, latest } = args;
-  const cleanCurrent = current.replace(/^v/, "");
-  const cleanLatest = latest.replace(/^v/, "");
+  const vPatternDetector = /^v/;
+  const cleanCurrent = current.replace(vPatternDetector, "");
+  const cleanLatest = latest.replace(vPatternDetector, "");
 
   const currentParts = cleanCurrent.split(".").map(Number);
   const latestParts = cleanLatest.split(".").map(Number);
