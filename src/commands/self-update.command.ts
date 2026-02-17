@@ -279,7 +279,7 @@ export async function selfUpdateCommand() {
     }
   } while (false);
 
-  const { name: binaryReleaseName } = getGithubLatestReleaseBinaryFilenameByOS();
+  const { fullName: binaryReleaseName } = getGithubLatestReleaseBinaryFilenameByOS();
   const asset = mcpbRelease.assets.find((asset) => asset.name === binaryReleaseName);
 
   writeLog(`Binary release name: ${binaryReleaseName}`);
