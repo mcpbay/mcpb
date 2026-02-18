@@ -7,3 +7,5 @@ mcp-config.json
 opencode.jsonc
 .env.mcpbay
 version-cache.json
+AGENTS.md
+CLAUDE.md
