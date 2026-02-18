@@ -1,13 +1,11 @@
-import type { IMcpPackage } from "../interfaces/mcp-package.interface.ts";
 import { MCPBAY_HOST } from "../constants/mcpbay-host.constant.ts";
 import { ContextVersion } from "../types/context-version.type.ts";
-import { crashIfNot } from "./crash-if-not.util.ts";
 import { loadOrCreateConfigFile } from "./load-or-create-config-file.util.ts";
 
-const API_KEY = Deno.env.get("MCPBAY_API_KEY");
 
-export async function downloadContext(slug: string): Promise<ContextVersion> {
+export async function downloadContext(slug: string): Promise<ContextVersion | null> {
   const config = loadOrCreateConfigFile();
+  const API_KEY = Deno.env.get("MCPBAY_API_KEY") ?? "";
   const init: RequestInit = {
     headers: API_KEY ? { Authorization: `Bearer ${API_KEY}` } : void 0,
     method: "GET",
@@ -19,10 +17,11 @@ export async function downloadContext(slug: string): Promise<ContextVersion> {
   if (!request.ok) {
     const response = await request.text();
 
-    crashIfNot(
-      false,
-      `Failed to download context (${request.status}): ${response}`,
-    );
+    if (request.status === 404) {
+      console.log("Context not found.");
+    }
+
+    return null;
   }
 
   const response = await request.json();

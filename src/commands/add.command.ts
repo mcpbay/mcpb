@@ -26,6 +26,11 @@ export async function addCommand(source: string, options: Record<string, any>) {
   }
 
   const contextVersion = await downloadContext(contextSlug.join("@"));
+
+  if (!contextVersion) {
+    return;
+  }
+
   const contextModulesPath = config.contextModulesPath ?? CONTEXT_MODULES_PATH;
 
   if (!existsSync(contextModulesPath)) {

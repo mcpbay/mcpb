@@ -13,7 +13,8 @@ const configOption =
   new Option(
     "-c, --config <path>",
     "Path to the config file."
-  ).default("./mcp-config.json");
+  )
+    .default("./mcp-config.json");
 
 clearUpdateScriptFile();
 await validateVersion();
@@ -44,4 +45,5 @@ program
   .description("Initializes the MCP server with all the previously installed contexts.")
   .action(startMcpCommand);
 
-program.parse();
+program
+  .parse();
