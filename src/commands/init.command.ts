@@ -7,52 +7,74 @@ const DEFAULT_AGENTS_MD_CONTENT = `
 - Always check the resources description to check if you need to read some of them for the task.
 `.trim();
 
+const CLAUDE_MD_REQUIRED_PROMPT_CONTENT = `
+## MCPB MCP guidelines
+- Read the \`AGENTS.md\` file and follow its instructions.
+`.trim();
+
 function getAgentsMdPath() {
   const cwd = Deno.cwd();
   return `${cwd}/AGENTS.md`;
 }
 
-function isAgentsMDPresent() {
-  const agentsFilePath = getAgentsMdPath();
-  const isAgentsMdPresent = fileExists(agentsFilePath);
+function getClaudeMdPath() {
+  const cwd = Deno.cwd();
+  return `${cwd}/CLAUDE.md`;
+}
+
+function isMDPresent(mdPath: string) {
+  const isAgentsMdPresent = fileExists(mdPath);
 
   return isAgentsMdPresent;
 }
 
-function createAgentsMd() {
-  const agentsFilePath = getAgentsMdPath();
-  Deno.writeTextFileSync(agentsFilePath, DEFAULT_AGENTS_MD_CONTENT);
+function injectMdContent(filePath: string, fileName: string, content: string) {
+  const agentsContent = Deno.readTextFileSync(filePath).trim();
 
-  console.log("AGENTS.md created and required prompt content added.");
-}
-
-function injectAgentsMdContent() {
-  const agentsFilePath = getAgentsMdPath();
-  const agentsContent = Deno.readTextFileSync(agentsFilePath).trim();
-
-  if (agentsContent.includes(DEFAULT_AGENTS_MD_CONTENT)) {
-    console.log("AGENTS.md already contains the required MCPB prompt to work correctly.");
+  if (agentsContent.includes(content)) {
+    console.log(`${fileName} already contains the required MCPB prompt to work correctly.`);
 
     return;
   }
 
   const updatedContent = (() => {
     if (!agentsContent) {
-      return DEFAULT_AGENTS_MD_CONTENT;
+      return content;
     }
 
-    return `${agentsContent}\n\n${DEFAULT_AGENTS_MD_CONTENT}`;
+    return `${agentsContent}\n\n${content}`;
   })();
 
-  Deno.writeTextFileSync(agentsFilePath, updatedContent);
-  console.log("AGENTS.md updated and required prompt content added.");
+  Deno.writeTextFileSync(filePath, updatedContent);
+  console.log(`${fileName} updated and required prompt content added.`);
 }
 
-export function initCommand() {
-  if (isAgentsMDPresent()) {
-    injectAgentsMdContent();
+export function initCommand(options: Record<string, unknown>) {
+  const withClaude = "withClaude" in options;
+  const agentsMdPath = getAgentsMdPath();
+  const claudeMdPath = getClaudeMdPath();
+  const isClaudeMdPresent = isMDPresent(claudeMdPath);
+
+  if (withClaude) {
+    if (isClaudeMdPresent) {
+      injectMdContent(claudeMdPath, "CLAUDE.md", CLAUDE_MD_REQUIRED_PROMPT_CONTENT);
+    } else {
+      Deno.writeTextFileSync(claudeMdPath, CLAUDE_MD_REQUIRED_PROMPT_CONTENT);
+      console.log("CLAUDE.md created and required prompt content added.");
+    }
   } else {
-    createAgentsMd();
+    if (isClaudeMdPresent) {
+      console.log("CLAUDE.md file detected!");
+      console.log("Run the `mcpb init --with-claude` to update the CLAUDE.md file and make it work with MCPB correctly.");
+      console.log("");
+    }
+  }
+
+  if (isMDPresent(agentsMdPath)) {
+    injectMdContent(agentsMdPath, "AGENTS.md", DEFAULT_AGENTS_MD_CONTENT);
+  } else {
+    Deno.writeTextFileSync(agentsMdPath, DEFAULT_AGENTS_MD_CONTENT);
+    console.log("AGENTS.md created and required prompt content added.");
   }
 
   try {
@@ -65,6 +87,6 @@ export function initCommand() {
     console.log("Check the marketplace to start using contexts:");
     console.log("https://mcpbay.io/marketplace");
     console.log("");
-    console.log("You can start importing contexts using the 'mcpb add' command.");
+    console.log("You can start importing contexts using the `mcpb add` command.");
   }
 }

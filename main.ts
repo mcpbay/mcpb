@@ -24,6 +24,7 @@ program
 program
   .command("init")
   .description("Initialize the MCPB CLI project.")
+  .option("--with-claude", "Injects the MCPB prompt to CLAUDE.md file.", Boolean)
   .action(initCommand);
 
 program
