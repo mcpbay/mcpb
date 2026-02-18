@@ -88,5 +88,8 @@ export function initCommand(options: Record<string, unknown>) {
     console.log("https://mcpbay.io/marketplace");
     console.log("");
     console.log("You can start importing contexts using the `mcpb add` command.");
+    console.log("");
+    console.log("If you didn't install the MCPB MCP server on your AI tool, you can install it using the `mcpb install-mcp` command.");
+    console.log("For Claude Code: `mcpb install-mcp claudecode`");
   }
 }
