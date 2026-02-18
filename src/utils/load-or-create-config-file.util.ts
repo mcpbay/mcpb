@@ -2,6 +2,7 @@ import type { IMcpPackage } from "../interfaces/mcp-package.interface.ts";
 import { existsSync } from "@std/fs/exists";
 import { CONFIG_FILE_PATH } from "../constants/config-file-path.constant.ts";
 import { loadConfigFile } from "./load-config-file.util.ts";
+import { loadEnv } from "./load-env.util.ts";
 
 let config: IMcpPackage | null = null;
 
@@ -13,6 +14,10 @@ export function loadOrCreateConfigFile(path = CONFIG_FILE_PATH) {
 
     return createConfigFile(path) as IMcpPackage;
   })();
+
+  if (config.env) {
+    loadEnv(config.env);
+  }
 
   return config;
 }
