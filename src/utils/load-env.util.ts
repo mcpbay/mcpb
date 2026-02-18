@@ -15,5 +15,4 @@ export function loadEnv(path: string) {
 
     loadSync({ envPath: path, export: true });
   }
-
 }
