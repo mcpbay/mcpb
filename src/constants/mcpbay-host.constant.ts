@@ -1,1 +1,1 @@
-export const MCPBAY_HOST = "http://localhost:3000";
+export const MCPBAY_HOST = Deno.env.get("API_HOST") ?? "https://papi.mcpbay.io";

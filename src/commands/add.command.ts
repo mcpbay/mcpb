@@ -1,5 +1,4 @@
 import { CONTEXT_MODULES_PATH } from "../constants/context-modules-path.constant.ts";
-import { checkConfigFileExists } from "../utils/check-config-file-exists.util.ts";
 import { crashIfNot } from "../utils/crash-if-not.util.ts";
 import { downloadContext } from "../utils/download-context.util.ts";
 import { saveConfiFile } from "../utils/save-config-file.util.ts";
@@ -7,8 +6,9 @@ import { existsSync } from "@std/fs";
 import { saveContext } from "../utils/save-context.util.ts";
 import { loadOrCreateConfigFile } from "../utils/load-or-create-config-file.util.ts";
 
-export async function addCommand(source: string) {
-  const config = loadOrCreateConfigFile();
+export async function addCommand(source: string, options: Record<string, any>) {
+  const { config: configPath } = options;
+  const config = loadOrCreateConfigFile(configPath);
   const slugContainsVersion = source.includes("@");
   let contextSlug = [source];
 
