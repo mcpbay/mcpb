@@ -6,3 +6,4 @@ logs
 mcp-config.json
 opencode.jsonc
 .env.mcpbay
+version-cache.json

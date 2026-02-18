@@ -5,7 +5,8 @@ import { checkConfigFileExists } from "../utils/check-config-file-exists.util.ts
 import { loadContext } from "../utils/load-context.util.ts";
 import { EasyMCPServer } from "@mcpbay/easy-mcp-server";
 
-export async function startMcpCommand(configPath?: string) {
+export async function startMcpCommand(options: Record<string, any>) {
+  const { config: configPath } = options;
   const config = checkConfigFileExists(configPath);
   const contexts: ContextVersion[] = [];
 

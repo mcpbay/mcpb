@@ -14,7 +14,7 @@ export function showUpdateNotification(args: IShowUpdateNotificationArguments) {
   console.log("╔═══════════════════════════════════════════════════════════╗");
   console.log("║                    UPDATE AVAILABLE                       ║");
   console.log("╠═══════════════════════════════════════════════════════════╣");
-  console.log(`║  Current version: ${currentVersion.padEnd(38)}  ║`);
+  console.log(`║  Current version: v${currentVersion.padEnd(38)}  ║`);
   console.log(`║  Latest version:  ${latestVersion.padEnd(38)}  ║`);
   console.log("╠═══════════════════════════════════════════════════════════╣");
   console.log("║  Run the following command to update:                     ║");
