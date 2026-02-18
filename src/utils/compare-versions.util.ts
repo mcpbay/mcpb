@@ -1,3 +1,5 @@
+import semver from "semver";
+
 interface ICompareVersionsArguments {
   // The current version to compare
   current: string;
@@ -15,23 +17,10 @@ export function compareVersions(args: ICompareVersionsArguments) {
   const cleanCurrent = current.replace(vPatternDetector, "");
   const cleanLatest = latest.replace(vPatternDetector, "");
 
-  const currentParts = cleanCurrent.split(".").map(Number);
-  const latestParts = cleanLatest.split(".").map(Number);
-  const maxLength = Math.max(currentParts.length, latestParts.length);
-
-  for (let i = 0; i < maxLength; i++) {
-    const currentPart = currentParts[i] || 0;
-    const latestPart = latestParts[i] || 0;
-    const isLatestNewer = latestPart > currentPart;
-    const isLatestOlder = latestPart < currentPart;
-
-    if (isLatestNewer) {
-      return 1;
-    }
-
-    if (isLatestOlder) {
-      return -1;
-    }
+  if (semver.gt(cleanLatest, cleanCurrent)) {
+    return 1;
+  } else if (semver.gt(cleanCurrent, cleanLatest)) {
+    return -1;
   }
 
   return 0;
