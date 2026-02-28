@@ -17,7 +17,8 @@
     "jsr:@std/testing@*": "1.0.17",
     "jsr:@std/testing@^1.0.17": "1.0.17",
     "npm:commander@^14.0.3": "14.0.3",
-    "npm:semver@^7.7.4": "7.7.4"
+    "npm:semver@^7.7.4": "7.7.4",
+    "npm:typescript@^5.9.3": "5.9.3"
   },
   "jsr": {
     "@mcpbay/easy-mcp-server@1.2.0": {
@@ -83,19 +84,25 @@
     "semver@7.7.4": {
       "integrity": "sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==",
       "bin": true
+    },
+    "typescript@5.9.3": {
+      "integrity": "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==",
+      "bin": true
     }
   },
   "workspace": {
     "dependencies": [
       "jsr:@mcpbay/easy-mcp-server@^1.2.0",
       "jsr:@online/get-string-uid@^1.0.1",
+      "jsr:@online/is@^0.0.6",
       "jsr:@std/assert@^1.0.18",
       "jsr:@std/dotenv@~0.225.6",
       "jsr:@std/fs@^1.0.22",
       "jsr:@std/path@^1.1.4",
       "jsr:@std/testing@^1.0.17",
       "npm:commander@^14.0.3",
-      "npm:semver@^7.7.4"
+      "npm:semver@^7.7.4",
+      "npm:typescript@^5.9.3"
     ]
   }
 }
