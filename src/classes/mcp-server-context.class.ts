@@ -28,12 +28,13 @@ import * as os from "node:os";
 import { getStringUid } from "@online/get-string-uid";
 import { UniversalAppChecker } from "./universal-app-checker.class.ts";
 import { camelCaseToSnakeCase } from "../utils/camel-case-to-snake-case.util.ts";
-import { LogType, writeLog } from "../utils/write-log.util.ts";
+import { writeLog } from "../utils/write-log.util.ts";
 import type { ToolStrategyLocalConfig } from "../types/tool-strategy-local-config.type.ts";
 import { handleLocalStrategy } from "./handlers/handle-local-strategy.handler.ts";
 import { handleLocalScriptStrategy } from "./handlers/handle-local-script-strategy.handler.ts";
-import { Role } from "@mcpbay/easy-mcp-server/enums";
+import { LogLevel, Role } from "@mcpbay/easy-mcp-server/enums";
 import { JsonSchemaMapper } from "./json-schema-mapper.class.ts";
+import { isObject } from "@online/is";
 
 interface IExecuteShellCommandOptions {
   cwd: string;
@@ -102,7 +103,7 @@ export class McpServerContext implements IContextModel {
     writeLog("Initialized");
 
     const catchLogs = (_args: CrashIfNotArguments) => {
-      writeLog(`EVENT [onInitialize] Exception`, LogType.ERROR);
+      writeLog(`EVENT [onInitialize] Exception`, LogLevel.ERROR);
       writeLog(_args);
     };
 
@@ -135,6 +136,8 @@ export class McpServerContext implements IContextModel {
     _options: IContextModelOptions,
   ): Promise<IServerClientInformation> {
     writeLog(`EVENT: onClientListInformation`);
+    writeLog(this.serverInformation);
+
     return this.serverInformation;
   }
 
@@ -241,7 +244,7 @@ export class McpServerContext implements IContextModel {
     writeLog(`EVENT: onClientListTools`);
 
     const tools = this.tools.map((tool) => {
-      return objectPick(tool, ["name", "description"]) as ITool;
+      return objectPick(tool, ["name", "description", "inputSchema"]) as ITool;
     });
 
     writeLog(`EVENT [onClientListTools] Response`);
@@ -256,9 +259,10 @@ export class McpServerContext implements IContextModel {
     options: IToolContextModelOptions,
   ): Promise<ToolCallResponse> {
     writeLog(`EVENT: onClientCallTool`);
+    writeLog(args);
 
     const catchLogs = (_args: CrashIfNotArguments) => {
-      writeLog(`EVENT [onClientCallTool] Exception`, LogType.ERROR);
+      writeLog(`EVENT [onClientCallTool] Exception`, LogLevel.ERROR);
       writeLog(_args);
     };
 
@@ -452,6 +456,14 @@ export class McpServerContext implements IContextModel {
     const cachedResponse = this.cache.get(cacheId);
 
     return cachedResponse;
+  }
+
+  async onInternalDebugInformation(message: string | object, level: LogLevel): Promise<void> {
+    if (isObject(message)) {
+      return writeLog(message, level);
+    }
+
+    writeLog(`[INTERNAL] (${level.toUpperCase()}) ${message}`, level);
   }
 }
 

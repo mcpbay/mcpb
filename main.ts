@@ -17,6 +17,13 @@ const configOption =
   )
     .default("./mcp-config.json");
 
+const debugOption =
+  new Option(
+    "-d, --debug <path>",
+    "Path to the debug file."
+  )
+    .default("./logs/mcpb.log");
+
 clearUpdateScriptFile();
 await validateVersion();
 

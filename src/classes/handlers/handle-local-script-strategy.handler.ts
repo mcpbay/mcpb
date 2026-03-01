@@ -20,7 +20,7 @@ export async function handleLocalScriptStrategy(this: McpServerContext, context:
   writeLog(config);
 
   if (config.language === "ts") {
-    const executionResponse = await executeTs(
+    const executionPromise = executeTs(
       config.code,
       {
         fn: {
@@ -39,10 +39,20 @@ export async function handleLocalScriptStrategy(this: McpServerContext, context:
       }
     );
 
+    executionPromise.catch((e) => {
+      writeLog("Error");
+      writeLog(e.message);
+    });
+
+    const executionResponse = await executionPromise;
+
     crashIfNot(isPlainObject(executionResponse), {
       code: INTERNAL_ERROR,
       message: "Wrong result type for script execution. Object expected."
     });
+
+    writeLog(`Execution response`);
+    writeLog(executionResponse);
 
     return executionResponse;
   }
