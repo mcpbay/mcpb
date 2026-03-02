@@ -1,4 +1,8 @@
 import ts, { transpile } from "typescript";
+import { SandboxAction } from "../enums/sandbox-action.enum.ts";
+import { SandboxNotification } from "../enums/sandbox-notification.enum.ts";
+import { SandboxFinishStatus } from "../enums/sandbox-finish-status.enum.ts";
+import { writeLog } from "../utils/write-log.util.ts";
 
 function _transpile(typescriptCode: string) {
   return transpile(
@@ -8,24 +12,65 @@ function _transpile(typescriptCode: string) {
       target: ts.ScriptTarget.ESNext,
       removeComments: false,
       sourceMap: false,
-    } satisfies ts.CompilerOptions
+    } satisfies ts.CompilerOptions,
   );
 }
 
-export interface ExecuteOptions {
-  context?: Record<string, unknown>;
-  timeout?: number;
-  permissions?: Deno.PermissionOptions;
-  memoryLimitMb?: number;
-  fn?: {
-    functionName: string;
-    args: unknown[];
-  };
+export interface IFunctionCallInformation {
+  functionName: string;
+  args: unknown[];
+}
+
+export interface IExecuteOptions {
+  allowedPackages: string[];
+  context: Record<string, unknown>;
+  timeout: number;
+  permissions: Deno.PermissionOptions;
+  memoryLimitMb: number;
+  fn: IFunctionCallInformation;
+  cwd: string;
+}
+
+export interface IInitializeActionContext {
+  code: string;
+  context: Record<string, unknown>;
+  allowedPackages: string[];
+  cwd: string;
+  functionnCall?: IFunctionCallInformation;
+}
+
+export interface IExecuteCodeActionContext {
+  contextId: number;
+}
+
+export interface IInitializeResponse {
+  notification: SandboxNotification.INITIALIZED;
+  status: SandboxFinishStatus.COMPLETED;
+  contextId: number;
+}
+
+export interface IExecuteCodeResponse<T = unknown> {
+  notification: SandboxNotification.EXECUTION_FINISHED;
+  status: SandboxFinishStatus.COMPLETED;
+  result: T;
+}
+
+export interface IExceptionResponse {
+  notification: SandboxNotification.EXECUTION_FINISHED;
+  status: SandboxFinishStatus.EXCEPTION;
+  error: string;
+  cause: unknown;
+  stack?: string;
+}
+
+export interface ILogNotification {
+  notification: SandboxNotification.LOG;
+  args: any[];
 }
 
 export async function executeTs(
   code: string,
-  options: ExecuteOptions = {}
+  options: Partial<IExecuteOptions> = {},
 ): Promise<unknown> {
   const {
     context = {},
@@ -37,14 +82,17 @@ export async function executeTs(
       run: false,
       write: false,
       sys: ["osRelease"],
-      import: true
+      import: true,
     },
     memoryLimitMb = 20,
-    fn
+    fn,
+    allowedPackages = [],
+    cwd = Deno.cwd(),
   } = options;
 
   code = _transpile(code);
-  const workerUrl = new URL('./sandbox_worker.ts', import.meta.url).href;
+
+  const workerUrl = new URL("../../sandbox_worker.ts", import.meta.url).href;
   const resourceLimits: Record<string, number> = {};
 
   if (memoryLimitMb) {
@@ -56,10 +104,10 @@ export async function executeTs(
     type: "module",
     // @ts-ignore: Deno types are not available.
     deno: {
-      permissions
+      permissions,
     },
     // @ts-ignore: Deno types are not available.
-    resourceLimits
+    resourceLimits,
   });
 
   return new Promise((resolve, reject) => {
@@ -69,14 +117,40 @@ export async function executeTs(
     }, timeout);
 
     worker.onmessage = (event: MessageEvent) => {
-      clearTimeout(timeoutId);
-      worker.terminate();
+      const message = event.data as
+        | IInitializeResponse
+        | IExecuteCodeResponse
+        | IExceptionResponse
+        | ILogNotification;
 
-      if ("error" in event.data) {
-        return reject(new Error(event.data.error));
+      switch (message.notification) {
+        case SandboxNotification.INITIALIZED:
+          worker.postMessage({
+            action: SandboxAction.EXECUTE,
+            context: {
+              contextId: message.contextId,
+            } satisfies IExecuteCodeActionContext,
+          });
+          break;
+        case SandboxNotification.EXECUTION_FINISHED:
+          clearTimeout(timeoutId);
+          worker.terminate();
+
+          if (message.status === SandboxFinishStatus.COMPLETED) {
+            return resolve(event.data.result);
+          }
+
+          const error = new Error(event.data.error);
+
+          error.stack = event.data.stack;
+          error.cause = event.data.cause;
+
+          return reject(error);
+        case SandboxNotification.LOG:
+          writeLog("[SANDBOX] Log");
+          writeLog(message.args);
+          break;
       }
-
-      resolve(event.data);
     };
 
     worker.onerror = (error) => {
@@ -85,6 +159,15 @@ export async function executeTs(
       reject(new Error(`Worker error: ${error.message}`));
     };
 
-    worker.postMessage({ code, context, isCallFunctionMode: !!fn, fnCallContent: fn });
+    worker.postMessage({
+      action: SandboxAction.INITIALIZE,
+      context: {
+        code,
+        context,
+        functionnCall: fn,
+        allowedPackages,
+        cwd,
+      } satisfies IInitializeActionContext,
+    });
   });
 }

@@ -32,7 +32,9 @@ function injectMdContent(filePath: string, fileName: string, content: string) {
   const agentsContent = Deno.readTextFileSync(filePath).trim();
 
   if (agentsContent.includes(content)) {
-    console.log(`${fileName} already contains the required MCPB prompt to work correctly.`);
+    console.log(
+      `${fileName} already contains the required MCPB prompt to work correctly.`,
+    );
 
     return;
   }
@@ -57,7 +59,11 @@ export function initCommand(options: Record<string, unknown>) {
 
   if (withClaude) {
     if (isClaudeMdPresent) {
-      injectMdContent(claudeMdPath, "CLAUDE.md", CLAUDE_MD_REQUIRED_PROMPT_CONTENT);
+      injectMdContent(
+        claudeMdPath,
+        "CLAUDE.md",
+        CLAUDE_MD_REQUIRED_PROMPT_CONTENT,
+      );
     } else {
       Deno.writeTextFileSync(claudeMdPath, CLAUDE_MD_REQUIRED_PROMPT_CONTENT);
       console.log("CLAUDE.md created and required prompt content added.");
@@ -65,7 +71,9 @@ export function initCommand(options: Record<string, unknown>) {
   } else {
     if (isClaudeMdPresent) {
       console.log("CLAUDE.md file detected!");
-      console.log("Run the `mcpb init --with-claude` to update the CLAUDE.md file and make it work with MCPB correctly.");
+      console.log(
+        "Run the `mcpb init --with-claude` to update the CLAUDE.md file and make it work with MCPB correctly.",
+      );
       console.log("");
     }
   }
@@ -87,9 +95,13 @@ export function initCommand(options: Record<string, unknown>) {
     console.log("Check the marketplace to start using contexts:");
     console.log("https://mcpbay.io/marketplace");
     console.log("");
-    console.log("You can start importing contexts using the `mcpb add` command.");
+    console.log(
+      "You can start importing contexts using the `mcpb add` command.",
+    );
     console.log("");
-    console.log("If you didn't install the MCPB MCP server on your AI tool, you can install it using the `mcpb install-mcp` command.");
+    console.log(
+      "If you didn't install the MCPB MCP server on your AI tool, you can install it using the `mcpb install-mcp` command.",
+    );
     console.log("For Claude Code: `mcpb install-mcp claudecode`");
   }
 }

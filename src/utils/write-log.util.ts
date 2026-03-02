@@ -13,7 +13,10 @@ function getYYYYDDMM(separator = "") {
   return `${year}${separator}${day}${separator}${month}`;
 }
 
-export function writeLog(line: string | object, type: LogLevel = LogLevel.DEBUG) {
+export function writeLog(
+  line: string | object,
+  type: LogLevel = LogLevel.DEBUG,
+) {
   if (!LOGS_PATH || !ENABLE_LOGS) {
     return;
   }

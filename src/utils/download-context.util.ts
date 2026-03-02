@@ -2,8 +2,9 @@ import { MCPBAY_HOST } from "../constants/mcpbay-host.constant.ts";
 import { ContextVersion } from "../types/context-version.type.ts";
 import { loadOrCreateConfigFile } from "./load-or-create-config-file.util.ts";
 
-
-export async function downloadContext(slug: string): Promise<ContextVersion | null> {
+export async function downloadContext(
+  slug: string,
+): Promise<ContextVersion | null> {
   const config = loadOrCreateConfigFile();
   const API_KEY = Deno.env.get("MCPBAY_API_KEY") ?? "";
   const init: RequestInit = {

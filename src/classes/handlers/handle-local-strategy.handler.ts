@@ -1,7 +1,13 @@
-import { IToolsCallResponse, ToolCallResponse } from "@mcpbay/easy-mcp-server/types";
+import {
+  IToolsCallResponse,
+  ToolCallResponse,
+} from "@mcpbay/easy-mcp-server/types";
 import { ToolStrategyLocalConfig } from "../../types/tool-strategy-local-config.type.ts";
 import { writeLog } from "../../utils/write-log.util.ts";
-import { McpServerContext, ToolLocalWorkingDirectoryType } from "../mcp-server-context.class.ts";
+import {
+  McpServerContext,
+  ToolLocalWorkingDirectoryType,
+} from "../mcp-server-context.class.ts";
 import { crashIfNot } from "@mcpbay/easy-mcp-server/utils";
 import { INTERNAL_ERROR } from "@mcpbay/easy-mcp-server/constants";
 import { StrategyHandlerContext } from "../types/strategy-handler-context.type.ts";
@@ -13,7 +19,10 @@ import { fileExists } from "../../utils/file-exists.util.ts";
 import { basename } from "@std/path/basename";
 import { fileNameToMime } from "../../utils/file-name-to-mime.util.ts";
 
-export async function handleLocalStrategy(this: McpServerContext, context: StrategyHandlerContext) {
+export async function handleLocalStrategy(
+  this: McpServerContext,
+  context: StrategyHandlerContext,
+) {
   const { args, strategy, platform, catchLogs, tool, _tool } = context;
 
   if (strategy.type !== "local") {
@@ -50,11 +59,12 @@ export async function handleLocalStrategy(this: McpServerContext, context: Strat
 
   crashIfNot(requiredAppsStatus.every((status) => status.exists), {
     code: INTERNAL_ERROR,
-    message: `Required apps not found: ${requiredAppsStatus
-      .filter((status) => !status.exists)
-      .map((status) => status.name)
-      .join(", ")
-      }`,
+    message: `Required apps not found: ${
+      requiredAppsStatus
+        .filter((status) => !status.exists)
+        .map((status) => status.name)
+        .join(", ")
+    }`,
     catch: catchLogs,
   });
 
@@ -137,8 +147,7 @@ export async function handleLocalStrategy(this: McpServerContext, context: Strat
 
     crashIfNot(criteriaSuccessCode === code, {
       code: INTERNAL_ERROR,
-      message:
-        `Invalid exit code: ${code}, expected ${criteriaSuccessCode}.`,
+      message: `Invalid exit code: ${code}, expected ${criteriaSuccessCode}.`,
       catch: catchLogs,
     });
 
@@ -158,7 +167,7 @@ export async function handleLocalStrategy(this: McpServerContext, context: Strat
     const jsonOutput = (() => {
       try {
         return JSON.parse(stdoutStr) as object;
-      } catch { }
+      } catch {}
 
       return null;
     })();
@@ -210,8 +219,7 @@ export async function handleLocalStrategy(this: McpServerContext, context: Strat
       } else if (outputFormat === "file") {
         crashIfNot(outputFilePath, {
           code: INTERNAL_ERROR,
-          message:
-            `Output file path not provided in tool success criteria.`,
+          message: `Output file path not provided in tool success criteria.`,
           catch: catchLogs,
         });
 

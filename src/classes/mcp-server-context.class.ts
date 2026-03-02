@@ -51,7 +51,7 @@ export enum ToolLocalWorkingDirectoryType {
   PROJECT_ROOT = "project_root",
 }
 
-type LocalResource = IResource & { id: string; };
+type LocalResource = IResource & { id: string };
 
 export class McpServerContext implements IContextModel {
   private serverInformation!: IServerClientInformation;
@@ -62,7 +62,8 @@ export class McpServerContext implements IContextModel {
   protected contexts: ContextVersion[] = [];
   private cooldowns: Map<string, number> = new Map();
   private cache: Map<number, object> = new Map();
-  protected readonly appChecker: UniversalAppChecker = new UniversalAppChecker();
+  protected readonly appChecker: UniversalAppChecker =
+    new UniversalAppChecker();
   protected placeholders = new Map<string, string>();
   private variables: Record<string, Record<string, string>> = {};
 
@@ -92,6 +93,11 @@ export class McpServerContext implements IContextModel {
       ToolLocalWorkingDirectoryType.REPO_ROOT,
       Deno.env.get("REPO_ROOT") ?? process.cwd(),
     );
+
+    writeLog("Placeholders");
+    writeLog(Object.fromEntries(this.placeholders.entries()));
+
+    writeLog(Deno.env.toObject());
   }
 
   async onInitialize() {
@@ -247,6 +253,42 @@ export class McpServerContext implements IContextModel {
       return objectPick(tool, ["name", "description", "inputSchema"]) as ITool;
     });
 
+    const workspacePath = {
+      type: "string",
+      description: "file:// URI pointing to a workspace directory.",
+      pattern: `^file:\\/\\/\\/?[^<>:"|?*\\r\\n]+$`,
+    };
+
+    /**
+     * Alex:
+     * We do inject the `workspacePath` argument into all tools...
+     * MCP Clients does not provide any way to get information about project/workspace paths.
+     */
+
+    for (const tool of tools) {
+      if ("inputSchema" in tool && isObject(tool.inputSchema)) {
+        const inputSchema = tool.inputSchema as {
+          type: string;
+          properties: unknown;
+          required?: string[];
+        };
+
+        if (
+          inputSchema.type === "object" && "properties" in inputSchema &&
+          isObject(inputSchema.properties)
+        ) {
+          inputSchema.properties = {
+            ...inputSchema.properties,
+            workspacePath,
+          };
+
+          if (!inputSchema.required?.includes("workspacePath")) {
+            inputSchema.required?.push("workspacePath");
+          }
+        }
+      }
+    }
+
     writeLog(`EVENT [onClientListTools] Response`);
     writeLog(tools);
 
@@ -327,7 +369,10 @@ export class McpServerContext implements IContextModel {
 
         this.startCooldown(tool.name, _tool.cooldownMs);
 
-        const localStrategyResponse = await handleLocalStrategy.call(this, context);
+        const localStrategyResponse = await handleLocalStrategy.call(
+          this,
+          context,
+        );
 
         if (localStrategyResponse === true || !localStrategyResponse) {
           continue;
@@ -343,9 +388,12 @@ export class McpServerContext implements IContextModel {
 
         this.startCooldown(tool.name, _tool.cooldownMs);
 
-        const localScriptStrategyResponse = await handleLocalScriptStrategy.call(this, context);
+        const localScriptStrategyResponse = await handleLocalScriptStrategy
+          .call(this, context);
 
-        if (localScriptStrategyResponse === true || !localScriptStrategyResponse) {
+        if (
+          localScriptStrategyResponse === true || !localScriptStrategyResponse
+        ) {
           continue;
         }
 
@@ -354,10 +402,13 @@ export class McpServerContext implements IContextModel {
             role: Role.ASSISTANT,
             content: {
               type: "text",
-              text: JSON.stringify(localScriptStrategyResponse)
-            }
+              text: JSON.stringify(localScriptStrategyResponse),
+            },
           }],
-          structuredContent: localScriptStrategyResponse as Record<string, unknown>
+          structuredContent: localScriptStrategyResponse as Record<
+            string,
+            unknown
+          >,
         };
       }
     }
@@ -451,14 +502,21 @@ export class McpServerContext implements IContextModel {
     this.cache.set(cacheId, response);
   }
 
-  getCachedResponse(toolId: string, strategyId: string, args: Record<string, unknown>) {
+  getCachedResponse(
+    toolId: string,
+    strategyId: string,
+    args: Record<string, unknown>,
+  ) {
     const cacheId = getStringUid(toolId + strategyId + JSON.stringify(args));
     const cachedResponse = this.cache.get(cacheId);
 
     return cachedResponse;
   }
 
-  async onInternalDebugInformation(message: string | object, level: LogLevel): Promise<void> {
+  async onInternalDebugInformation(
+    message: string | object,
+    level: LogLevel,
+  ): Promise<void> {
     if (isObject(message)) {
       return writeLog(message, level);
     }

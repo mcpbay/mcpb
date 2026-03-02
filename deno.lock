@@ -1,13 +1,14 @@
 {
   "version": "5",
   "specifiers": {
-    "jsr:@mcpbay/easy-mcp-server@^1.2.1": "1.2.1",
     "jsr:@online/get-string-uid@^1.0.1": "1.0.1",
+    "jsr:@online/is@*": "0.0.6",
     "jsr:@online/is@^0.0.6": "0.0.6",
     "jsr:@std/assert@^1.0.17": "1.0.19",
     "jsr:@std/assert@^1.0.19": "1.0.19",
     "jsr:@std/data-structures@^1.0.10": "1.0.10",
     "jsr:@std/dotenv@~0.225.6": "0.225.6",
+    "jsr:@std/fs@*": "1.0.23",
     "jsr:@std/fs@^1.0.22": "1.0.23",
     "jsr:@std/fs@^1.0.23": "1.0.23",
     "jsr:@std/internal@^1.0.12": "1.0.12",
@@ -19,13 +20,6 @@
     "npm:typescript@^5.9.3": "5.9.3"
   },
   "jsr": {
-    "@mcpbay/easy-mcp-server@1.2.1": {
-      "integrity": "664e0f0a96298face0e2487122441d6947913c247aae2942bde4296fd9f776a9",
-      "dependencies": [
-        "jsr:@online/get-string-uid",
-        "jsr:@online/is"
-      ]
-    },
     "@online/get-string-uid@1.0.1": {
       "integrity": "3b9760d4fa21d19843f9e9d4535e50d6b0f56a77d085bacbdde69dd2317012e9"
     },
@@ -97,6 +91,16 @@
       "npm:commander@^14.0.3",
       "npm:semver@^7.7.4",
       "npm:typescript@^5.9.3"
-    ]
+    ],
+    "links": {
+      "jsr:@mcpbay/easy-mcp-server@1.2.1": {
+        "dependencies": [
+          "jsr:@online/get-string-uid@^1.0.1",
+          "jsr:@online/is@^0.0.6",
+          "jsr:@std/assert@1",
+          "npm:zod@^4.3.5"
+        ]
+      }
+    }
   }
 }

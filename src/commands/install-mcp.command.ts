@@ -16,7 +16,10 @@ export enum InstallMCPTarget {
 
 const CLAUDE_CODE_JSON_PATH = expandTilde("~/.claude.json");
 
-export function installMcpCommand(target: InstallMCPTarget, options: Record<string, string>) {
+export function installMcpCommand(
+  target: InstallMCPTarget,
+  options: Record<string, string>,
+) {
   const mcpName = options?.mcpName || "mcpb";
 
   if (!CLAUDE_CODE_JSON_PATH) {
@@ -38,7 +41,9 @@ export function installMcpCommand(target: InstallMCPTarget, options: Record<stri
       return;
     }
 
-    const claudeJson = readJsonFromFile<IClaudeJSONSchema>(CLAUDE_CODE_JSON_PATH);
+    const claudeJson = readJsonFromFile<IClaudeJSONSchema>(
+      CLAUDE_CODE_JSON_PATH,
+    );
     const { mcpServers = {} } = claudeJson;
 
     console.log("Installing to ClaudeCode...");
@@ -55,7 +60,7 @@ export function installMcpCommand(target: InstallMCPTarget, options: Record<stri
         ...claudeJson.mcpServers,
         [mcpName]: {
           command: "mcpb",
-          args: ["start-mcp"]
+          args: ["start-mcp"],
         },
       },
     });
