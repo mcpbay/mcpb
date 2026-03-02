@@ -1,1 +1,1 @@
-export const CONFIG_FILE_PATH = "./mcp-config.json";
+export const CONFIG_FILE_PATH = "file:///./mcp-config.json";

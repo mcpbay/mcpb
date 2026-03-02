@@ -32,9 +32,10 @@ import { writeLog } from "../utils/write-log.util.ts";
 import type { ToolStrategyLocalConfig } from "../types/tool-strategy-local-config.type.ts";
 import { handleLocalStrategy } from "./handlers/handle-local-strategy.handler.ts";
 import { handleLocalScriptStrategy } from "./handlers/handle-local-script-strategy.handler.ts";
-import { LogLevel, Role } from "@mcpbay/easy-mcp-server/enums";
-import { JsonSchemaMapper } from "./json-schema-mapper.class.ts";
+import { LogLevel } from "@mcpbay/easy-mcp-server/enums";
 import { isObject } from "@online/is";
+import { loadContextsFromConfigFile } from "../utils/load-contexts-from-config-file.util.ts";
+import { LOAD_CONTEXTS_TOOL_NAME } from "../constants/load-contexts-tool-name.constant.ts";
 
 interface IExecuteShellCommandOptions {
   cwd: string;
@@ -51,7 +52,68 @@ export enum ToolLocalWorkingDirectoryType {
   PROJECT_ROOT = "project_root",
 }
 
-type LocalResource = IResource & { id: string };
+type LocalResource = IResource & { id: string; };
+
+const workspacePath = {
+  type: "string",
+  description: "file:// URI pointing to a workspace directory.",
+  pattern: `^file:\\/\\/\\/?[^<>:"|?*\\r\\n]+$`,
+};
+
+const LoadContextsTool: ITool = {
+  name: LOAD_CONTEXTS_TOOL_NAME,
+  description:
+    "Load the resource, prompts and tools to use. Required to be called always you going to start a task.",
+  inputSchema: {
+    type: "object",
+    properties: { workspacePath },
+    required: ["workspacePath"],
+  },
+  outputSchema: {
+    type: "object",
+    properties: {
+      status: {
+        description: "The status of the execution.",
+        type: "string",
+        oneOf: [
+          {
+            const: "completed",
+            description: "The action was completed succesfully.",
+            title: "Completed Action",
+          },
+          {
+            const: "failed",
+            description: "The action failed.",
+            title: "Action Filed",
+          },
+        ],
+      },
+    },
+    required: ["status"],
+  },
+};
+
+const LoadContextsToolSuccessResponse: ToolCallResponse = {
+  content: [{
+    type: "text",
+    text: JSON.stringify({ status: "completed" }),
+  }],
+  structuredContent: { status: "completed" } as Record<
+    string,
+    unknown
+  >,
+};
+
+const LoadContextsToolErrorResponse: ToolCallResponse = {
+  content: [{
+    type: "text",
+    text: JSON.stringify({ status: "failed" }),
+  }],
+  structuredContent: { status: "failed" } as Record<
+    string,
+    unknown
+  >,
+};
 
 export class McpServerContext implements IContextModel {
   private serverInformation!: IServerClientInformation;
@@ -68,16 +130,7 @@ export class McpServerContext implements IContextModel {
   private variables: Record<string, Record<string, string>> = {};
 
   constructor(contexts: ContextVersion[]) {
-    this.contexts = contexts;
-
-    this.prompts = contexts
-      .flatMap((contextVersion) => contextVersion.prompts);
-
-    this.tools = contexts
-      .flatMap((contextVersion) => contextVersion.tools);
-
-    this.resources = contexts
-      .flatMap((contextVersion) => contextVersion.resources);
+    this.initializeInternals(contexts);
 
     this.placeholders.set(ToolLocalWorkingDirectoryType.TEMP, os.tmpdir());
     this.placeholders.set(ToolLocalWorkingDirectoryType.CWD, process.cwd());
@@ -98,6 +151,19 @@ export class McpServerContext implements IContextModel {
     writeLog(Object.fromEntries(this.placeholders.entries()));
 
     writeLog(Deno.env.toObject());
+  }
+
+  initializeInternals(contexts: ContextVersion[]) {
+    this.contexts = contexts;
+
+    this.prompts = contexts
+      .flatMap((contextVersion) => contextVersion.prompts);
+
+    this.tools = contexts
+      .flatMap((contextVersion) => contextVersion.tools);
+
+    this.resources = contexts
+      .flatMap((contextVersion) => contextVersion.resources);
   }
 
   async onInitialize() {
@@ -253,12 +319,6 @@ export class McpServerContext implements IContextModel {
       return objectPick(tool, ["name", "description", "inputSchema"]) as ITool;
     });
 
-    const workspacePath = {
-      type: "string",
-      description: "file:// URI pointing to a workspace directory.",
-      pattern: `^file:\\/\\/\\/?[^<>:"|?*\\r\\n]+$`,
-    };
-
     /**
      * Alex:
      * We do inject the `workspacePath` argument into all tools...
@@ -277,6 +337,10 @@ export class McpServerContext implements IContextModel {
           inputSchema.type === "object" && "properties" in inputSchema &&
           isObject(inputSchema.properties)
         ) {
+          if ("workspacePath" in inputSchema.properties) {
+            continue;
+          }
+
           inputSchema.properties = {
             ...inputSchema.properties,
             workspacePath,
@@ -292,7 +356,7 @@ export class McpServerContext implements IContextModel {
     writeLog(`EVENT [onClientListTools] Response`);
     writeLog(tools);
 
-    return tools;
+    return tools.concat(LoadContextsTool);
   }
 
   async onClientCallTool(
@@ -307,6 +371,29 @@ export class McpServerContext implements IContextModel {
       writeLog(`EVENT [onClientCallTool] Exception`, LogLevel.ERROR);
       writeLog(_args);
     };
+
+    if (tool.name === LoadContextsTool.name) {
+      const workspacePath = args.workspacePath as string;
+      const configFilePath = `${workspacePath}/mcp-config.json`;
+
+      writeLog("______________________________________________");
+      writeLog({ configFilePath });
+
+      const contexts = await loadContextsFromConfigFile(
+        configFilePath,
+        false
+      );
+
+      writeLog("Loaded new contests");
+      writeLog(contexts);
+
+      this.initializeInternals(contexts);
+      options.notify.toolsListChanged();
+      options.notify.promptsListChanged();
+      options.notify.resourcesListChanged();
+
+      return LoadContextsToolSuccessResponse;
+    }
 
     const _tool = this.tools.find((t) => t.name === tool.name);
 
@@ -399,11 +486,8 @@ export class McpServerContext implements IContextModel {
 
         return {
           content: [{
-            role: Role.ASSISTANT,
-            content: {
-              type: "text",
-              text: JSON.stringify(localScriptStrategyResponse),
-            },
+            type: "text",
+            text: JSON.stringify(localScriptStrategyResponse),
           }],
           structuredContent: localScriptStrategyResponse as Record<
             string,

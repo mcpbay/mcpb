@@ -51,7 +51,7 @@ export async function checkVersionOutdated() {
     });
     const isUpdateAvailable = comparison > 0;
 
-    await saveVersionCache({
+    saveVersionCache({
       isOutdated: isUpdateAvailable,
       currentVersion,
       latestVersion,

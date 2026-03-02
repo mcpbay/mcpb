@@ -1,1 +1,1 @@
-export const VERSION_CACHE_PATH = "./version-cache.json";
+export const VERSION_CACHE_PATH = "file://./version-cache.json";

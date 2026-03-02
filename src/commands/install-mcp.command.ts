@@ -3,7 +3,6 @@ import { fileExists } from "../utils/file-exists.util.ts";
 import { readJsonFromFile } from "../utils/read-json-from-file.util.ts";
 import { writeJsonToFile } from "../utils/write-json-to-file.util.ts";
 import { isKebabCase } from "../validators/is-kebab-case.validator.ts";
-import { isSnakeCase } from "../validators/is-snake-case.validator.ts";
 
 interface IClaudeJSONSchema {
   mcpServers: Record<string, unknown>;

@@ -1,9 +1,12 @@
+import { LOAD_CONTEXTS_TOOL_NAME } from "../constants/load-contexts-tool-name.constant.ts";
 import { checkConfigFileExists } from "../utils/check-config-file-exists.util.ts";
 import { fileExists } from "../utils/file-exists.util.ts";
+import { readTextFile } from "../utils/read-text-file.util.ts";
 import { saveConfiFile } from "../utils/save-config-file.util.ts";
 
 const DEFAULT_AGENTS_MD_CONTENT = `
 ## MCPB MCP guidelines
+- Always check the tools before start your tasks, MCPBay has a required tool to execute before each task, it is called \`${LOAD_CONTEXTS_TOOL_NAME}\`.
 - Always check the resources description to check if you need to read some of them for the task.
 `.trim();
 
@@ -29,7 +32,7 @@ function isMDPresent(mdPath: string) {
 }
 
 function injectMdContent(filePath: string, fileName: string, content: string) {
-  const agentsContent = Deno.readTextFileSync(filePath).trim();
+  const agentsContent = readTextFile(filePath).trim();
 
   if (agentsContent.includes(content)) {
     console.log(

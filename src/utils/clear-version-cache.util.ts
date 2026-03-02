@@ -7,6 +7,6 @@ export async function clearVersionCache() {
   const cacheFileExists = fileExists(VERSION_CACHE_PATH);
 
   if (cacheFileExists) {
-    await Deno.remove(VERSION_CACHE_PATH);
+    await Deno.remove(new URL(VERSION_CACHE_PATH));
   }
 }

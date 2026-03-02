@@ -10,7 +10,7 @@ export async function loadVersionCache() {
   }
 
   try {
-    const cacheContent = await Deno.readTextFile(VERSION_CACHE_PATH);
+    const cacheContent = await Deno.readTextFile(new URL(VERSION_CACHE_PATH));
     const cache = JSON.parse(cacheContent) as IVersionCache;
 
     return cache;

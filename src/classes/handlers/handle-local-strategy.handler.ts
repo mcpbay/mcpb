@@ -59,12 +59,11 @@ export async function handleLocalStrategy(
 
   crashIfNot(requiredAppsStatus.every((status) => status.exists), {
     code: INTERNAL_ERROR,
-    message: `Required apps not found: ${
-      requiredAppsStatus
-        .filter((status) => !status.exists)
-        .map((status) => status.name)
-        .join(", ")
-    }`,
+    message: `Required apps not found: ${requiredAppsStatus
+      .filter((status) => !status.exists)
+      .map((status) => status.name)
+      .join(", ")
+      }`,
     catch: catchLogs,
   });
 
@@ -167,7 +166,7 @@ export async function handleLocalStrategy(
     const jsonOutput = (() => {
       try {
         return JSON.parse(stdoutStr) as object;
-      } catch {}
+      } catch { }
 
       return null;
     })();
@@ -203,11 +202,8 @@ export async function handleLocalStrategy(
 
         const response = {
           content: [{
-            role: Role.ASSISTANT,
-            content: {
-              type: "text",
-              text: stdoutStr,
-            },
+            type: "text",
+            text: stdoutStr,
           }],
           structuredContent,
         } satisfies ToolCallResponse;
@@ -258,11 +254,8 @@ export async function handleLocalStrategy(
     }
 
     const response = [{
-      role: Role.ASSISTANT,
-      content: {
-        type: "text",
-        text: stdoutStr,
-      },
+      type: "text",
+      text: stdoutStr,
     }] satisfies ToolCallResponse;
 
     writeLog(`EVENT [onClientCallTool] Response`);

@@ -1,18 +1,15 @@
-import { MCPBAY_HOST } from "../constants/mcpbay-host.constant.ts";
 import { ContextVersion } from "../types/context-version.type.ts";
-import { loadOrCreateConfigFile } from "./load-or-create-config-file.util.ts";
 
 export async function downloadContext(
   slug: string,
 ): Promise<ContextVersion | null> {
-  const config = loadOrCreateConfigFile();
   const API_KEY = Deno.env.get("MCPBAY_API_KEY") ?? "";
   const init: RequestInit = {
     headers: API_KEY ? { Authorization: `Bearer ${API_KEY}` } : void 0,
     method: "GET",
   };
 
-  const host = config.apiHost ?? MCPBAY_HOST;
+  const host = Deno.env.get("API_HOST") ?? "https://papi.mcpbay.io";
   const request = await fetch(`${host}/mcp/download/${slug}`, init);
 
   if (!request.ok) {
@@ -20,6 +17,14 @@ export async function downloadContext(
 
     if (request.status === 404) {
       console.log("Context not found.");
+    } else {
+      console.log(`Unexpected API response`);
+      console.log(`  host: ${host}`);
+      console.log(`  status: ${request.status}`);
+      console.log(`  response:`);
+      console.log("");
+      console.log(response.trim());
+      console.log("");
     }
 
     return null;
