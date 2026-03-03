@@ -36,6 +36,9 @@ import { LogLevel } from "@mcpbay/easy-mcp-server/enums";
 import { isObject } from "@online/is";
 import { loadContextsFromConfigFile } from "../utils/load-contexts-from-config-file.util.ts";
 import { LOAD_CONTEXTS_TOOL_NAME } from "../constants/load-contexts-tool-name.constant.ts";
+import { RESOURCE_SCHEMA } from "./schemas/resource.schema.ts";
+import { TOOL_SCHEMA } from "./schemas/tool.schema.ts";
+import { PROMPT_SCHEMA } from "./schemas/prompts.schema.ts";
 
 interface IExecuteShellCommandOptions {
   cwd: string;
@@ -73,8 +76,8 @@ const LoadContextsTool: ITool = {
     type: "object",
     properties: {
       status: {
-        description: "The status of the execution.",
         type: "string",
+        description: "The status of the execution.",
         oneOf: [
           {
             const: "completed",
@@ -87,6 +90,18 @@ const LoadContextsTool: ITool = {
             title: "Action Filed",
           },
         ],
+      },
+      tools: {
+        type: "array",
+        items: TOOL_SCHEMA
+      },
+      resources: {
+        type: "array",
+        items: RESOURCE_SCHEMA
+      },
+      prompts: {
+        type: "array",
+        items: PROMPT_SCHEMA
       },
     },
     required: ["status"],
@@ -113,6 +128,40 @@ const LoadContextsToolErrorResponse: ToolCallResponse = {
     string,
     unknown
   >,
+};
+
+const ListResourcesTool: ITool = {
+  name: "mcpb_list_resources",
+  description: "List the resources of the mcpbay MCP.",
+  inputSchema: {
+    type: "object",
+    properties: {},
+    // required: []
+  },
+  // outputSchema: {
+  //   type: "array",
+  //   items: RESOURCE_SCHEMA
+  // }
+};
+
+const ReadResourceTool: ITool = {
+  name: "mcpb_read_resource",
+  description: "Reads a particular resource.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      resourceUri: {
+        type: "string",
+        description: "The resource URI.",
+        pattern: `^file:\\/\\/\\/?[^<>:"|?*\\r\\n]+$`,
+      },
+    },
+    required: ["resourceUri"]
+  },
+  // outputSchema: {
+  //   type: "string",
+  //   description: "The content of the resource."
+  // }
 };
 
 export class McpServerContext implements IContextModel {
@@ -356,7 +405,7 @@ export class McpServerContext implements IContextModel {
     writeLog(`EVENT [onClientListTools] Response`);
     writeLog(tools);
 
-    return tools.concat(LoadContextsTool);
+    return tools.concat(LoadContextsTool, ReadResourceTool, ListResourcesTool);
   }
 
   async onClientCallTool(
@@ -372,12 +421,15 @@ export class McpServerContext implements IContextModel {
       writeLog(_args);
     };
 
+    /**
+     * Alex: I HATE THIS!! But all MCP clients are s***... I need to force them to call few tools on
+     * each task to make the mcp load contexts on each project.
+     * 
+     * Yeah... MCP clients does not provide as minimum information as the workspace path to the MCP.
+     */
     if (tool.name === LoadContextsTool.name) {
       const workspacePath = args.workspacePath as string;
       const configFilePath = `${workspacePath}/mcp-config.json`;
-
-      writeLog("______________________________________________");
-      writeLog({ configFilePath });
 
       const contexts = await loadContextsFromConfigFile(
         configFilePath,
@@ -388,11 +440,59 @@ export class McpServerContext implements IContextModel {
       writeLog(contexts);
 
       this.initializeInternals(contexts);
+      /**
+       * Alex: Many MCP clients care a f*** these notifications...
+       */
       options.notify.toolsListChanged();
       options.notify.promptsListChanged();
       options.notify.resourcesListChanged();
 
-      return LoadContextsToolSuccessResponse;
+      writeLog("INTERNAL_LISTS");
+      const resources = await this.onClientListResources(void 0 as unknown as IContextModelOptions);
+      const tools = await this.onClientListTools(void 0 as unknown as IContextModelOptions);
+      const prompts = await this.onClientListPrompts(void 0 as unknown as IContextModelOptions);
+      const result = { status: "completed", resources, tools, prompts };
+      writeLog("END_INTERNAL_LISTS");
+
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(result),
+        }],
+        structuredContent: result as Record<
+          string,
+          unknown
+        >,
+      };
+    } else if (tool.name === ListResourcesTool.name) {
+      /**
+       * Alex: Yeah... I need to implement this because OpenCode doesn't know what resources are.
+       * ñ_ñ
+       */
+
+      // Hacky... just for now...
+      const resources = await this.onClientListResources(void 0 as unknown as IContextModelOptions);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(resources)
+          }
+        ],
+        structuredContent: {} as unknown as Record<string, unknown>
+      };
+    } else if (tool.name === ReadResourceTool.name) {
+      const uri = args.resourceUri as string;
+      const resource = await this.onClientReadResource(uri, void 0 as unknown as IContextModelOptions);
+
+      // @ts-ignore: Alex: I don't want to typecheck here...
+      const content: string = resource[0]?.blob ?? resource[0]?.text;
+
+      return [{
+        type: "text",
+        text: content
+      }];
     }
 
     const _tool = this.tools.find((t) => t.name === tool.name);

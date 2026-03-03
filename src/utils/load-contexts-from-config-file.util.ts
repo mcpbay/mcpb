@@ -1,4 +1,3 @@
-import { dirname } from "@std/path";
 import { ContextVersion } from "../types/context-version.type.ts";
 import { loadContext } from "./load-context.util.ts";
 import { writeLog } from "./write-log.util.ts";

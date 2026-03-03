@@ -5,9 +5,11 @@ import { readTextFile } from "../utils/read-text-file.util.ts";
 import { saveConfiFile } from "../utils/save-config-file.util.ts";
 
 const DEFAULT_AGENTS_MD_CONTENT = `
-## MCPB MCP guidelines
-- Always check the tools before start your tasks, MCPBay has a required tool to execute before each task, it is called \`${LOAD_CONTEXTS_TOOL_NAME}\`.
-- Always check the resources description to check if you need to read some of them for the task.
+## CRITICAL MCPB MCP guidelines
+
+Before any task you will perform execute the following guidelines:
+1. Always check the tools before start your tasks, MCPBay has a required tool to execute before each task, it is called \`${LOAD_CONTEXTS_TOOL_NAME}\`.
+2. Always check the resources description to check if you need to read some of them for the task.
 `.trim();
 
 const CLAUDE_MD_REQUIRED_PROMPT_CONTENT = `

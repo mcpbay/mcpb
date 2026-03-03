@@ -10,6 +10,7 @@ import {
   installMcpCommand,
   InstallMCPTarget,
 } from "./src/commands/install-mcp.command.ts";
+import { CONFIG_FILE_PATH } from "./src/constants/config-file-path.constant.ts";
 
 const program = new Command();
 const version = getVersion();
@@ -17,7 +18,7 @@ const configOption = new Option(
   "-c, --config <path>",
   "Path to the config file.",
 )
-  .default("file:///./mcp-config.json");
+  .default(CONFIG_FILE_PATH);
 
 const debugOption = new Option(
   "-d, --debug <path>",

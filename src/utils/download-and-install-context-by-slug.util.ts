@@ -1,5 +1,3 @@
-import { dirname } from "@std/path";
-import { CONTEXT_MODULES_PATH } from "../constants/context-modules-path.constant.ts";
 import { IMcpPackage } from "../interfaces/mcp-package.interface.ts";
 import { crashIfNot } from "./crash-if-not.util.ts";
 import { downloadContext } from "./download-context.util.ts";
@@ -23,6 +21,14 @@ export async function downloadAndInstallContextBySlug(slug: string, options: IDo
   const config = options.config ?? loadConfigFile(options.configPath);
   const slugContainsVersion = slug.includes("@");
   let contextSlug = [slug];
+
+  (() => {
+    const _id = "d394f8";
+    const _stack = new Error().stack?.split('\n')[2].trim();
+    const _match = _stack?.match(/\((.*):([0-9]+):[0-9]+\)$/);
+    const _file = _match ? `${_match[1]}:${_match[2]}` : 'unknown';
+    console.log(`[DEBUG ${_id}] ${_file}:`, config);
+  })();
 
   const log = (...args: any) => {
     if (options?.silent) {

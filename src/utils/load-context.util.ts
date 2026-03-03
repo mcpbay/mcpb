@@ -1,12 +1,9 @@
-import { dirname } from "@std/path";
-import { addCommand } from "../commands/add.command.ts";
-import { CONTEXT_MODULES_PATH } from "../constants/context-modules-path.constant.ts";
 import { ContextVersion } from "../types/context-version.type.ts";
 import { downloadAndInstallContextBySlug } from "./download-and-install-context-by-slug.util.ts";
 import { fileExists } from "./file-exists.util.ts";
-import { jsonFromFile } from "./json-from-file.util.ts";
-import { readTextFile } from "./read-text-file.util.ts";
 import { writeLog } from "./write-log.util.ts";
+import { getDirname } from "./get-dirname.util.ts";
+import { readJsonFromFile } from "./read-json-from-file.util.ts";
 
 export interface ILoadContextOptions {
   configPath: string;
@@ -18,7 +15,7 @@ export async function loadContext(
   options: ILoadContextOptions
 ) {
   writeLog("loadContext");
-  const cwd = dirname(options.configPath);
+  const cwd = getDirname(options.configPath);
   const contextModulesPath = `${cwd}/context_modules`;
   const contextPath = `${contextModulesPath}/${context}/${version}.json`;
   writeLog({ contextModulesPath, contextPath });
@@ -27,5 +24,5 @@ export async function loadContext(
     await downloadAndInstallContextBySlug(`${context}@${version}`, { silent: true, configPath: options.configPath, contextModulesPath });
   }
 
-  return jsonFromFile<ContextVersion>(contextPath);
+  return readJsonFromFile<ContextVersion>(contextPath);
 }
