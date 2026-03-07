@@ -12,7 +12,7 @@ export interface ILoadContextOptions {
 export async function loadContext(
   context: string,
   version: string,
-  options: ILoadContextOptions
+  options: ILoadContextOptions,
 ) {
   writeLog("loadContext");
   const cwd = getDirname(options.configPath);
@@ -21,7 +21,11 @@ export async function loadContext(
   writeLog({ contextModulesPath, contextPath });
 
   if (!fileExists(contextPath)) {
-    await downloadAndInstallContextBySlug(`${context}@${version}`, { silent: true, configPath: options.configPath, contextModulesPath });
+    await downloadAndInstallContextBySlug(`${context}@${version}`, {
+      silent: true,
+      configPath: options.configPath,
+      contextModulesPath,
+    });
   }
 
   return readJsonFromFile<ContextVersion>(contextPath);

@@ -1,4 +1,5 @@
 import { IMcpPackage } from "../interfaces/mcp-package.interface.ts";
+import { ToolLocalScriptStrategyConfig } from "../types/tool-local-script-strategy-config.type.ts";
 import { crashIfNot } from "./crash-if-not.util.ts";
 import { downloadContext } from "./download-context.util.ts";
 import { fileExists } from "./file-exists.util.ts";
@@ -14,21 +15,20 @@ export interface IDownloadAndInstallContextBySlugOptions {
   config?: IMcpPackage;
 }
 
-export async function downloadAndInstallContextBySlug(slug: string, options: IDownloadAndInstallContextBySlugOptions) {
+export interface IDownloadAndInstallContextBySlugResponse {
+  hasTypeScriptScripts: boolean;
+}
+
+export async function downloadAndInstallContextBySlug(
+  slug: string,
+  options: IDownloadAndInstallContextBySlugOptions,
+): Promise<IDownloadAndInstallContextBySlugResponse> {
   writeLog("downloadAndInstallContextBySlug");
   writeLog(options);
   const { contextModulesPath } = options;
   const config = options.config ?? loadConfigFile(options.configPath);
   const slugContainsVersion = slug.includes("@");
   let contextSlug = [slug];
-
-  (() => {
-    const _id = "d394f8";
-    const _stack = new Error().stack?.split('\n')[2].trim();
-    const _match = _stack?.match(/\((.*):([0-9]+):[0-9]+\)$/);
-    const _file = _match ? `${_match[1]}:${_match[2]}` : 'unknown';
-    console.log(`[DEBUG ${_id}] ${_file}:`, config);
-  })();
 
   const log = (...args: any) => {
     if (options?.silent) {
@@ -61,7 +61,7 @@ export async function downloadAndInstallContextBySlug(slug: string, options: IDo
     console.error(`Error downloading context version.`);
     console.error(JSON.stringify(contextVersion));
 
-    return;
+    return { hasTypeScriptScripts: false };
   }
 
   if (!fileExists(contextModulesPath)) {
@@ -77,7 +77,9 @@ export async function downloadAndInstallContextBySlug(slug: string, options: IDo
 
   if (fileExists(contextFolderPath)) {
     if (fileExists(contextVersionPath)) {
-      return log(`Context "${slug}" already exists.`);
+      log(`Context "${slug}" already exists.`);
+      // TODO: Alex: Check in the `contextVersionPath` if there's some script.
+      return { hasTypeScriptScripts: false };
     }
 
     saveContext(contextVersion, contextVersionPath);
@@ -89,4 +91,16 @@ export async function downloadAndInstallContextBySlug(slug: string, options: IDo
   }
 
   saveConfiFile(config);
+
+  const hasTypeScriptScripts = contextVersion.tools.some((tool) => {
+    for (const executionStrategy of tool.execution) {
+      if (executionStrategy.type === "local-script") {
+        const config = executionStrategy.config as ToolLocalScriptStrategyConfig;
+
+        return config.language === "ts";
+      }
+    }
+  });
+
+  return { hasTypeScriptScripts };
 }

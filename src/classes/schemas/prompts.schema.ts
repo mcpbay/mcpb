@@ -5,7 +5,7 @@ export const PROMPT_ARGUMENT_SCHEMA = {
     description: { type: "string" },
     required: { type: "boolean" },
   },
-  required: ["name", "description"]
+  required: ["name", "description"],
 };
 
 export const PROMPT_SCHEMA = {
@@ -15,8 +15,8 @@ export const PROMPT_SCHEMA = {
     description: { type: "string" },
     arguments: {
       type: "array",
-      items: PROMPT_ARGUMENT_SCHEMA
-    }
+      items: PROMPT_ARGUMENT_SCHEMA,
+    },
   },
-  required: ["name", "description"]
+  required: ["name", "description"],
 };

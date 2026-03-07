@@ -3,7 +3,10 @@ import { loadContext } from "./load-context.util.ts";
 import { writeLog } from "./write-log.util.ts";
 import { loadConfigFile } from "./load-config-file.util.ts";
 
-export async function loadContextsFromConfigFile(configPath: string, create = true) {
+export async function loadContextsFromConfigFile(
+  configPath: string,
+  create = true,
+) {
   writeLog("loadContextsFromConfigFile");
 
   const contexts: ContextVersion[] = [];

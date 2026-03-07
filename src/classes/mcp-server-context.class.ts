@@ -55,7 +55,7 @@ export enum ToolLocalWorkingDirectoryType {
   PROJECT_ROOT = "project_root",
 }
 
-type LocalResource = IResource & { id: string; };
+type LocalResource = IResource & { id: string };
 
 const workspacePath = {
   type: "string",
@@ -93,15 +93,15 @@ const LoadContextsTool: ITool = {
       },
       tools: {
         type: "array",
-        items: TOOL_SCHEMA
+        items: TOOL_SCHEMA,
       },
       resources: {
         type: "array",
-        items: RESOURCE_SCHEMA
+        items: RESOURCE_SCHEMA,
       },
       prompts: {
         type: "array",
-        items: PROMPT_SCHEMA
+        items: PROMPT_SCHEMA,
       },
     },
     required: ["status"],
@@ -156,7 +156,7 @@ const ReadResourceTool: ITool = {
         pattern: `^file:\\/\\/\\/?[^<>:"|?*\\r\\n]+$`,
       },
     },
-    required: ["resourceUri"]
+    required: ["resourceUri"],
   },
   // outputSchema: {
   //   type: "string",
@@ -424,7 +424,7 @@ export class McpServerContext implements IContextModel {
     /**
      * Alex: I HATE THIS!! But all MCP clients are s***... I need to force them to call few tools on
      * each task to make the mcp load contexts on each project.
-     * 
+     *
      * Yeah... MCP clients does not provide as minimum information as the workspace path to the MCP.
      */
     if (tool.name === LoadContextsTool.name) {
@@ -433,7 +433,7 @@ export class McpServerContext implements IContextModel {
 
       const contexts = await loadContextsFromConfigFile(
         configFilePath,
-        false
+        false,
       );
 
       writeLog("Loaded new contests");
@@ -448,9 +448,15 @@ export class McpServerContext implements IContextModel {
       options.notify.resourcesListChanged();
 
       writeLog("INTERNAL_LISTS");
-      const resources = await this.onClientListResources(void 0 as unknown as IContextModelOptions);
-      const tools = await this.onClientListTools(void 0 as unknown as IContextModelOptions);
-      const prompts = await this.onClientListPrompts(void 0 as unknown as IContextModelOptions);
+      const resources = await this.onClientListResources(
+        void 0 as unknown as IContextModelOptions,
+      );
+      const tools = await this.onClientListTools(
+        void 0 as unknown as IContextModelOptions,
+      );
+      const prompts = await this.onClientListPrompts(
+        void 0 as unknown as IContextModelOptions,
+      );
       const result = { status: "completed", resources, tools, prompts };
       writeLog("END_INTERNAL_LISTS");
 
@@ -471,27 +477,32 @@ export class McpServerContext implements IContextModel {
        */
 
       // Hacky... just for now...
-      const resources = await this.onClientListResources(void 0 as unknown as IContextModelOptions);
+      const resources = await this.onClientListResources(
+        void 0 as unknown as IContextModelOptions,
+      );
 
       return {
         content: [
           {
             type: "text",
-            text: JSON.stringify(resources)
-          }
+            text: JSON.stringify(resources),
+          },
         ],
-        structuredContent: {} as unknown as Record<string, unknown>
+        structuredContent: {} as unknown as Record<string, unknown>,
       };
     } else if (tool.name === ReadResourceTool.name) {
       const uri = args.resourceUri as string;
-      const resource = await this.onClientReadResource(uri, void 0 as unknown as IContextModelOptions);
+      const resource = await this.onClientReadResource(
+        uri,
+        void 0 as unknown as IContextModelOptions,
+      );
 
       // @ts-ignore: Alex: I don't want to typecheck here...
       const content: string = resource[0]?.blob ?? resource[0]?.text;
 
       return [{
         type: "text",
-        text: content
+        text: content,
       }];
     }
 
@@ -583,6 +594,8 @@ export class McpServerContext implements IContextModel {
         ) {
           continue;
         }
+
+        writeLog(localScriptStrategyResponse, LogLevel.INFO)
 
         return {
           content: [{

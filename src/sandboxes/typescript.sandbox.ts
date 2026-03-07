@@ -8,7 +8,7 @@ function _transpile(typescriptCode: string) {
   return transpile(
     typescriptCode,
     {
-      module: ts.ModuleKind.CommonJS,
+      module: ts.ModuleKind.ESNext,
       target: ts.ScriptTarget.ESNext,
       removeComments: false,
       sourceMap: false,
@@ -32,11 +32,12 @@ export interface IExecuteOptions {
 }
 
 export interface IInitializeActionContext {
+  contextId: number;
   code: string;
   context: Record<string, unknown>;
   allowedPackages: string[];
   cwd: string;
-  functionnCall?: IFunctionCallInformation;
+  functionCall?: IFunctionCallInformation;
 }
 
 export interface IExecuteCodeActionContext {
@@ -74,7 +75,7 @@ export async function executeTs(
 ): Promise<unknown> {
   const {
     context = {},
-    timeout = 5000,
+    timeout = 10000,
     permissions = {
       net: false,
       read: false,
@@ -90,7 +91,7 @@ export async function executeTs(
     cwd = Deno.cwd(),
   } = options;
 
-  code = _transpile(code);
+  // code = _transpile(code);
 
   const workerUrl = new URL("../../sandbox_worker.ts", import.meta.url).href;
   const resourceLimits: Record<string, number> = {};
@@ -164,9 +165,10 @@ export async function executeTs(
       context: {
         code,
         context,
-        functionnCall: fn,
+        functionCall: fn,
         allowedPackages,
         cwd,
+        contextId: 0,
       } satisfies IInitializeActionContext,
     });
   });

@@ -4,6 +4,6 @@ export const RESOURCE_SCHEMA = {
     uri: { type: "string" },
     name: { type: "string" },
     description: { type: "string" },
-    mimeType: { type: "string" }
-  }
+    mimeType: { type: "string" },
+  },
 };

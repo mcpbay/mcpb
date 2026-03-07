@@ -59,11 +59,12 @@ export async function handleLocalStrategy(
 
   crashIfNot(requiredAppsStatus.every((status) => status.exists), {
     code: INTERNAL_ERROR,
-    message: `Required apps not found: ${requiredAppsStatus
-      .filter((status) => !status.exists)
-      .map((status) => status.name)
-      .join(", ")
-      }`,
+    message: `Required apps not found: ${
+      requiredAppsStatus
+        .filter((status) => !status.exists)
+        .map((status) => status.name)
+        .join(", ")
+    }`,
     catch: catchLogs,
   });
 
@@ -166,7 +167,7 @@ export async function handleLocalStrategy(
     const jsonOutput = (() => {
       try {
         return JSON.parse(stdoutStr) as object;
-      } catch { }
+      } catch {}
 
       return null;
     })();

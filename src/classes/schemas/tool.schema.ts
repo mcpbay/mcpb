@@ -12,11 +12,11 @@ export const TOOL_SCHEMA = {
           oneOf: [
             { const: "required" },
             { const: "optional" },
-            { const: "forbidden" }
-          ]
-        }
+            { const: "forbidden" },
+          ],
+        },
       },
-      required: ["taskSupport"]
+      required: ["taskSupport"],
     },
     outputSchema: { type: "object" },
     annotations: {
@@ -26,10 +26,10 @@ export const TOOL_SCHEMA = {
         readOnlyHint: { type: "boolean" },
         destructiveHint: { type: "boolean" },
         idempotentHint: { type: "boolean" },
-        openWorldHint: { type: "boolean" }
+        openWorldHint: { type: "boolean" },
       },
-      required: []
+      required: [],
     },
   },
-  required: ["name", "description",]
+  required: ["name", "description"],
 };

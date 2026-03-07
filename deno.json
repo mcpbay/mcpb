@@ -3,7 +3,7 @@
   "tasks": {
     "build:generic": {
       "description": "Used as common structure for all build commands.",
-      "command": "deno compile --allow-net --allow-read --allow-write --allow-run --allow-env --unstable-worker-options --include sandbox_worker.ts"
+      "command": "deno compile -A --unstable-worker-options"
     },
     "start": "deno run -A --env-file=.env.mcpbay main.ts",
     "codegen": "npx openapi-typescript http://localhost:3000/api-json -o ./src/api/schema.d.ts",
@@ -22,6 +22,7 @@
     "@std/path": "jsr:@std/path@^1.1.4",
     "@std/testing": "jsr:@std/testing@^1.0.17",
     "commander": "npm:commander@^14.0.3",
+    "esbuild-wasm": "npm:esbuild-wasm@^0.27.3",
     "semver": "npm:semver@^7.7.4",
     "typescript": "npm:typescript@^5.9.3"
   },

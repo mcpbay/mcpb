@@ -12,10 +12,13 @@ export interface ILoadConfigFileOptions {
 
 let config: IMcpPackage | null = null;
 
-export function loadConfigFile(path = CONFIG_FILE_PATH, options?: Partial<ILoadConfigFileOptions>) {
+export function loadConfigFile(
+  path = CONFIG_FILE_PATH,
+  options?: Partial<ILoadConfigFileOptions>,
+) {
   writeLog("loadConfigFile");
 
-  const readConfigFileContent = (() => {
+  const readConfigFileContent = () => {
     if (fileExists(path)) {
       writeLog(`fileExists(${path})`);
       return readJsonFromFile<IMcpPackage>(path);
@@ -28,7 +31,7 @@ export function loadConfigFile(path = CONFIG_FILE_PATH, options?: Partial<ILoadC
     }
 
     return { imports: {} } satisfies IMcpPackage;
-  });
+  };
 
   if (options?.reload) {
     config = readConfigFileContent();
