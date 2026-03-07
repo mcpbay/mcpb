@@ -1,5 +1,4 @@
-import { isRelativePath } from "../validators/is-relative-path.validator.ts";
-import { fromFileUrl, isAbsolute, join, resolve } from "@std/path";
+import { fromFileUrl, isAbsolute, join } from "@std/path";
 import { isValidFileURI } from "../validators/is-valid-file-uri.validator.ts";
 
 export function resolvePath(path: string | URL, basePath?: string) {

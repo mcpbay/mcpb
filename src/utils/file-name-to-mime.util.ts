@@ -183,7 +183,7 @@ const EXTENSION_MIME_MAP: Record<string, string> = {
   ".babelrc": "application/json",
   ".npmrc": "text/plain",
   ".yarnrc": "text/plain",
-};
+} as const;
 
 export function fileNameToMime(fileName: string) {
   for (const extension in EXTENSION_MIME_MAP) {
