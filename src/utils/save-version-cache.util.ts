@@ -10,7 +10,7 @@ interface ISaveVersionCacheArguments {
   latestVersion: string;
 }
 
-export async function saveVersionCache(args: ISaveVersionCacheArguments) {
+export function saveVersionCache(args: ISaveVersionCacheArguments) {
   const { isOutdated, currentVersion, latestVersion } = args;
 
   const cache = {
@@ -22,5 +22,5 @@ export async function saveVersionCache(args: ISaveVersionCacheArguments) {
 
   const cacheJson = JSON.stringify(cache, null, 2);
 
-  await Deno.writeTextFile(VERSION_CACHE_PATH, cacheJson);
+  Deno.writeTextFileSync(new URL(VERSION_CACHE_PATH), cacheJson);
 }

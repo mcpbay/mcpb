@@ -1,62 +1,39 @@
-import { CONTEXT_MODULES_PATH } from "../constants/context-modules-path.constant.ts";
-import { crashIfNot } from "../utils/crash-if-not.util.ts";
-import { downloadContext } from "../utils/download-context.util.ts";
-import { saveConfiFile } from "../utils/save-config-file.util.ts";
-import { existsSync } from "@std/fs";
-import { saveContext } from "../utils/save-context.util.ts";
-import { loadOrCreateConfigFile } from "../utils/load-or-create-config-file.util.ts";
+import { loadConfigFile } from "../utils/load-config-file.util.ts";
+import { downloadAndInstallContextBySlug } from "../utils/download-and-install-context-by-slug.util.ts";
+import { getDirname } from "../utils/get-dirname.util.ts";
+import { UniversalAppChecker } from "../classes/universal-app-checker.class.ts";
+import { getForEveryOS } from "../utils/get-for-every-os.util.ts";
 
 export async function addCommand(source: string, options: Record<string, any>) {
-  const { config: configPath } = options;
-  const config = loadOrCreateConfigFile(configPath);
-  const slugContainsVersion = source.includes("@");
-  let contextSlug = [source];
+  const { config: configPath, silent } = options;
+  const config = loadConfigFile(configPath, { create: true });
+  const cwd = getDirname(configPath);
+  const contextModulesPath = `${cwd}/context_modules`;
+  const { hasTypeScriptScripts } = await downloadAndInstallContextBySlug(source, {
+    config,
+    configPath,
+    silent,
+    contextModulesPath,
+  });
 
-  if (slugContainsVersion) {
-    const [slug, version] = source.split("@");
+  if (hasTypeScriptScripts) {
+    const appChecker = new UniversalAppChecker();
+    const denoAppInfo = await appChecker.checkApp("deno");
 
-    crashIfNot(slug, "Invalid slug format.");
-    crashIfNot(version, "Invalid slug version.");
+    if (!denoAppInfo.exists) {
+      const linuxDenoInstallCmd = "curl -fsSL https://deno.land/install.sh | sh";
+      const denoInstallationLink = getForEveryOS({
+        windows: "irm https://deno.land/install.ps1 | iex",
+        darwin: linuxDenoInstallCmd,
+        linux: linuxDenoInstallCmd,
+        unknown: linuxDenoInstallCmd
+      });
 
-    config.imports[slug] = version;
-    contextSlug = [slug, version];
-  } else {
-    config.imports[source] = "latest";
-    contextSlug = [source, "latest"];
-  }
-
-  const contextVersion = await downloadContext(contextSlug.join("@"));
-
-  if (!contextVersion) {
-    return;
-  }
-
-  const contextModulesPath = config.contextModulesPath ?? CONTEXT_MODULES_PATH;
-
-  if (!existsSync(contextModulesPath)) {
-    Deno.mkdirSync(contextModulesPath);
-  }
-
-  const contextFolderName = contextVersion.context.slug;
-  const contextFolderPath = `${contextModulesPath}/${contextFolderName}`;
-  const contextVersionPath =
-    `${contextFolderPath}/${contextVersion.version}.json`;
-
-  config.imports[contextSlug[0]] = contextVersion.version;
-
-  if (existsSync(contextFolderPath)) {
-    if (existsSync(contextVersionPath)) {
-      return console.log(`Context "${source}" already exists.`);
+      console.log(`TypeScript scripts detected for this context!`);
+      console.log(`To run some of the tools you need the Deno JavaScript/TypeScript runtime installed in your system.`);
+      console.log(`Please install it before trying to use the context tools:`);
+      console.log(`  ${denoInstallationLink}`);
+      console.log(`Official website: https://deno.com/`);
     }
-
-    saveContext(contextVersion, contextVersionPath);
-  } else {
-    Deno.mkdirSync(contextFolderPath);
-
-    saveContext(contextVersion, contextVersionPath);
-
-    console.log(`Context "${source}" added successfully.`);
   }
-
-  saveConfiFile(config);
 }

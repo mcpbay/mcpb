@@ -4,8 +4,7 @@ export function expandTilde(path: string) {
     return path;
   }
 
-  const home =
-    Deno.env.get("HOME") ??
+  const home = Deno.env.get("HOME") ??
     Deno.env.get("USERPROFILE");
 
   if (!home) {

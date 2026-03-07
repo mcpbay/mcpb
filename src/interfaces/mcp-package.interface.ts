@@ -1,6 +1,9 @@
 export interface IMcpPackage {
   imports: Record<string, string>;
-  env?: string;
-  apiHost?: string;
-  contextModulesPath?: string;
+  envFile?: string;
+  env?: Partial<{
+    MCPBAY_API_KEY: string;
+    API_HOST: string;
+    CONTEXTS_PATH: string;
+  }>;
 }

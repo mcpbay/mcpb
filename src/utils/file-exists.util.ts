@@ -1,6 +1,7 @@
 export function fileExists(path: string): boolean {
   try {
-    Deno.statSync(path);
+    const filePath = path.startsWith("file://") ? new URL(path) : path;
+    Deno.statSync(filePath);
     return true;
   } catch (e) {
     return false;

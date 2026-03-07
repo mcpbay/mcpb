@@ -1,11 +1,11 @@
-import { existsSync } from "@std/fs";
 import { CONFIG_FILE_PATH } from "../constants/config-file-path.constant.ts";
-import { loadConfigFile } from "./load-config-file.util.ts";
+import { fileExists } from "./file-exists.util.ts";
+import { readJsonFromFile } from "./read-json-from-file.util.ts";
 
 export function checkConfigFileExists(path = CONFIG_FILE_PATH) {
-  if (!existsSync(path)) {
+  if (!fileExists(path)) {
     throw new Error("Config file not found.");
   }
 
-  return loadConfigFile(path);
+  return readJsonFromFile(path);
 }
