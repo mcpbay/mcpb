@@ -58,7 +58,8 @@ export class MetadataManager {
     const fileContent = this.readFileAsText();
 
     if (isJsTsFile) {
-      const updatedContent = `${fileContent}\n\n/* MCPB_METADATA_ID: ${metadataId} */`;
+      const updatedContent =
+        `${fileContent}\n\n/* MCPB_METADATA_ID: ${metadataId} */`;
 
       Object.assign(this, { content: updatedContent });
       await Deno.writeTextFile(this.filePath, updatedContent);
@@ -72,7 +73,10 @@ export class MetadataManager {
   async getOrCreateMetadataId() {
     const metadataId = this.getMetadataId() ?? await this.assignMetadataId();
 
-    crashIfNot(metadataId, `Unable to find or create metadata id on file: ${this.filePath}`);
+    crashIfNot(
+      metadataId,
+      `Unable to find or create metadata id on file: ${this.filePath}`,
+    );
 
     return metadataId;
   }
@@ -84,15 +88,16 @@ export class MetadataManager {
 
     const { value: allMembersPrevalue } = await kv.get(membersIndex);
 
-    const allMembers =
-      allMembersPrevalue as string[] | null
-      ?? [] as string[];
+    const allMembers = allMembersPrevalue as string[] | null ??
+      [] as string[];
 
     const metadataKeys = Object.keys(metadata);
-    const fixedMembers = Array.from(new Set([
-      ...allMembers,
-      ...metadataKeys,
-    ]));
+    const fixedMembers = Array.from(
+      new Set([
+        ...allMembers,
+        ...metadataKeys,
+      ]),
+    );
 
     await kv.set(membersIndex, fixedMembers);
 

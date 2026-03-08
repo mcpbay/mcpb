@@ -14,7 +14,10 @@ export function removeStaticImports(code: string): string {
     const next = code[i + 1];
 
     // line comment
-    if (!inSingle && !inDouble && !inTemplate && !inBlockComment && c === "/" && next === "/") {
+    if (
+      !inSingle && !inDouble && !inTemplate && !inBlockComment && c === "/" &&
+      next === "/"
+    ) {
       inLineComment = true;
     }
 
@@ -23,7 +26,10 @@ export function removeStaticImports(code: string): string {
     }
 
     // block comment
-    if (!inSingle && !inDouble && !inTemplate && !inLineComment && c === "/" && next === "*") {
+    if (
+      !inSingle && !inDouble && !inTemplate && !inLineComment && c === "/" &&
+      next === "*"
+    ) {
       inBlockComment = true;
     }
 

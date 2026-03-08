@@ -1,13 +1,11 @@
 import { writeLog } from "../../utils/write-log.util.ts";
-import {
-  McpServerContext
-} from "../mcp-server-context.class.ts";
+import { McpServerContext } from "../mcp-server-context.class.ts";
 import { StrategyHandlerContext } from "../types/strategy-handler-context.type.ts";
 import { ToolLocalScriptStrategyConfig } from "../../types/tool-local-script-strategy-config.type.ts";
 import { crashIfNot } from "@mcpbay/easy-mcp-server/utils";
 import {
   INTERNAL_ERROR,
-  INVALID_PARAMS
+  INVALID_PARAMS,
 } from "@mcpbay/easy-mcp-server/constants";
 import { objectPick } from "../../utils/object-pick.util.ts";
 import { isValidFileURI } from "../../validators/is-valid-file-uri.validator.ts";
@@ -51,7 +49,7 @@ export async function handleLocalScriptStrategy(
     crashIfNot(!!workspacePath, {
       code: INVALID_PARAMS,
       message: "'workspacePath' argument can't be empty.",
-    })
+    });
 
     crashIfNot(isValidFileURI(workspacePath), {
       code: INVALID_PARAMS,
@@ -69,12 +67,12 @@ export async function handleLocalScriptStrategy(
           allowRead: config.allowReadProject,
           allowWrite: config.allowWriteProject,
           allowNet: config.allowedDomains,
-          allowedPackages: config.allowedPackages
+          allowedPackages: config.allowedPackages,
         },
         invoke: {
           function: "toolHandler",
-          arguments: [fixedArgs]
-        }
+          arguments: [fixedArgs],
+        },
       });
 
       writeLog("Deno.removeSync(codeFilePath);");
@@ -92,7 +90,9 @@ export async function handleLocalScriptStrategy(
     } catch (e) {
       crashIfNot(false, {
         code: INTERNAL_ERROR,
-        message: `Error executing "${tool.name}" script: ${(e as Error).message}`
+        message: `Error executing "${tool.name}" script: ${
+          (e as Error).message
+        }`,
       });
     }
   }

@@ -595,7 +595,7 @@ export class McpServerContext implements IContextModel {
           continue;
         }
 
-        writeLog(localScriptStrategyResponse, LogLevel.INFO)
+        writeLog(localScriptStrategyResponse, LogLevel.INFO);
 
         return {
           content: [{

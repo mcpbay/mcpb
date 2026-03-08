@@ -5,9 +5,10 @@ import { SandboxAction } from "./src/enums/sandbox-action.enum.ts";
 import { SandboxFinishStatus } from "./src/enums/sandbox-finish-status.enum.ts";
 import { SandboxNotification } from "./src/enums/sandbox-notification.enum.ts";
 import type {
-  IExceptionResponse, IExecuteCodeResponse,
+  IExceptionResponse,
+  IExecuteCodeResponse,
   IInitializeActionContext,
-  IInitializeResponse
+  IInitializeResponse,
 } from "./src/sandboxes/typescript.sandbox.ts";
 import { getInstallationDir } from "./src/utils/get-installation-dir.util.ts";
 
@@ -22,18 +23,18 @@ function transpile(code: string) {
   }).outputText;
 }
 
-
 export interface ITransformImports {
   importFunctionName: string;
   mustAwait: boolean;
 }
 
-export async function transformImports(code: string, options?: Partial<ITransformImports>): Promise<string> {
-  const fn = (options?.mustAwait ? 'await ' : '') +
+export async function transformImports(
+  code: string,
+  options?: Partial<ITransformImports>,
+): Promise<string> {
+  const fn = (options?.mustAwait ? "await " : "") +
     (
-      options?.importFunctionName
-        ? options.importFunctionName
-        : 'require'
+      options?.importFunctionName ? options.importFunctionName : "require"
     );
 
   function destruct(keys: string[], target: string): string {
@@ -42,31 +43,34 @@ export async function transformImports(code: string, options?: Partial<ITransfor
 
     const out: string[] = [];
     while (keys.length) {
-      out.push(keys.shift()!.trim().replace(/ as /g, ':'));
+      out.push(keys.shift()!.trim().replace(/ as /g, ":"));
     }
-    return 'const { ' + out.join(', ') + ' } = ' + target;
+    return "const { " + out.join(", ") + " } = " + target;
   }
 
   function generate(keys: string[], dep: string, base: string): string {
     // Caso especial: import {} from 'module' -> solo ejecuta el import
     if (!base && keys.length === 0) {
-      return dep + ';';
+      return dep + ";";
     }
 
     if (keys.length && !base) return destruct(keys, dep);
-    return 'const ' + base + ' = ' + dep + (keys.length ? ';\n' + destruct(keys, base) : '');
+    return "const " + base + " = " + dep +
+      (keys.length ? ";\n" + destruct(keys, base) : "");
   }
 
   return code.replace(
     /(^|;\s*|\r?\n+)import\s*((?:\*\s*as)?\s*([a-z$_][\w$]*)?\s*,?\s*(?:{([\s\S]*?)})?)?\s*(from)?\s*(['"`][^'"`]+['"`])(?=;?)(?=([^"'`]*["'`][^"'`]*["'`])*[^"'`]*$)/gi,
     (raw, ws, _, base, req, fro, dep) => {
-      dep = fn + '(' + dep + ')';
+      dep = fn + "(" + dep + ")";
 
       // Procesar req (los imports dentro de {})
-      const keys = req ? req.split(',').filter((k: string) => k.trim() !== '') : [];
+      const keys = req
+        ? req.split(",").filter((k: string) => k.trim() !== "")
+        : [];
 
-      return (ws || '') + (fro ? generate(keys, dep, base) : dep);
-    }
+      return (ws || "") + (fro ? generate(keys, dep, base) : dep);
+    },
   );
 }
 
@@ -144,14 +148,17 @@ async function initialize(context: IInitializeActionContext) {
       } catch (err) {
         throw new Error(`Failed to preload package "${pkg}": ${err}`);
       }
-    })
+    }),
   );
 }
 
 async function execute(context: IInitializeActionContext) {
   const { contextId, functionCall, code, cwd, allowedPackages = [] } = context;
 
-  const codeWithRemovedImports = await transformImports(code, { importFunctionName: "_import", mustAwait: true });
+  const codeWithRemovedImports = await transformImports(code, {
+    importFunctionName: "_import",
+    mustAwait: true,
+  });
   const codeCwd = !!cwd ? `Deno.chdir(new URL("${cwd}"));` : "";
 
   const preparedCode = `

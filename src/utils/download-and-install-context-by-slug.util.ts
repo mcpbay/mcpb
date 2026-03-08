@@ -97,7 +97,8 @@ export async function downloadAndInstallContextBySlug(
   const hasTypeScriptScripts = contextVersion.tools.some((tool) => {
     for (const executionStrategy of tool.execution) {
       if (executionStrategy.type === "local-script") {
-        const config = executionStrategy.config as ToolLocalScriptStrategyConfig;
+        const config = executionStrategy
+          .config as ToolLocalScriptStrategyConfig;
 
         return config.language === "ts";
       }
