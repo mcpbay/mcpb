@@ -3,7 +3,7 @@ import { compareVersions } from "../utils/compare-versions.util.ts";
 import { ArchitectureType, getOs, OSType } from "../utils/get-os.util.ts";
 import { generateUpdateScriptFile } from "../utils/generate-update-script-file.util.ts";
 import { getCurrentExecutableDirPath } from "../utils/get-current-executable-dir-path.util.ts";
-import { fileExists } from "../utils/file-exists.util.ts";
+import { exists } from "../utils/exists.util.ts";
 import { sleep } from "../utils/sleep.util.ts";
 import { downloadFileWithProgress } from "../utils/download-file-with-progress.util.ts";
 import * as path from "jsr:@std/path";
@@ -43,7 +43,7 @@ function getUpdateFilePath() {
 
 function isUpdateExecutablePresent() {
   const updateFilePath = getUpdateFilePath();
-  const isUpdateExecutablePresentInDisk = fileExists(updateFilePath);
+  const isUpdateExecutablePresentInDisk = exists(updateFilePath);
 
   return isUpdateExecutablePresentInDisk;
 }
@@ -99,7 +99,8 @@ async function getExecutableResponse(filePath: string, args?: string[]) {
 
 async function getGithubLatestRelease() {
   // Yeah! It is hardcoded... what you gonna do?!
-  const githubApiUrl = "https://api.github.com/repos/mcpbay/mcpb/releases/latest";
+  const githubApiUrl =
+    "https://api.github.com/repos/mcpbay/mcpb/releases/latest";
   const response = await fetch(githubApiUrl);
 
   if (!response.ok) {
@@ -140,22 +141,30 @@ function getGithubLatestReleaseBinaryFilenameByOS() {
  * If present on the `INTENTION_FLAG_UID` environment variable, it means that the
  * executable must replace itself.
  */
-const INTERNAL_SELF_REPLACE_INTENTION = "f26b5225c51e4442ce2d1ed918b4add5974314264ad246757935c4414b7f23b6";
-const INTERNAL_DELETE_UPDATE_INTENTION = "4614572bf3a97ad5d693bb9ee5ab710caf38dd5aa4e0b67f60c0d5ead7a36670";
+const INTERNAL_SELF_REPLACE_INTENTION =
+  "f26b5225c51e4442ce2d1ed918b4add5974314264ad246757935c4414b7f23b6";
+const INTERNAL_DELETE_UPDATE_INTENTION =
+  "4614572bf3a97ad5d693bb9ee5ab710caf38dd5aa4e0b67f60c0d5ead7a36670";
 
 function writeLog(text: string) {
   return;
   const currentDir = getCurrentExecutableDirPath();
-  const currentExecutableName = path.basename(Deno.execPath()).replace(".exe", "");
+  const currentExecutableName = path.basename(Deno.execPath()).replace(
+    ".exe",
+    "",
+  );
   const logFilePath = `${currentDir}/${currentExecutableName}.log`;
 
-  Deno.writeTextFileSync(logFilePath, text + "\n", { append: true, create: true });
+  Deno.writeTextFileSync(logFilePath, text + "\n", {
+    append: true,
+    create: true,
+  });
 }
 
 /**
  * This command is a little bit annoying... but i'll explain it.
  * The action this command performs depends on the `INTENTION_FLAG_UID` environment variable.
- * 
+ *
  * `INTENTION_FLAG_UID` is undefined:
  *   Step 1: Compare current executable version with remote version.
  *   Step 2: Checks if there is an `update` executable file in the same directory.
@@ -172,7 +181,7 @@ function writeLog(text: string) {
  *    Step 3: Execute the new `mcpb` executable with env `INTENTION_FLAG_UID` = `INTERNAL_DELETE_UPDATE_INTENTION`.
  * `INTENTION_FLAG_UID` is `INTERNAL_DELETE_UPDATE_INTENTION`:
  *    Step 1: Delete the `update` executable file.
- * @returns 
+ * @returns
  */
 export async function selfUpdateCommand() {
   const INTENTION_FLAG_UID = Deno.env.get("INTENTION_FLAG_UID");
@@ -182,13 +191,14 @@ export async function selfUpdateCommand() {
 
   writeLog(`INTENTION_FLAG_UID: ${INTENTION_FLAG_UID}`);
 
-  const selfExecuteWithIntention = (intentionCode: string, useUpdate = true) => {
+  const selfExecuteWithIntention = (
+    intentionCode: string,
+    useUpdate = true,
+  ) => {
     writeLog(`Execute update with intention: ${intentionCode}`);
 
     const execution = new Deno.Command(
-      useUpdate
-        ? updateFilePath
-        : executableName,
+      useUpdate ? updateFilePath : executableName,
       {
         args: ["self-update"],
         stdin: "null",
@@ -197,7 +207,7 @@ export async function selfUpdateCommand() {
         cwd: currentExecutableDir,
         env: { INTENTION_FLAG_UID: intentionCode },
         detached: true,
-      }
+      },
     );
 
     console.log("Update executed!");
@@ -252,9 +262,11 @@ export async function selfUpdateCommand() {
   }
 
   do {
-    if (fileExists(updateFilePath)) {
+    if (exists(updateFilePath)) {
       writeLog("Update file exists, check version...");
-      const updateFileVersion = await getExecutableResponse(updateFilePath, ["--version"]);
+      const updateFileVersion = await getExecutableResponse(updateFilePath, [
+        "--version",
+      ]);
 
       if (updateFileVersion === null) {
         writeLog("Update file is broken, delete it.");
@@ -265,7 +277,7 @@ export async function selfUpdateCommand() {
 
       const versionComparison = compareVersions({
         current: latestReleaseVersion,
-        latest: updateFileVersion
+        latest: updateFileVersion,
       });
 
       if (versionComparison === 0) {
@@ -279,14 +291,20 @@ export async function selfUpdateCommand() {
     }
   } while (false);
 
-  const { fullName: binaryReleaseName } = getGithubLatestReleaseBinaryFilenameByOS();
-  const asset = mcpbRelease.assets.find((asset) => asset.name === binaryReleaseName);
+  const { fullName: binaryReleaseName } =
+    getGithubLatestReleaseBinaryFilenameByOS();
+  const asset = mcpbRelease.assets.find((asset) =>
+    asset.name === binaryReleaseName
+  );
 
   writeLog(`Binary release name: ${binaryReleaseName}`);
   writeLog(`Asset: ${JSON.stringify(asset)}`);
 
   if (!asset) {
-    console.log("MCPB release binary not found for this OS:", binaryReleaseName);
+    console.log(
+      "MCPB release binary not found for this OS:",
+      binaryReleaseName,
+    );
 
     Deno.exit(1);
   }
@@ -294,7 +312,7 @@ export async function selfUpdateCommand() {
   writeLog(`Downloading update...`);
   await downloadFileWithProgress({
     url: asset.browser_download_url,
-    path: updateFilePath
+    path: updateFilePath,
   });
 
   writeLog(`Executing update...`);

@@ -1,22 +1,22 @@
+import { LogLevel } from "@mcpbay/easy-mcp-server/enums";
+
 const ENABLE_LOGS = Boolean(Deno.env.get("ENABLE_LOGS"));
 const LOGS_PATH = Deno.env.get("LOGS_FOLDER_PATH");
-const LOGS_ALIAS_PATH = Deno.env.get("LOGS_ALIAS");
-
-export enum LogType {
-  DEBUG = "DEBUG",
-  INFO = "INFO",
-  WARN = "WARN",
-  ERROR = "ERROR",
-}
+const LOGS_ALIAS = Deno.env.get("LOGS_ALIAS");
 
 function getYYYYDDMM(separator = "") {
   const date = new Date();
-  return `${date.getFullYear()}${separator}${
-    date.getMonth() + 1
-  }${separator}${date.getDate()}`;
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+
+  return `${year}${separator}${day}${separator}${month}`;
 }
 
-export function writeLog(line: string | object, type: LogType = LogType.INFO) {
+export function writeLog(
+  line: string | object,
+  type: LogLevel = LogLevel.DEBUG,
+) {
   if (!LOGS_PATH || !ENABLE_LOGS) {
     return;
   }
@@ -25,8 +25,8 @@ export function writeLog(line: string | object, type: LogType = LogType.INFO) {
     line = `\n${JSON.stringify(line, null, 2)}`;
   }
 
-  if (LOGS_ALIAS_PATH) {
-    line = `[${LOGS_ALIAS_PATH}] ${line}`;
+  if (LOGS_ALIAS) {
+    line = `[${LOGS_ALIAS}] ${line}`;
   }
 
   line = `(${type}) ${line}`;

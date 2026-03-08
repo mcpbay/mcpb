@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-  "/contexts": {
+  "/v1/contexts": {
     parameters: {
       query?: never;
       header?: never;
@@ -12,17 +12,17 @@ export interface paths {
       cookie?: never;
     };
     /** Retrieves user's contexts. */
-    get: operations["ContextsController_listContexts"];
+    get: operations["ContextsController_listContexts_v1"];
     put?: never;
     /** Creates a new context. */
-    post: operations["ContextsController_createContext"];
+    post: operations["ContextsController_createContext_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/contexts/{contextId}": {
+  "/v1/contexts/{contextId}": {
     parameters: {
       query?: never;
       header?: never;
@@ -30,16 +30,17 @@ export interface paths {
       cookie?: never;
     };
     /** Retrieves an specific context. */
-    get: operations["ContextsController_getContext"];
+    get: operations["ContextsController_getContext_v1"];
     put?: never;
     post?: never;
     delete?: never;
     options?: never;
     head?: never;
-    patch?: never;
+    /** Retrieves an specific context. */
+    patch: operations["ContextsController_updateContext_v1"];
     trace?: never;
   };
-  "/marketplace": {
+  "/v1/marketplace": {
     parameters: {
       query?: never;
       header?: never;
@@ -47,7 +48,7 @@ export interface paths {
       cookie?: never;
     };
     /** Returns a list of contexts to display in the marketplace section. */
-    get: operations["MarketplaceController_listMarketplaceItems"];
+    get: operations["MarketplaceController_listMarketplaceItems_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -56,7 +57,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/marketplace/{slugId}": {
+  "/v1/marketplace/{slugId}": {
     parameters: {
       query?: never;
       header?: never;
@@ -64,7 +65,7 @@ export interface paths {
       cookie?: never;
     };
     /** Returns the context information with the current version content. */
-    get: operations["MarketplaceController_getMarketplaceContextBySlug"];
+    get: operations["MarketplaceController_getMarketplaceContextBySlug_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -73,7 +74,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/contexts/{contextId}/context-versions": {
+  "/v1/contexts/{contextId}/context-versions": {
     parameters: {
       query?: never;
       header?: never;
@@ -81,17 +82,17 @@ export interface paths {
       cookie?: never;
     };
     /** Retrieves a list of context versions within a context. */
-    get: operations["ContextVersionsController_listContextVersions"];
+    get: operations["ContextVersionsController_listContextVersions_v1"];
     put?: never;
     /** Creates a new context version within a context. */
-    post: operations["ContextVersionsController_createContextVersion"];
+    post: operations["ContextVersionsController_createContextVersion_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/contexts/{contextId}/context-versions/{contextVersionId}": {
+  "/v1/contexts/{contextId}/context-versions/{contextVersionId}": {
     parameters: {
       query?: never;
       header?: never;
@@ -102,160 +103,21 @@ export interface paths {
     put?: never;
     post?: never;
     /** Deletes a context version. */
-    delete: operations["ContextVersionsController_deleteContextVersion"];
+    delete: operations["ContextVersionsController_deleteContextVersion_v1"];
     options?: never;
     head?: never;
     /** Updates a context version. */
-    patch: operations["ContextVersionsController_updateContextVersion"];
+    patch: operations["ContextVersionsController_updateContextVersion_v1"];
     trace?: never;
   };
-  "/catalogs": {
+  "/v1/contexts/{contextId}/context-versions/{contextVersionId}/metrics": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    /** List all user's catalog. */
-    get: operations["CatalogsController_listCatalog"];
-    put?: never;
-    /** Creates a new catalog. */
-    post: operations["CatalogsController_createCatalog"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/catalogs/{catalogId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Deletes a catalog. */
-    delete: operations["CatalogsController_deleteCatalog"];
-    options?: never;
-    head?: never;
-    /** Updates a catalog. */
-    patch: operations["CatalogsController_updateCatalog"];
-    trace?: never;
-  };
-  "/catalogs/{catalogId}/contexts-versions": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Inserts a context version in a catalog. */
-    post: operations["CatalogContextsController_insertContextVersion"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/catalogs/{catalogId}/contexts-versions/{contextVersionId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Removes a context version from a catalog. */
-    delete: operations["CatalogContextsController_deleteContextVersion"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/auth/sign-up": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Register a new user account. */
-    post: operations["AuthController_registerUser"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/auth/sign-in": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Authenticate a user account. */
-    post: operations["AuthController_authenticateUser"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/auth/request-validation": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Request validation for an account. */
-    post: operations["AuthController_requestValidation"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/auth/verify": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Verify an account. */
-    post: operations["AuthController_verifyUser"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/auth/check": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Check if the user is authenticated. */
-    get: operations["AuthController_checkUser"];
+    get: operations["ContextVersionsController_getContextVersionMetrics_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -264,7 +126,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/tokens": {
+  "/v1/tokens": {
     parameters: {
       query?: never;
       header?: never;
@@ -272,17 +134,17 @@ export interface paths {
       cookie?: never;
     };
     /** Retrieves the user tokens. */
-    get: operations["TokensController_listTokens"];
+    get: operations["TokensController_listTokens_v1"];
     put?: never;
     /** Creates a new token. */
-    post: operations["TokensController_createToken"];
+    post: operations["TokensController_createToken_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/tokens/{tokenId}": {
+  "/v1/tokens/{tokenId}": {
     parameters: {
       query?: never;
       header?: never;
@@ -293,13 +155,218 @@ export interface paths {
     put?: never;
     post?: never;
     /** Deletes a token. */
-    delete: operations["TokensController_deleteToken"];
+    delete: operations["TokensController_deleteToken_v1"];
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/mcp/information": {
+  "/v1/metrics": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["MetricsController_getUserMetrics_v1"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/catalogs": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List all user's catalog. */
+    get: operations["CatalogsController_listCatalog_v1"];
+    put?: never;
+    /** Creates a new catalog. */
+    post: operations["CatalogsController_createCatalog_v1"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/catalogs/{catalogId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Deletes a catalog. */
+    delete: operations["CatalogsController_deleteCatalog_v1"];
+    options?: never;
+    head?: never;
+    /** Updates a catalog. */
+    patch: operations["CatalogsController_updateCatalog_v1"];
+    trace?: never;
+  };
+  "/v1/catalogs/{catalogId}/contexts-versions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Inserts a context version in a catalog. */
+    post: operations["CatalogContextsController_insertContextVersion_v1"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/catalogs/{catalogId}/contexts-versions/{contextVersionId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Removes a context version from a catalog. */
+    delete: operations["CatalogContextsController_deleteContextVersion_v1"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/auth/sign-up": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Register a new user account. */
+    post: operations["AuthController_registerUser_v1"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/auth/sign-in": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Authenticate a user account. */
+    post: operations["AuthController_authenticateUser_v1"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/auth/request-validation": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Request validation for an account. */
+    post: operations["AuthController_requestValidation_v1"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/auth/verify": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Verify an account. */
+    post: operations["AuthController_verifyUser_v1"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/auth/check": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Check if the user is authenticated. */
+    get: operations["AuthController_checkUser_v1"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/auth/request-reset-password": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Requests a recover an account by resetting the password. */
+    get: operations["AuthController_requestResetPassword_v1"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/auth/reset-password": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Resets a user password. */
+    post: operations["AuthController_resetPassword_v1"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/mcp/information": {
     parameters: {
       query?: never;
       header?: never;
@@ -307,7 +374,7 @@ export interface paths {
       cookie?: never;
     };
     /** Returns the catalog information. */
-    get: operations["McpController_listInformation"];
+    get: operations["McpController_listInformation_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -316,7 +383,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/mcp/prompts": {
+  "/v1/mcp/prompts": {
     parameters: {
       query?: never;
       header?: never;
@@ -324,7 +391,7 @@ export interface paths {
       cookie?: never;
     };
     /** Get a list of prompts of a catalog. */
-    get: operations["McpController_listPrompts"];
+    get: operations["McpController_listPrompts_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -333,7 +400,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/mcp/tools": {
+  "/v1/mcp/tools": {
     parameters: {
       query?: never;
       header?: never;
@@ -341,7 +408,7 @@ export interface paths {
       cookie?: never;
     };
     /** Get a list of tools of a catalog. */
-    get: operations["McpController_listTools"];
+    get: operations["McpController_listTools_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -350,7 +417,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/mcp/resources": {
+  "/v1/mcp/resources": {
     parameters: {
       query?: never;
       header?: never;
@@ -358,7 +425,7 @@ export interface paths {
       cookie?: never;
     };
     /** Get a list of resources of a catalog. */
-    get: operations["McpController_listResources"];
+    get: operations["McpController_listResources_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -367,7 +434,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/mcp/resources/{resourceId}": {
+  "/v1/mcp/resources/{resourceId}": {
     parameters: {
       query?: never;
       header?: never;
@@ -375,7 +442,7 @@ export interface paths {
       cookie?: never;
     };
     /** Returns the full content of a resource. */
-    get: operations["McpController_readResource"];
+    get: operations["McpController_readResource_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -384,7 +451,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/mcp/download/{slugId}": {
+  "/v1/mcp/download/{slugId}": {
     parameters: {
       query?: never;
       header?: never;
@@ -392,7 +459,7 @@ export interface paths {
       cookie?: never;
     };
     /** Returns the full content of a context version. */
-    get: operations["McpController_downloadContext"];
+    get: operations["McpController_downloadContext_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -449,6 +516,12 @@ export interface components {
       hasMore: boolean;
       /** @description The next page url. */
       nextUrl?: string;
+    };
+    UpdateContextBody: {
+      /** @description The name of the context. */
+      name: string;
+      /** @description The description of the context. */
+      description: string;
     };
     PromptArgument: {
       /** @description The name of the argument. */
@@ -656,6 +729,16 @@ export interface components {
       id: string;
     };
     /**
+     * @description The placeholders to use for the execution strategy.
+     * @enum {string}
+     */
+    ToolLocalWorkingDirectoryType:
+      | "temp"
+      | "workspace"
+      | "repo_root"
+      | "cwd"
+      | "project_root";
+    /**
      * @description The operating system to use for the execution strategy.
      * @enum {string}
      */
@@ -700,47 +783,13 @@ export interface components {
        */
       outputFilePath: string | null;
     };
-    /**
-     * @description The placeholders to use for the execution strategy.
-     * @enum {string}
-     */
-    ToolLocalWorkingDirectoryType:
-      | "temp"
-      | "workspace"
-      | "repo_root"
-      | "cwd"
-      | "project_root";
     ToolStrategyLocalConfig: {
-      /**
-       * @description Whether to run the tool in a shell or not. Default: `false`.
-       * @default false
-       */
-      runInShell: boolean;
-      /** @description The commands to execute the tool. Only use it if `runInShell` is `false`. */
-      commands: string[];
-      /** @description The environment to use for the execution strategy. */
-      environment: components["schemas"]["ToolStrategyLocalEnvironment"];
-      /**
-       * @description The timeout to use for the execution strategy.
-       * @default null
-       */
-      timeout: number | null;
-      /**
-       * @description The working directory to use for the execution strategy.
-       * @default null
-       */
-      workingDirectory: string | null;
+      /** @description The tags this strategy belongs to. */
+      tags: string[];
+      /** @description The tags must be invalidated when this strategy succeeds. */
+      invalidateTags: string[];
       /** @description The maximum output size to use for the execution strategy. */
       maxOutputSize: number;
-      /** @description The cooldown time to use for the execution strategy. Used to avoid LLM tool spam. */
-      cooldownMs: number;
-      /**
-       * @description The success criteria to use for the execution strategy.
-       * @default null
-       */
-      successCriteria:
-        | components["schemas"]["ToolStrategyLocalSuccessCriteria"]
-        | null;
       /**
        * @description Whether the tool is deterministic or not. Default: `false`.
        * @default false
@@ -755,10 +804,159 @@ export interface components {
       outputMapping: {
         [key: string]: string;
       } | null;
+      /**
+       * @description The timeout to use for the execution strategy. In miliseconds.
+       * @default null
+       */
+      timeout: number | null;
+      /**
+       * @description Whether to run the tool in a shell or not. Default: `false`.
+       * @default false
+       */
+      runInShell: boolean;
+      /** @description The commands to execute the tool. Only use it if `runInShell` is `false`. */
+      commands: string[];
+      /** @description The environment to use for the execution strategy. */
+      environment: components["schemas"]["ToolStrategyLocalEnvironment"];
+      /**
+       * @description The working directory to use for the execution strategy.
+       * @default null
+       */
+      workingDirectory: string | null;
+      /**
+       * @description The success criteria to use for the execution strategy.
+       * @default null
+       */
+      successCriteria:
+        | components["schemas"]["ToolStrategyLocalSuccessCriteria"]
+        | null;
     };
     ToolStrategyWebhookConfig: {
       /** @description The webhook url to use for the execution strategy. */
       url: string;
+    };
+    /**
+     * @description The http method to use in for the request.
+     * @enum {string}
+     */
+    ToolRequestMethod: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+    ToolKeyValue: {
+      /**
+       * @description Whether the header is enabled or not. Default: `true`.
+       * @default true
+       */
+      enabled: boolean;
+      /** @description The key of the header. */
+      key: string;
+      /** @description The value of the header. */
+      value: string;
+    };
+    /**
+     * @description The expected response type. Default: `ToolRequestResponseType.JSON`.
+     * @enum {string}
+     */
+    ToolRequestResponseType: "json" | "xml";
+    ToolRequestStrategyConfig: {
+      /** @description The tags this strategy belongs to. */
+      tags: string[];
+      /** @description The tags must be invalidated when this strategy succeeds. */
+      invalidateTags: string[];
+      /** @description The maximum output size to use for the execution strategy. */
+      maxOutputSize: number;
+      /**
+       * @description Whether the tool is deterministic or not. Default: `false`.
+       * @default false
+       */
+      deterministic: boolean;
+      /** @description The placeholders to use for the execution strategy. */
+      placeholders: components["schemas"]["ToolLocalWorkingDirectoryType"][];
+      /**
+       * @description The output mapping for the execution strategy.
+       * @default null
+       */
+      outputMapping: {
+        [key: string]: string;
+      } | null;
+      /**
+       * @description The timeout to use for the execution strategy. In miliseconds.
+       * @default null
+       */
+      timeout: number | null;
+      /** @description The URL to make the request. */
+      url: string;
+      /** @description The http method to use in for the request. */
+      method: components["schemas"]["ToolRequestMethod"];
+      /** @description The headers to use in the request. */
+      headers: components["schemas"]["ToolKeyValue"][];
+      /**
+       * @description The body to use in the request. Required if `method` is `ToolRequestMethod.POST`, `ToolRequestMethod.PATCH`, or `ToolRequestMethod.PUT`.
+       * @default null
+       */
+      body: {
+        [key: string]: unknown;
+      } | null;
+      /**
+       * @description The query to use in the request. Optional, only used if `method` is `ToolRequestMethod.GET`.
+       * @default null
+       */
+      query: components["schemas"]["ToolKeyValue"][] | null;
+      /**
+       * @description The expected response type. Default: `ToolRequestResponseType.JSON`.
+       * @default json
+       */
+      responseType: components["schemas"]["ToolRequestResponseType"];
+    };
+    /**
+     * @description The language to use for the execution strategy.
+     * @enum {string}
+     */
+    ToolLocalScriptStrategyLanguage: "ts";
+    ToolLocalScriptStrategyConfig: {
+      /** @description The tags this strategy belongs to. */
+      tags: string[];
+      /** @description The tags must be invalidated when this strategy succeeds. */
+      invalidateTags: string[];
+      /** @description The maximum output size to use for the execution strategy. */
+      maxOutputSize: number;
+      /**
+       * @description Whether the tool is deterministic or not. Default: `false`.
+       * @default false
+       */
+      deterministic: boolean;
+      /** @description The placeholders to use for the execution strategy. */
+      placeholders: components["schemas"]["ToolLocalWorkingDirectoryType"][];
+      /**
+       * @description The output mapping for the execution strategy.
+       * @default null
+       */
+      outputMapping: {
+        [key: string]: string;
+      } | null;
+      /**
+       * @description The timeout to use for the execution strategy. In miliseconds.
+       * @default null
+       */
+      timeout: number | null;
+      /** @description The language to use for the execution strategy. */
+      language: components["schemas"]["ToolLocalScriptStrategyLanguage"];
+      /** @description The code to execute. */
+      code: string;
+      /**
+       * @description Allow script to read the project files.
+       * @default true
+       */
+      allowReadProject: boolean;
+      /**
+       * @description Allow script to write the project files.
+       * @default false
+       */
+      allowWriteProject: boolean;
+      /** @description Allowed domains to make requests to. */
+      allowedDomains: string[];
+      /** @description Allowed packages/modules to import in the script. */
+      allowedPackages: string[];
+      /** @description Allowed environments to use. */
+      allowedEnvironments: string[];
     };
     /**
      * @description The status of the tool.
@@ -769,14 +967,17 @@ export interface components {
      * @description The type of execution strategy.
      * @enum {string}
      */
-    ToolExecutionType: "local" | "webhook";
+    ToolExecutionType: "local" | "webhook" | "request" | "local-script";
     ToolExecutionStrategy: {
+      /** @description The unique id of this execution strategy. */
+      id: string;
       /** @description The type of execution strategy. */
       type: components["schemas"]["ToolExecutionType"];
       /** @description The configuration for the execution strategy. */
       config:
         | components["schemas"]["ToolStrategyLocalConfig"]
-        | components["schemas"]["ToolStrategyWebhookConfig"];
+        | components["schemas"]["ToolLocalScriptStrategyConfig"]
+        | components["schemas"]["ToolRequestStrategyConfig"];
       /**
        * @description The priority of the execution strategy. Number between 0 and 1.
        * @default null
@@ -840,6 +1041,8 @@ export interface components {
       annotations: components["schemas"]["ToolAnnotation"] | null;
       /** @description The permissions of the tool. */
       permissions?: components["schemas"]["ToolPermissions"];
+      /** @description The cooldown time to use for the tool. Used to avoid LLM tool spam. */
+      cooldownMs: number;
     };
     Environment: {
       /** @description The id of the environment. UUID. */
@@ -926,6 +1129,8 @@ export interface components {
       resources: components["schemas"]["Resource"][];
       /** @description The tools of the context version. */
       tools: components["schemas"]["Tool"][];
+      /** @description The environments of the context version. */
+      variables: components["schemas"]["Environment"][];
     };
     ListContextVersionsResponse: {
       /** @description The context versions. */
@@ -949,6 +1154,8 @@ export interface components {
       resources?: components["schemas"]["Resource"][];
       /** @description The tools of the context version. */
       tools?: components["schemas"]["Tool"][];
+      /** @description The environments of the context version. */
+      variables?: components["schemas"]["Environment"][];
     };
     GenericResponse: {
       /**
@@ -956,6 +1163,95 @@ export interface components {
        * @example true
        */
       success: boolean;
+    };
+    /** @enum {string} */
+    MetricGranularity: "hour" | "day" | "month" | "year";
+    MetricSerieElement: {
+      /**
+       * Format: date-time
+       * @description The bucket time of the metric.
+       */
+      bucket: string;
+      /** @description The views of the metric. */
+      views: number;
+      /** @description The lists of the metric. */
+      lists: number;
+      /** @description The installations of the metric. */
+      installations: number;
+    };
+    GetContextVersionMetricResponse: {
+      /** @description The id of the context version. */
+      contextVersionId: number;
+      /** @description The granularity of the metric. */
+      granularity: components["schemas"]["MetricGranularity"];
+      /** @description The series of the metric. */
+      series: components["schemas"]["MetricSerieElement"][];
+    };
+    /**
+     * @description The access type of the token.
+     * @enum {string}
+     */
+    TokenAccessType: "mcp" | "api";
+    CreateTokenBody: {
+      /** @description The description of the token. */
+      description: string;
+      /** @description The access type of the token. */
+      accessType: components["schemas"]["TokenAccessType"];
+    };
+    Token: {
+      /** @description The id of the entity. */
+      id: number;
+      /**
+       * Format: date-time
+       * @description The creation date of the entity.
+       */
+      createdAt: string;
+      /**
+       * Format: date-time
+       * @description The update date of the entity.
+       */
+      updatedAt: string;
+      /** @description The description of the token. */
+      description: string;
+      /** @description The token. */
+      key: string;
+    };
+    ListTokensResponse: {
+      /** @description The tokens. */
+      items: components["schemas"]["Token"][];
+      /** @description Whether there are more tokens. */
+      hasMore: boolean;
+      /** @description The next page url. */
+      nextUrl?: string;
+    };
+    GetUserMetricsResponse: {
+      /** @description The granularity of the metric. */
+      granularity: components["schemas"]["MetricGranularity"];
+      /** @description The series of the metric. */
+      series: components["schemas"]["MetricSerieElement"][];
+      /** @description The amount of context versions. */
+      totalContextVersions: number;
+      /** @description The amount of contexts created by the user. */
+      totalContexts: number;
+      /**
+       * @description The amount of context versions by status.
+       * @example {
+       *       "draft": 5,
+       *       "published": 10,
+       *       "archived": 2,
+       *       "internal": 1
+       *     }
+       */
+      contextVersions: {
+        /** @example 0 */
+        draft?: number;
+        /** @example 0 */
+        internal?: number;
+        /** @example 0 */
+        published?: number;
+        /** @example 0 */
+        archived?: number;
+      };
     };
     /**
      * @description The status of the catalog.
@@ -1055,42 +1351,13 @@ export interface components {
       /** @description The code to use to try verify the user. */
       code: string;
     };
-    /**
-     * @description The access type of the token.
-     * @enum {string}
-     */
-    TokenAccessType: "mcp" | "api";
-    CreateTokenBody: {
-      /** @description The description of the token. */
-      description: string;
-      /** @description The access type of the token. */
-      accessType: components["schemas"]["TokenAccessType"];
-    };
-    Token: {
-      /** @description The id of the entity. */
-      id: number;
-      /**
-       * Format: date-time
-       * @description The creation date of the entity.
-       */
-      createdAt: string;
-      /**
-       * Format: date-time
-       * @description The update date of the entity.
-       */
-      updatedAt: string;
-      /** @description The description of the token. */
-      description: string;
-      /** @description The token. */
-      key: string;
-    };
-    ListTokensResponse: {
-      /** @description The tokens. */
-      items: components["schemas"]["Token"][];
-      /** @description Whether there are more tokens. */
-      hasMore: boolean;
-      /** @description The next page url. */
-      nextUrl?: string;
+    ResetPasswordBody: {
+      /** @description The new password of the user. */
+      password: string;
+      /** @description The confirmation password. */
+      confirmPassword: string;
+      /** @description The code to use to try validate the password reset. */
+      code: string;
     };
   };
   responses: never;
@@ -1101,7 +1368,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  ContextsController_listContexts: {
+  ContextsController_listContexts_v1: {
     parameters: {
       query: {
         /** @description The previous query last item id. */
@@ -1126,7 +1393,7 @@ export interface operations {
       };
     };
   };
-  ContextsController_createContext: {
+  ContextsController_createContext_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -1150,7 +1417,7 @@ export interface operations {
       };
     };
   };
-  ContextsController_getContext: {
+  ContextsController_getContext_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -1179,7 +1446,33 @@ export interface operations {
       };
     };
   };
-  MarketplaceController_listMarketplaceItems: {
+  ContextsController_updateContext_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        contextId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateContextBody"];
+      };
+    };
+    responses: {
+      /** @description The context. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Context"];
+        };
+      };
+    };
+  };
+  MarketplaceController_listMarketplaceItems_v1: {
     parameters: {
       query: {
         /** @description The previous query last item id. */
@@ -1205,7 +1498,7 @@ export interface operations {
       };
     };
   };
-  MarketplaceController_getMarketplaceContextBySlug: {
+  MarketplaceController_getMarketplaceContextBySlug_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -1228,7 +1521,7 @@ export interface operations {
       };
     };
   };
-  ContextVersionsController_listContextVersions: {
+  ContextVersionsController_listContextVersions_v1: {
     parameters: {
       query: {
         /** @description The previous query last item id. */
@@ -1256,7 +1549,7 @@ export interface operations {
       };
     };
   };
-  ContextVersionsController_createContextVersion: {
+  ContextVersionsController_createContextVersion_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -1282,7 +1575,7 @@ export interface operations {
       };
     };
   };
-  ContextVersionsController_deleteContextVersion: {
+  ContextVersionsController_deleteContextVersion_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -1305,7 +1598,7 @@ export interface operations {
       };
     };
   };
-  ContextVersionsController_updateContextVersion: {
+  ContextVersionsController_updateContextVersion_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -1339,7 +1632,136 @@ export interface operations {
       };
     };
   };
-  CatalogsController_listCatalog: {
+  ContextVersionsController_getContextVersionMetrics_v1: {
+    parameters: {
+      query: {
+        granularity: components["schemas"]["MetricGranularity"];
+        /** @description The time since which the metrics must be retrieved. */
+        since: string;
+        /** @description The time until which the metrics must be retrieved. */
+        until: string;
+      };
+      header?: never;
+      path: {
+        contextVersionId: number;
+        contextId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description The metrics of the context version. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json":
+            components["schemas"]["GetContextVersionMetricResponse"];
+        };
+      };
+    };
+  };
+  TokensController_listTokens_v1: {
+    parameters: {
+      query: {
+        /** @description The previous query last item id. */
+        lastId?: number;
+        /** @description The limit of the page. */
+        size: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description The created tokens. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ListTokensResponse"];
+        };
+      };
+    };
+  };
+  TokensController_createToken_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateTokenBody"];
+      };
+    };
+    responses: {
+      /** @description The created token. */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Token"];
+        };
+      };
+    };
+  };
+  TokensController_deleteToken_v1: {
+    parameters: {
+      query: {
+        tokenId: number;
+      };
+      header?: never;
+      path: {
+        tokenId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Wathever the token was deleted or not. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["GenericResponse"];
+        };
+      };
+    };
+  };
+  MetricsController_getUserMetrics_v1: {
+    parameters: {
+      query: {
+        granularity: components["schemas"]["MetricGranularity"];
+        /** @description The time since which the metrics must be retrieved. */
+        since: string;
+        /** @description The time until which the metrics must be retrieved. */
+        until: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description The user metrics. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["GetUserMetricsResponse"];
+        };
+      };
+    };
+  };
+  CatalogsController_listCatalog_v1: {
     parameters: {
       query: {
         /** @description Whatever the response must arrives with extended information or not. */
@@ -1366,7 +1788,7 @@ export interface operations {
       };
     };
   };
-  CatalogsController_createCatalog: {
+  CatalogsController_createCatalog_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -1390,7 +1812,7 @@ export interface operations {
       };
     };
   };
-  CatalogsController_deleteCatalog: {
+  CatalogsController_deleteCatalog_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -1412,7 +1834,7 @@ export interface operations {
       };
     };
   };
-  CatalogsController_updateCatalog: {
+  CatalogsController_updateCatalog_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -1438,7 +1860,7 @@ export interface operations {
       };
     };
   };
-  CatalogContextsController_insertContextVersion: {
+  CatalogContextsController_insertContextVersion_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -1464,7 +1886,7 @@ export interface operations {
       };
     };
   };
-  CatalogContextsController_deleteContextVersion: {
+  CatalogContextsController_deleteContextVersion_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -1487,7 +1909,7 @@ export interface operations {
       };
     };
   };
-  AuthController_registerUser: {
+  AuthController_registerUser_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -1523,7 +1945,7 @@ export interface operations {
       };
     };
   };
-  AuthController_authenticateUser: {
+  AuthController_authenticateUser_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -1559,7 +1981,7 @@ export interface operations {
       };
     };
   };
-  AuthController_requestValidation: {
+  AuthController_requestValidation_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -1579,7 +2001,7 @@ export interface operations {
       };
     };
   };
-  AuthController_verifyUser: {
+  AuthController_verifyUser_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -1614,7 +2036,7 @@ export interface operations {
       };
     };
   };
-  AuthController_checkUser: {
+  AuthController_checkUser_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -1639,13 +2061,11 @@ export interface operations {
       };
     };
   };
-  TokensController_listTokens: {
+  AuthController_requestResetPassword_v1: {
     parameters: {
       query: {
-        /** @description The previous query last item id. */
-        lastId?: number;
-        /** @description The limit of the page. */
-        size: number;
+        /** @description The user's email. */
+        email: string;
       };
       header?: never;
       path?: never;
@@ -1653,55 +2073,6 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description The created tokens. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ListTokensResponse"];
-        };
-      };
-    };
-  };
-  TokensController_createToken: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateTokenBody"];
-      };
-    };
-    responses: {
-      /** @description The created token. */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Token"];
-        };
-      };
-    };
-  };
-  TokensController_deleteToken: {
-    parameters: {
-      query: {
-        tokenId: number;
-      };
-      header?: never;
-      path: {
-        tokenId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Wathever the token was deleted or not. */
       200: {
         headers: {
           [name: string]: unknown;
@@ -1710,9 +2081,44 @@ export interface operations {
           "application/json": components["schemas"]["GenericResponse"];
         };
       };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
     };
   };
-  McpController_listInformation: {
+  AuthController_resetPassword_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ResetPasswordBody"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["GenericResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  McpController_listInformation_v1: {
     parameters: {
       query: {
         /** @description The catalog slug. */
@@ -1735,7 +2141,7 @@ export interface operations {
       };
     };
   };
-  McpController_listPrompts: {
+  McpController_listPrompts_v1: {
     parameters: {
       query: {
         /** @description The catalog slug. */
@@ -1758,7 +2164,7 @@ export interface operations {
       };
     };
   };
-  McpController_listTools: {
+  McpController_listTools_v1: {
     parameters: {
       query: {
         /** @description The catalog slug. */
@@ -1781,7 +2187,7 @@ export interface operations {
       };
     };
   };
-  McpController_listResources: {
+  McpController_listResources_v1: {
     parameters: {
       query: {
         /** @description The catalog slug. */
@@ -1804,7 +2210,7 @@ export interface operations {
       };
     };
   };
-  McpController_readResource: {
+  McpController_readResource_v1: {
     parameters: {
       query: {
         /** @description The catalog slug. */
@@ -1836,7 +2242,7 @@ export interface operations {
       };
     };
   };
-  McpController_downloadContext: {
+  McpController_downloadContext_v1: {
     parameters: {
       query?: never;
       header?: never;

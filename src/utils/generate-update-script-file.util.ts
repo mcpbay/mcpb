@@ -1,4 +1,4 @@
-import { fileExists } from "./file-exists.util.ts";
+import { exists } from "./exists.util.ts";
 import { getCurrentExecutableDirPath } from "./get-current-executable-dir-path.util.ts";
 import { getOs, OSType } from "./get-os.util.ts";
 
@@ -247,7 +247,7 @@ export function getScriptData() {
 export function clearUpdateScriptFile() {
   const { path } = getScriptData();
 
-  if (fileExists(path)) {
+  if (exists(path)) {
     try {
       Deno.removeSync(path);
     } catch {}

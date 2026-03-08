@@ -1,23 +1,32 @@
-import { addCommand } from "../commands/add.command.ts";
-import { CONTEXT_MODULES_PATH } from "../constants/context-modules-path.constant.ts";
-import { existsSync } from "@std/fs";
 import { ContextVersion } from "../types/context-version.type.ts";
-import { loadOrCreateConfigFile } from "./load-or-create-config-file.util.ts";
+import { downloadAndInstallContextBySlug } from "./download-and-install-context-by-slug.util.ts";
+import { exists } from "./exists.util.ts";
+import { writeLog } from "./write-log.util.ts";
+import { getDirname } from "./get-dirname.util.ts";
+import { readJsonFromFile } from "./read-json-from-file.util.ts";
+
+export interface ILoadContextOptions {
+  configPath: string;
+}
 
 export async function loadContext(
   context: string,
   version: string,
+  options: ILoadContextOptions,
 ) {
-  const config = loadOrCreateConfigFile();
-  const contextModulesPath = config.contextModulesPath ?? CONTEXT_MODULES_PATH;
+  writeLog("loadContext");
+  const cwd = getDirname(options.configPath);
+  const contextModulesPath = `${cwd}/context_modules`;
   const contextPath = `${contextModulesPath}/${context}/${version}.json`;
+  writeLog({ contextModulesPath, contextPath });
 
-  if (!existsSync(contextPath)) {
-    await addCommand(`${context}@${version}`, {});
+  if (!exists(contextPath)) {
+    await downloadAndInstallContextBySlug(`${context}@${version}`, {
+      silent: true,
+      configPath: options.configPath,
+      contextModulesPath,
+    });
   }
 
-  const contextJson = Deno.readTextFileSync(contextPath);
-  const contextObject = JSON.parse(contextJson);
-
-  return contextObject as ContextVersion;
+  return readJsonFromFile<ContextVersion>(contextPath);
 }
