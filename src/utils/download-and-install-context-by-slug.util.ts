@@ -2,7 +2,7 @@ import { IMcpPackage } from "../interfaces/mcp-package.interface.ts";
 import { ToolLocalScriptStrategyConfig } from "../types/tool-local-script-strategy-config.type.ts";
 import { crashIfNot } from "./crash-if-not.util.ts";
 import { downloadContext } from "./download-context.util.ts";
-import { fileExists } from "./file-exists.util.ts";
+import { exists } from "./exists.util.ts";
 import { loadConfigFile } from "./load-config-file.util.ts";
 import { saveConfiFile } from "./save-config-file.util.ts";
 import { saveContext } from "./save-context.util.ts";
@@ -13,6 +13,7 @@ export interface IDownloadAndInstallContextBySlugOptions {
   contextModulesPath: string;
   silent?: boolean;
   config?: IMcpPackage;
+  force?: boolean;
 }
 
 export interface IDownloadAndInstallContextBySlugResponse {
@@ -25,7 +26,7 @@ export async function downloadAndInstallContextBySlug(
 ): Promise<IDownloadAndInstallContextBySlugResponse> {
   writeLog("downloadAndInstallContextBySlug");
   writeLog(options);
-  const { contextModulesPath } = options;
+  const { contextModulesPath, force } = options;
   const config = options.config ?? loadConfigFile(options.configPath);
   const slugContainsVersion = slug.includes("@");
   let contextSlug = [slug];
@@ -64,7 +65,7 @@ export async function downloadAndInstallContextBySlug(
     return { hasTypeScriptScripts: false };
   }
 
-  if (!fileExists(contextModulesPath)) {
+  if (!exists(contextModulesPath, true)) {
     Deno.mkdirSync(contextModulesPath);
   }
 
@@ -75,13 +76,14 @@ export async function downloadAndInstallContextBySlug(
 
   config.imports[contextSlug[0]] = contextVersion.version;
 
-  if (fileExists(contextFolderPath)) {
-    if (fileExists(contextVersionPath)) {
+  if (exists(contextFolderPath, true)) {
+    if (exists(contextVersionPath) && !force) {
       log(`Context "${slug}" already exists.`);
       // TODO: Alex: Check in the `contextVersionPath` if there's some script.
       return { hasTypeScriptScripts: false };
     }
 
+    log(`Context "${slug}" added successfully.`);
     saveContext(contextVersion, contextVersionPath);
   } else {
     Deno.mkdirSync(contextFolderPath);

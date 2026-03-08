@@ -1,5 +1,5 @@
 import { expandTilde } from "../utils/expand-tilde.util.ts";
-import { fileExists } from "../utils/file-exists.util.ts";
+import { exists } from "../utils/exists.util.ts";
 import { readJsonFromFile } from "../utils/read-json-from-file.util.ts";
 import { writeJsonToFile } from "../utils/write-json-to-file.util.ts";
 import { isKebabCase } from "../validators/is-kebab-case.validator.ts";
@@ -34,7 +34,7 @@ export function installMcpCommand(
   }
 
   if (target === InstallMCPTarget.CLAUDE_CODE) {
-    if (!fileExists(CLAUDE_CODE_JSON_PATH)) {
+    if (!exists(CLAUDE_CODE_JSON_PATH)) {
       console.log("ClaudeCode is not installed. Please install it first.");
 
       return;

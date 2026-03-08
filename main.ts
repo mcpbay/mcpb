@@ -20,6 +20,11 @@ const configOption = new Option(
 )
   .default(CONFIG_FILE_PATH);
 
+const forceOption = new Option(
+  "-f, --force",
+  "Forces the action.",
+);
+
 const debugOption = new Option(
   "-d, --debug <path>",
   "Path to the debug file.",
@@ -68,6 +73,7 @@ program
   .command("add <slug>")
   .description("Install a new context.")
   .addOption(configOption)
+  .addOption(forceOption)
   .action(addCommand);
 
 program

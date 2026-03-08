@@ -3,7 +3,7 @@ import { compareVersions } from "../utils/compare-versions.util.ts";
 import { ArchitectureType, getOs, OSType } from "../utils/get-os.util.ts";
 import { generateUpdateScriptFile } from "../utils/generate-update-script-file.util.ts";
 import { getCurrentExecutableDirPath } from "../utils/get-current-executable-dir-path.util.ts";
-import { fileExists } from "../utils/file-exists.util.ts";
+import { exists } from "../utils/exists.util.ts";
 import { sleep } from "../utils/sleep.util.ts";
 import { downloadFileWithProgress } from "../utils/download-file-with-progress.util.ts";
 import * as path from "jsr:@std/path";
@@ -43,7 +43,7 @@ function getUpdateFilePath() {
 
 function isUpdateExecutablePresent() {
   const updateFilePath = getUpdateFilePath();
-  const isUpdateExecutablePresentInDisk = fileExists(updateFilePath);
+  const isUpdateExecutablePresentInDisk = exists(updateFilePath);
 
   return isUpdateExecutablePresentInDisk;
 }
@@ -262,7 +262,7 @@ export async function selfUpdateCommand() {
   }
 
   do {
-    if (fileExists(updateFilePath)) {
+    if (exists(updateFilePath)) {
       writeLog("Update file exists, check version...");
       const updateFileVersion = await getExecutableResponse(updateFilePath, [
         "--version",

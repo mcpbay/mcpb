@@ -1,7 +1,7 @@
 import type { IMcpPackage } from "../interfaces/mcp-package.interface.ts";
 import { CONFIG_FILE_PATH } from "../constants/config-file-path.constant.ts";
 import { loadEnv } from "./load-env.util.ts";
-import { fileExists } from "./file-exists.util.ts";
+import { exists } from "./exists.util.ts";
 import { writeLog } from "./write-log.util.ts";
 import { readJsonFromFile } from "./read-json-from-file.util.ts";
 
@@ -19,7 +19,7 @@ export function loadConfigFile(
   writeLog("loadConfigFile");
 
   const readConfigFileContent = () => {
-    if (fileExists(path)) {
+    if (exists(path)) {
       writeLog(`fileExists(${path})`);
       return readJsonFromFile<IMcpPackage>(path);
     }

@@ -43,6 +43,16 @@ export async function handleLocalScriptStrategy(
     writeLog("workspacePath");
     writeLog(workspacePath);
 
+    crashIfNot(workspacePath !== undefined, {
+      code: INVALID_PARAMS,
+      message: "Missing 'workspacePath' argument.",
+    });
+
+    crashIfNot(!!workspacePath, {
+      code: INVALID_PARAMS,
+      message: "'workspacePath' argument can't be empty.",
+    })
+
     crashIfNot(isValidFileURI(workspacePath), {
       code: INVALID_PARAMS,
       message: "Invalid 'workspacePath' argument.",

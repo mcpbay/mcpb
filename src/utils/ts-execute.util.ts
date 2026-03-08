@@ -78,17 +78,18 @@ if(_mcpb_result !== undefined) {
     stdout: "piped"
   });
 
-  const timer = setTimeout(() => {
-    child.kill("SIGKILL");
-    Deno.removeSync(codeFilePath);
-    throw new Error("Timeout");
-  }, timeout);
-
   const decoder = new TextDecoder();
   const child = command.spawn();
+
+  const timeoutId = setTimeout(() => {
+    try {
+      child.kill("SIGKILL");
+    } catch { }
+  }, timeout);
+
   const { success, stderr, stdout } = await child.output();
 
-  clearTimeout(timer);
+  clearTimeout(timeoutId);
 
   if (!success) {
     Deno.removeSync(codeFilePath);

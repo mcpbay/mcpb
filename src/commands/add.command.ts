@@ -5,7 +5,7 @@ import { UniversalAppChecker } from "../classes/universal-app-checker.class.ts";
 import { getForEveryOS } from "../utils/get-for-every-os.util.ts";
 
 export async function addCommand(source: string, options: Record<string, any>) {
-  const { config: configPath, silent } = options;
+  const { config: configPath, silent, force } = options;
   const config = loadConfigFile(configPath, { create: true });
   const cwd = getDirname(configPath);
   const contextModulesPath = `${cwd}/context_modules`;
@@ -14,6 +14,7 @@ export async function addCommand(source: string, options: Record<string, any>) {
     configPath,
     silent,
     contextModulesPath,
+    force
   });
 
   if (hasTypeScriptScripts) {
