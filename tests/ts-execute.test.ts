@@ -1,5 +1,9 @@
-
-import { assert, assertEquals, assertRejects, assertStringIncludes } from "@std/assert";
+import {
+  assert,
+  assertEquals,
+  assertRejects,
+  assertStringIncludes,
+} from "@std/assert";
 import { tsExecute } from "../src/utils/ts-execute.util.ts";
 
 Deno.test("tsExecute", async (test) => {
@@ -37,7 +41,9 @@ Deno.test("tsExecute", async (test) => {
     const tempFilePath = await Deno.makeTempFile({ suffix: ".txt" });
     await Deno.writeTextFile(tempFilePath, "test content");
 
-    const code = `Deno.readTextFileSync("${tempFilePath.replaceAll("\\", "/")}");`;
+    const code = `Deno.readTextFileSync("${
+      tempFilePath.replaceAll("\\", "/")
+    }");`;
 
     await assertRejects(
       async () => {
@@ -94,7 +100,7 @@ Deno.test("tsExecute", async (test) => {
   });
 
   await test.step("should invoke a function with arguments", async () => {
-    const code = 'function add(a, b) { console.log(a + b); }';
+    const code = "function add(a, b) { console.log(a + b); }";
     const options = {
       cwd: Deno.cwd(),
       permissions: {
@@ -116,7 +122,8 @@ Deno.test("tsExecute", async (test) => {
   });
 
   await test.step("should return the stringified response of the invoked function", async () => {
-    const code = 'function greet(name) { return { message: `Hello, ${name}!` }; }';
+    const code =
+      "function greet(name) { return { message: `Hello, ${name}!` }; }";
     const options = {
       cwd: Deno.cwd(),
       permissions: {
@@ -134,7 +141,10 @@ Deno.test("tsExecute", async (test) => {
 
     const { outMessage } = await tsExecute(code, options);
 
-    assertEquals(outMessage.trim(), JSON.stringify({ message: "Hello, Deno!" }));
+    assertEquals(
+      outMessage.trim(),
+      JSON.stringify({ message: "Hello, Deno!" }),
+    );
   });
 
   // await test.step("should handle timeout", async () => {
@@ -160,7 +170,8 @@ Deno.test("tsExecute", async (test) => {
   // });
 
   await test.step("should allow permitted package imports", async () => {
-    const code = 'const { assert } = await import("jsr:@std/assert"); assert(true); console.log("Import successful");';
+    const code =
+      'const { assert } = await import("jsr:@std/assert"); assert(true); console.log("Import successful");';
     const options = {
       cwd: Deno.cwd(),
       permissions: {
@@ -178,7 +189,8 @@ Deno.test("tsExecute", async (test) => {
   });
 
   await test.step("should disallow non-permitted package imports", async () => {
-    const code = 'const { assert } = import("jsr:@std/assert"); assert(true); console.log("Import successful");';
+    const code =
+      'const { assert } = import("jsr:@std/assert"); assert(true); console.log("Import successful");';
     const options = {
       cwd: Deno.cwd(),
       permissions: {
@@ -195,7 +207,7 @@ Deno.test("tsExecute", async (test) => {
         await tsExecute(code, options);
       },
       Error,
-      "Invalid package import: \"jsr:@std/assert\".",
+      'Invalid package import: "jsr:@std/assert".',
     );
   });
 

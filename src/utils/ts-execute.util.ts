@@ -25,7 +25,9 @@ export async function tsExecute(code: string, options: ITSExecuteOptions) {
   code = code.replaceAll("import(", "_mcpb_import(");
 
   const mcpbImport = `
-const allowedPackages: string[] = ${JSON.stringify(options.permissions.allowedPackages)};
+const allowedPackages: string[] = ${
+    JSON.stringify(options.permissions.allowedPackages)
+  };
 
 function _mcpb_import(_packageName: string) {
   if (!allowedPackages.includes(_packageName)) {
@@ -40,7 +42,9 @@ function _mcpb_import(_packageName: string) {
 
   if (invoke) {
     code += `
-const _mcpb_result = await ${invoke.function}(...${JSON.stringify(invoke.arguments)});
+const _mcpb_result = await ${invoke.function}(...${
+      JSON.stringify(invoke.arguments)
+    });
 
 //if (typeof _mcpb_result !== "object") {
 //  throw new Error("Invalid function result, object expected.");
@@ -75,20 +79,21 @@ if(_mcpb_result !== undefined) {
     // signal: AbortSignal.timeout(timeout),
     stdin: "null",
     stderr: "piped",
-    stdout: "piped"
+    stdout: "piped",
   });
-
-  const timer = setTimeout(() => {
-    child.kill("SIGKILL");
-    Deno.removeSync(codeFilePath);
-    throw new Error("Timeout");
-  }, timeout);
 
   const decoder = new TextDecoder();
   const child = command.spawn();
+
+  const timeoutId = setTimeout(() => {
+    try {
+      child.kill("SIGKILL");
+    } catch {}
+  }, timeout);
+
   const { success, stderr, stdout } = await child.output();
 
-  clearTimeout(timer);
+  clearTimeout(timeoutId);
 
   if (!success) {
     Deno.removeSync(codeFilePath);

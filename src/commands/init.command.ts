@@ -1,6 +1,6 @@
 import { LOAD_CONTEXTS_TOOL_NAME } from "../constants/load-contexts-tool-name.constant.ts";
 import { checkConfigFileExists } from "../utils/check-config-file-exists.util.ts";
-import { fileExists } from "../utils/file-exists.util.ts";
+import { exists } from "../utils/exists.util.ts";
 import { readTextFile } from "../utils/read-text-file.util.ts";
 import { saveConfiFile } from "../utils/save-config-file.util.ts";
 
@@ -28,7 +28,7 @@ function getClaudeMdPath() {
 }
 
 function isMDPresent(mdPath: string) {
-  const isAgentsMdPresent = fileExists(mdPath);
+  const isAgentsMdPresent = exists(mdPath);
 
   return isAgentsMdPresent;
 }

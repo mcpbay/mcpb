@@ -1,6 +1,6 @@
 import { ContextVersion } from "../types/context-version.type.ts";
 import { downloadAndInstallContextBySlug } from "./download-and-install-context-by-slug.util.ts";
-import { fileExists } from "./file-exists.util.ts";
+import { exists } from "./exists.util.ts";
 import { writeLog } from "./write-log.util.ts";
 import { getDirname } from "./get-dirname.util.ts";
 import { readJsonFromFile } from "./read-json-from-file.util.ts";
@@ -20,7 +20,7 @@ export async function loadContext(
   const contextPath = `${contextModulesPath}/${context}/${version}.json`;
   writeLog({ contextModulesPath, contextPath });
 
-  if (!fileExists(contextPath)) {
+  if (!exists(contextPath)) {
     await downloadAndInstallContextBySlug(`${context}@${version}`, {
       silent: true,
       configPath: options.configPath,

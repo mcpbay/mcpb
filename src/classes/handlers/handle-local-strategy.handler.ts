@@ -15,7 +15,7 @@ import { isJson } from "../../validators/is-json.validator.ts";
 import { JsonSchemaMapper } from "../json-schema-mapper.class.ts";
 import { IObjectJsonSchema } from "../../validators/is-object-json-schema.validator.ts";
 import { Role } from "@mcpbay/easy-mcp-server/enums";
-import { fileExists } from "../../utils/file-exists.util.ts";
+import { exists } from "../../utils/exists.util.ts";
 import { basename } from "@std/path/basename";
 import { fileNameToMime } from "../../utils/file-name-to-mime.util.ts";
 
@@ -228,7 +228,7 @@ export async function handleLocalStrategy(
           `EVENT [onClientCallTool] Patched Output File Path: ${patchedOutputFilePath}`,
         );
 
-        crashIfNot(fileExists(patchedOutputFilePath), {
+        crashIfNot(exists(patchedOutputFilePath), {
           code: INTERNAL_ERROR,
           message:
             `Invalid response. expected file does not exists: ${patchedOutputFilePath}.`,
