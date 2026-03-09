@@ -22,8 +22,6 @@
     "@std/path": "jsr:@std/path@^1.1.4",
     "@std/testing": "jsr:@std/testing@^1.0.17",
     "commander": "npm:commander@^14.0.3",
-    "esbuild-wasm": "npm:esbuild-wasm@^0.27.3",
-    "semver": "npm:semver@^7.7.4",
-    "typescript": "npm:typescript@^5.9.3"
+    "semver": "npm:semver@^7.7.4"
   }
 }

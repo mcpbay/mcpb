@@ -16,10 +16,8 @@
     "jsr:@std/path@^1.1.4": "1.1.4",
     "jsr:@std/testing@^1.0.17": "1.0.17",
     "npm:commander@^14.0.3": "14.0.3",
-    "npm:esbuild-wasm@~0.27.3": "0.27.3",
     "npm:semver@*": "7.7.4",
-    "npm:semver@^7.7.4": "7.7.4",
-    "npm:typescript@^5.9.3": "5.9.3"
+    "npm:semver@^7.7.4": "7.7.4"
   },
   "jsr": {
     "@mcpbay/easy-mcp-server@1.2.2": {
@@ -92,16 +90,8 @@
     "commander@14.0.3": {
       "integrity": "sha512-H+y0Jo/T1RZ9qPP4Eh1pkcQcLRglraJaSLoyOtHxu6AapkjWVCy2Sit1QQ4x3Dng8qDlSsZEet7g5Pq06MvTgw=="
     },
-    "esbuild-wasm@0.27.3": {
-      "integrity": "sha512-AUXuOxZ145/5Az+lIqk6TdJbxKTyDGkXMJpTExmBdbnHR6n6qAFx+F4oG9ORpVYJ9dQYeQAqzv51TO4DFKsbXw==",
-      "bin": true
-    },
     "semver@7.7.4": {
       "integrity": "sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==",
-      "bin": true
-    },
-    "typescript@5.9.3": {
-      "integrity": "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==",
       "bin": true
     }
   },
@@ -230,9 +220,7 @@
       "jsr:@std/path@^1.1.4",
       "jsr:@std/testing@^1.0.17",
       "npm:commander@^14.0.3",
-      "npm:esbuild-wasm@~0.27.3",
-      "npm:semver@^7.7.4",
-      "npm:typescript@^5.9.3"
+      "npm:semver@^7.7.4"
     ]
   }
 }
