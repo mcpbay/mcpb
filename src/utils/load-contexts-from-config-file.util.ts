@@ -16,7 +16,7 @@ export async function loadContextsFromConfigFile(
   writeLog(config);
 
   for (const [slug, version] of Object.entries(config.imports)) {
-    const context = await loadContext(slug, version, { configPath });
+    const context = (await loadContext(slug, version, { configPath, doNotDownload: true }))!;
 
     contexts.push(context);
   }

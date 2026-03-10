@@ -7,15 +7,12 @@ import { getClaudeMdPath } from "../utils/get-claude-md-path.util.ts";
 import { saveConfiFile } from "../utils/save-config-file.util.ts";
 
 const DEFAULT_AGENTS_MD_CONTENT = `
-## CRITICAL MCPB MCP guidelines
-
 Before any task you will perform execute the following guidelines:
 1. Always check the tools before start your tasks, MCPBay has a required tool to execute before each task, it is called \`${LOAD_CONTEXTS_TOOL_NAME}\`.
 2. Always check the resources description to check if you need to read some of them for the task.
 `.trim();
 
 const CLAUDE_MD_REQUIRED_PROMPT_CONTENT = `
-## MCPB MCP guidelines
 - Read the \`AGENTS.md\` file and follow its instructions.
 `.trim();
 
@@ -33,7 +30,7 @@ export function initCommand(options: Record<string, unknown>) {
   const mdManager = new MdManager(agentsMdPath);
 
   mdManager.creteIfNotExists().updateOrCreateSection(
-    "CRITICAL MCPB MCP guidelines",
+    "CRITICAL MCPB MCP GUIDELINES",
     DEFAULT_AGENTS_MD_CONTENT,
     {
       onCreated: (section) => console.log(`Section '${section.title}' added to 'AGENTS.md' file.`),
