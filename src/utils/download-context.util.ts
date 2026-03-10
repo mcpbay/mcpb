@@ -9,7 +9,7 @@ export async function downloadContext(
     method: "GET",
   };
 
-  const host = Deno.env.get("API_HOST") ?? "https://papi.mcpbay.io/v1";
+  const host = Deno.env.get("API_HOST") ?? "https://papi.mcpbay.io";
   const request = await fetch(`${host}/mcp/download/${slug}`, init);
 
   if (!request.ok) {

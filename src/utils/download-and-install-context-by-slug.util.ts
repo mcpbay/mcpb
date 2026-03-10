@@ -115,14 +115,13 @@ export async function downloadAndInstallContextBySlug(
   const contextVersion =
     await downloadContext(fullSlug);
 
+  log(`Context ${fullSlug} downloaded successfully.`);
 
   if (!contextVersion) {
     console.error(`Error downloading context version.`);
     console.error(JSON.stringify(contextVersion));
 
     return { hasTypeScriptScripts: false };
-  } else {
-    log(`Context ${fullSlug} downloaded successfully.`);
   }
 
   if (!exists(contextModulesPath, true)) {
