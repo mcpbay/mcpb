@@ -35,7 +35,7 @@ function normalizeSlug(slug: string) {
     crashIfNot(_slug, "Invalid slug: empty slug.");
     crashIfNot(version, "Invalid slug version: empty version.");
 
-    contextSlug = { slug: _slug, version, fullSlug: `${slug}@${version}` };
+    contextSlug = { slug: _slug, version, fullSlug: `${_slug}@${version}` };
   }
 
   return contextSlug;
@@ -88,6 +88,7 @@ export async function downloadAndInstallContextBySlug(
 
       if (comparison === 0) {
         log(`Context "${slug}" already exists.`);
+        log(`Use \`mcpb add ${fullSlug} --force\` to force the context installation.`);
 
         const contextVersion =
           await loadContext(slug, realVersion, { configPath: options.configPath, doNotDownload: true });
@@ -102,7 +103,7 @@ export async function downloadAndInstallContextBySlug(
         return { hasTypeScriptScripts };
       } else if (comparison < 0) {
         log(`Context "${fullSlug}" is out of date.`);
-        log(`Please use \`mcpb add ${fullSlug} --force\` to force the context installation.`);
+        log(`Use \`mcpb add ${fullSlug} --force\` to force the context installation.`);
 
         return { hasTypeScriptScripts: false };
       }
@@ -134,6 +135,7 @@ export async function downloadAndInstallContextBySlug(
   if (exists(contextFolderPath, true)) {
     if (exists(contextVersionPath) && !force) {
       log(`Context "${slug}" already exists.`);
+      log(`Use \`mcpb add ${fullSlug} --force\` to force the context installation.`);
       const hasTypeScriptScripts = checkToolScripts(contextVersion);
       return { hasTypeScriptScripts: hasTypeScriptScripts };
     }
@@ -159,7 +161,7 @@ export async function downloadAndInstallContextBySlug(
     if (isContextPresent) {
       log(`Previous prompt found for context '${slug}'. Updating it...`);
     } else {
-      log(`Injecting '${fullSlug} prompt into 'AGENTS.md' file.`);
+      log(`Injecting '${fullSlug}' prompt into 'AGENTS.md' file.`);
     }
 
     mdManager.updateOrCreateSection(
