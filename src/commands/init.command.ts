@@ -1,31 +1,20 @@
+import { MdManager } from "../classes/md-manager.class.ts";
 import { LOAD_CONTEXTS_TOOL_NAME } from "../constants/load-contexts-tool-name.constant.ts";
 import { checkConfigFileExists } from "../utils/check-config-file-exists.util.ts";
 import { exists } from "../utils/exists.util.ts";
-import { readTextFile } from "../utils/read-text-file.util.ts";
+import { getAgentsMdPath } from "../utils/get-agents-md-path.util.ts";
+import { getClaudeMdPath } from "../utils/get-claude-md-path.util.ts";
 import { saveConfiFile } from "../utils/save-config-file.util.ts";
 
 const DEFAULT_AGENTS_MD_CONTENT = `
-## CRITICAL MCPB MCP guidelines
-
 Before any task you will perform execute the following guidelines:
 1. Always check the tools before start your tasks, MCPBay has a required tool to execute before each task, it is called \`${LOAD_CONTEXTS_TOOL_NAME}\`.
 2. Always check the resources description to check if you need to read some of them for the task.
 `.trim();
 
 const CLAUDE_MD_REQUIRED_PROMPT_CONTENT = `
-## MCPB MCP guidelines
 - Read the \`AGENTS.md\` file and follow its instructions.
 `.trim();
-
-function getAgentsMdPath() {
-  const cwd = Deno.cwd();
-  return `${cwd}/AGENTS.md`;
-}
-
-function getClaudeMdPath() {
-  const cwd = Deno.cwd();
-  return `${cwd}/CLAUDE.md`;
-}
 
 function isMDPresent(mdPath: string) {
   const isAgentsMdPresent = exists(mdPath);
@@ -33,46 +22,35 @@ function isMDPresent(mdPath: string) {
   return isAgentsMdPresent;
 }
 
-function injectMdContent(filePath: string, fileName: string, content: string) {
-  const agentsContent = readTextFile(filePath).trim();
-
-  if (agentsContent.includes(content)) {
-    console.log(
-      `${fileName} already contains the required MCPB prompt to work correctly.`,
-    );
-
-    return;
-  }
-
-  const updatedContent = (() => {
-    if (!agentsContent) {
-      return content;
-    }
-
-    return `${agentsContent}\n\n${content}`;
-  })();
-
-  Deno.writeTextFileSync(filePath, updatedContent);
-  console.log(`${fileName} updated and required prompt content added.`);
-}
-
 export function initCommand(options: Record<string, unknown>) {
   const withClaude = "withClaude" in options;
   const agentsMdPath = getAgentsMdPath();
   const claudeMdPath = getClaudeMdPath();
   const isClaudeMdPresent = isMDPresent(claudeMdPath);
+  const mdManager = new MdManager(agentsMdPath);
+
+  mdManager.creteIfNotExists().updateOrCreateSection(
+    "CRITICAL MCPB MCP GUIDELINES",
+    DEFAULT_AGENTS_MD_CONTENT,
+    {
+      onCreated: (section) => console.log(`Section '${section.title}' added to 'AGENTS.md' file.`),
+      onSameContent: (section) => console.log(`Section '${section.title}' in 'AGENTS.md' already contains the required prompt to work correctly.`),
+      onUpdated: (section) => console.log(`Section '${section.title}' in 'AGENTS.md' updated and required prompt content added.`),
+    }
+  );
 
   if (withClaude) {
-    if (isClaudeMdPresent) {
-      injectMdContent(
-        claudeMdPath,
-        "CLAUDE.md",
-        CLAUDE_MD_REQUIRED_PROMPT_CONTENT,
-      );
-    } else {
-      Deno.writeTextFileSync(claudeMdPath, CLAUDE_MD_REQUIRED_PROMPT_CONTENT);
-      console.log("CLAUDE.md created and required prompt content added.");
-    }
+    const mdManager = new MdManager(claudeMdPath);
+
+    mdManager.creteIfNotExists().updateOrCreateSection(
+      "CRITICAL MCPB MCP GUIDELINES",
+      CLAUDE_MD_REQUIRED_PROMPT_CONTENT,
+      {
+        onCreated: (section) => console.log(`Section '${section.title}' added to 'CLAUDE.md' file.`),
+        onSameContent: (section) => console.log(`Section '${section.title}' in 'CLAUDE.md' already contains the required prompt to work correctly.`),
+        onUpdated: (section) => console.log(`Section '${section.title}' in 'CLAUDE.md' updated and required prompt content added.`),
+      }
+    );
   } else {
     if (isClaudeMdPresent) {
       console.log("CLAUDE.md file detected!");
@@ -81,13 +59,6 @@ export function initCommand(options: Record<string, unknown>) {
       );
       console.log("");
     }
-  }
-
-  if (isMDPresent(agentsMdPath)) {
-    injectMdContent(agentsMdPath, "AGENTS.md", DEFAULT_AGENTS_MD_CONTENT);
-  } else {
-    Deno.writeTextFileSync(agentsMdPath, DEFAULT_AGENTS_MD_CONTENT);
-    console.log("AGENTS.md created and required prompt content added.");
   }
 
   try {
