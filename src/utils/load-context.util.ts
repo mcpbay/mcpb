@@ -7,6 +7,7 @@ import { readJsonFromFile } from "./read-json-from-file.util.ts";
 
 export interface ILoadContextOptions {
   configPath: string;
+  doNotDownload: boolean;
 }
 
 export async function loadContext(
@@ -21,6 +22,10 @@ export async function loadContext(
   writeLog({ contextModulesPath, contextPath });
 
   if (!exists(contextPath)) {
+    if (options.doNotDownload) {
+      return;
+    }
+
     await downloadAndInstallContextBySlug(`${context}@${version}`, {
       silent: true,
       configPath: options.configPath,

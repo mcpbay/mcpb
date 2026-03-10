@@ -4,2264 +4,2292 @@
  */
 
 export interface paths {
-  "/v1/contexts": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/contexts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieves user's contexts. */
+        get: operations["ContextsController_listContexts_v1"];
+        put?: never;
+        /** Creates a new context. */
+        post: operations["ContextsController_createContext_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Retrieves user's contexts. */
-    get: operations["ContextsController_listContexts_v1"];
-    put?: never;
-    /** Creates a new context. */
-    post: operations["ContextsController_createContext_v1"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/contexts/{contextId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/contexts/{contextId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieves an specific context. */
+        get: operations["ContextsController_getContext_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Retrieves an specific context. */
+        patch: operations["ContextsController_updateContext_v1"];
+        trace?: never;
     };
-    /** Retrieves an specific context. */
-    get: operations["ContextsController_getContext_v1"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** Retrieves an specific context. */
-    patch: operations["ContextsController_updateContext_v1"];
-    trace?: never;
-  };
-  "/v1/marketplace": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/marketplace": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Returns a list of contexts to display in the marketplace section. */
+        get: operations["MarketplaceController_listMarketplaceItems_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Returns a list of contexts to display in the marketplace section. */
-    get: operations["MarketplaceController_listMarketplaceItems_v1"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/marketplace/{slugId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/marketplace/{slugId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Returns the context information with the current version content. */
+        get: operations["MarketplaceController_getMarketplaceContextBySlug_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Returns the context information with the current version content. */
-    get: operations["MarketplaceController_getMarketplaceContextBySlug_v1"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/contexts/{contextId}/context-versions": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/contexts/{contextId}/context-versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieves a list of context versions within a context. */
+        get: operations["ContextVersionsController_listContextVersions_v1"];
+        put?: never;
+        /** Creates a new context version within a context. */
+        post: operations["ContextVersionsController_createContextVersion_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Retrieves a list of context versions within a context. */
-    get: operations["ContextVersionsController_listContextVersions_v1"];
-    put?: never;
-    /** Creates a new context version within a context. */
-    post: operations["ContextVersionsController_createContextVersion_v1"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/contexts/{contextId}/context-versions/{contextVersionId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/contexts/{contextId}/context-versions/{contextVersionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Deletes a context version. */
+        delete: operations["ContextVersionsController_deleteContextVersion_v1"];
+        options?: never;
+        head?: never;
+        /** Updates a context version. */
+        patch: operations["ContextVersionsController_updateContextVersion_v1"];
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Deletes a context version. */
-    delete: operations["ContextVersionsController_deleteContextVersion_v1"];
-    options?: never;
-    head?: never;
-    /** Updates a context version. */
-    patch: operations["ContextVersionsController_updateContextVersion_v1"];
-    trace?: never;
-  };
-  "/v1/contexts/{contextId}/context-versions/{contextVersionId}/metrics": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/contexts/{contextId}/context-versions/{contextVersionId}/metrics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ContextVersionsController_getContextVersionMetrics_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["ContextVersionsController_getContextVersionMetrics_v1"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/tokens": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/tokens": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieves the user tokens. */
+        get: operations["TokensController_listTokens_v1"];
+        put?: never;
+        /** Creates a new token. */
+        post: operations["TokensController_createToken_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Retrieves the user tokens. */
-    get: operations["TokensController_listTokens_v1"];
-    put?: never;
-    /** Creates a new token. */
-    post: operations["TokensController_createToken_v1"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/tokens/{tokenId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/tokens/{tokenId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Deletes a token. */
+        delete: operations["TokensController_deleteToken_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Deletes a token. */
-    delete: operations["TokensController_deleteToken_v1"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/metrics": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/metrics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["MetricsController_getUserMetrics_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["MetricsController_getUserMetrics_v1"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/catalogs": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/catalogs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List all user's catalog. */
+        get: operations["CatalogsController_listCatalog_v1"];
+        put?: never;
+        /** Creates a new catalog. */
+        post: operations["CatalogsController_createCatalog_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** List all user's catalog. */
-    get: operations["CatalogsController_listCatalog_v1"];
-    put?: never;
-    /** Creates a new catalog. */
-    post: operations["CatalogsController_createCatalog_v1"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/catalogs/{catalogId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/catalogs/{catalogId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Deletes a catalog. */
+        delete: operations["CatalogsController_deleteCatalog_v1"];
+        options?: never;
+        head?: never;
+        /** Updates a catalog. */
+        patch: operations["CatalogsController_updateCatalog_v1"];
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Deletes a catalog. */
-    delete: operations["CatalogsController_deleteCatalog_v1"];
-    options?: never;
-    head?: never;
-    /** Updates a catalog. */
-    patch: operations["CatalogsController_updateCatalog_v1"];
-    trace?: never;
-  };
-  "/v1/catalogs/{catalogId}/contexts-versions": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/catalogs/{catalogId}/contexts-versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Inserts a context version in a catalog. */
+        post: operations["CatalogContextsController_insertContextVersion_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Inserts a context version in a catalog. */
-    post: operations["CatalogContextsController_insertContextVersion_v1"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/catalogs/{catalogId}/contexts-versions/{contextVersionId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/catalogs/{catalogId}/contexts-versions/{contextVersionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Removes a context version from a catalog. */
+        delete: operations["CatalogContextsController_deleteContextVersion_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Removes a context version from a catalog. */
-    delete: operations["CatalogContextsController_deleteContextVersion_v1"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/auth/sign-up": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/auth/sign-up": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Register a new user account. */
+        post: operations["AuthController_registerUser_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Register a new user account. */
-    post: operations["AuthController_registerUser_v1"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/auth/sign-in": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/auth/sign-in": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Authenticate a user account. */
+        post: operations["AuthController_authenticateUser_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Authenticate a user account. */
-    post: operations["AuthController_authenticateUser_v1"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/auth/request-validation": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/auth/request-validation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Request validation for an account. */
+        post: operations["AuthController_requestValidation_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Request validation for an account. */
-    post: operations["AuthController_requestValidation_v1"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/auth/verify": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/auth/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Verify an account. */
+        post: operations["AuthController_verifyUser_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Verify an account. */
-    post: operations["AuthController_verifyUser_v1"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/auth/check": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/auth/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Check if the user is authenticated. */
+        get: operations["AuthController_checkUser_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Check if the user is authenticated. */
-    get: operations["AuthController_checkUser_v1"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/auth/request-reset-password": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/auth/request-reset-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Requests a recover an account by resetting the password. */
+        get: operations["AuthController_requestResetPassword_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Requests a recover an account by resetting the password. */
-    get: operations["AuthController_requestResetPassword_v1"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/auth/reset-password": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/auth/reset-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Resets a user password. */
+        post: operations["AuthController_resetPassword_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Resets a user password. */
-    post: operations["AuthController_resetPassword_v1"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/mcp/information": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/auth/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Refreshes the access token. */
+        post: operations["AuthController_refresh_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Returns the catalog information. */
-    get: operations["McpController_listInformation_v1"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/mcp/prompts": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/mcp/information": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Returns the catalog information. */
+        get: operations["McpController_listInformation_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get a list of prompts of a catalog. */
-    get: operations["McpController_listPrompts_v1"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/mcp/tools": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/mcp/prompts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a list of prompts of a catalog. */
+        get: operations["McpController_listPrompts_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get a list of tools of a catalog. */
-    get: operations["McpController_listTools_v1"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/mcp/resources": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/mcp/tools": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a list of tools of a catalog. */
+        get: operations["McpController_listTools_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get a list of resources of a catalog. */
-    get: operations["McpController_listResources_v1"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/mcp/resources/{resourceId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/mcp/resources": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a list of resources of a catalog. */
+        get: operations["McpController_listResources_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Returns the full content of a resource. */
-    get: operations["McpController_readResource_v1"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/v1/mcp/download/{slugId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/mcp/resources/{resourceId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Returns the full content of a resource. */
+        get: operations["McpController_readResource_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Returns the full content of a context version. */
-    get: operations["McpController_downloadContext_v1"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+    "/v1/mcp/download/{slugId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Returns the full content of a context version. */
+        get: operations["McpController_downloadContext_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    /**
-     * @description The type of the context.
-     * @enum {string}
-     */
-    ContextType: "public" | "private";
-    CreateContextBody: {
-      /** @description The name of the context. */
-      name: string;
-      /** @description The description of the context. */
-      description: string;
-      /** @description The slug of the context. */
-      slug: string;
-      /** @description The type of the context. */
-      type: components["schemas"]["ContextType"];
+    schemas: {
+        /**
+         * @description The type of the context.
+         * @enum {string}
+         */
+        ContextType: "public" | "private";
+        CreateContextBody: {
+            /** @description The name of the context. */
+            name: string;
+            /** @description The description of the context. */
+            description: string;
+            /** @description The slug of the context. */
+            slug: string;
+            /** @description The type of the context. */
+            type: components["schemas"]["ContextType"];
+        };
+        Context: {
+            /** @description The id of the entity. */
+            id: number;
+            /**
+             * Format: date-time
+             * @description The creation date of the entity.
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description The update date of the entity.
+             */
+            updatedAt: string;
+            /** @description The name of the context. */
+            name: string;
+            /** @description The description of the context. */
+            description: string;
+            /** @description The slug of the context. */
+            slug: string;
+            /** @description The type of the context. */
+            type: components["schemas"]["ContextType"];
+        };
+        ListContextsResponse: {
+            /** @description The contexts. */
+            items: components["schemas"]["Context"][];
+            /** @description Whether there are more contexts. */
+            hasMore: boolean;
+            /** @description The next page url. */
+            nextUrl?: string;
+        };
+        UpdateContextBody: {
+            /** @description The name of the context. */
+            name: string;
+            /** @description The description of the context. */
+            description: string;
+        };
+        PromptArgument: {
+            /** @description The name of the argument. */
+            name: string;
+            /** @description The description of the argument. */
+            description?: string;
+            /**
+             * @description The required status of the argument.
+             * @default false
+             */
+            required: boolean;
+        };
+        MarketplaceContextVersionPrompt: {
+            /** @description The name of the prompt. */
+            name: string;
+            /** @description The title of the prompt. */
+            title: string;
+            /** @description The description of the prompt. */
+            description: string;
+            /** @description The arguments of the prompt. */
+            arguments: components["schemas"]["PromptArgument"][];
+        };
+        MarketplaceContextVersionResource: {
+            /** @description The uri of the resource. */
+            uri: string;
+            /** @description The name of the resource. */
+            name: string;
+            /** @description The title of the resource. */
+            title: string;
+            /** @description The description of the resource. */
+            description: string;
+            /** @description The mime type of the resource. */
+            mimeType: string;
+            /**
+             * @description The size of the resource.
+             * @default null
+             */
+            size: number | null;
+            /** @description The id of the resource. UUID. */
+            id: string;
+        };
+        MarketplaceContextVersionTool: {
+            /** @description The tool's name. */
+            name: string;
+            /** @description The title of the tool, human readable. For display purposes. */
+            title: string;
+            /** @description The description of the resource, human readable. */
+            description: string;
+            /** @description The id of the resource. UUID. */
+            id: string;
+        };
+        MarketplaceContextVersion: {
+            /** @description The id of the entity. */
+            id: number;
+            /** @description The version of the context version. */
+            version: string;
+            /**
+             * @description The description of the context version.
+             * @default null
+             */
+            description: string | null;
+            /** @description The prompts of the context version. */
+            prompts: components["schemas"]["MarketplaceContextVersionPrompt"][];
+            /** @description The resources of the context version. */
+            resources: components["schemas"]["MarketplaceContextVersionResource"][];
+            /** @description The tools of the context version. */
+            tools: components["schemas"]["MarketplaceContextVersionTool"][];
+        };
+        MarketplaceContext: {
+            /** @description The id of the entity. */
+            id: number;
+            /**
+             * Format: date-time
+             * @description The creation date of the entity.
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description The update date of the entity.
+             */
+            updatedAt: string;
+            /** @description The name of the context. */
+            name: string;
+            /** @description The description of the context. */
+            description: string;
+            /** @description The slug of the context. */
+            slug: string;
+            /** @description The type of the context. */
+            type: components["schemas"]["ContextType"];
+            /** @description The versions of the context. */
+            contextVersions: components["schemas"]["MarketplaceContextVersion"][];
+        };
+        ListMarketplaceItemsResponse: {
+            /** @description The marketplace contexts. */
+            items: components["schemas"]["MarketplaceContext"][];
+            /** @description Whether there are more marketplace contexts. */
+            hasMore: boolean;
+            /** @description The next page url. */
+            nextUrl?: string;
+        };
+        /**
+         * @description The status of the context version.
+         * @enum {string}
+         */
+        ContextVersionStatus: "draft" | "internal" | "published" | "archived";
+        /**
+         * @description The content of the message.
+         * @enum {string}
+         */
+        MessageRole: "user" | "assistant";
+        /**
+         * @description The content of the message.
+         * @enum {string}
+         */
+        PromptMessageContentType: "text" | "image" | "audio" | "resource" | "webhook";
+        PromptMessageContent: {
+            /** @description The content of the message. */
+            type: components["schemas"]["PromptMessageContentType"];
+            /** @description The content of the message, only use if `type` is `PromptMessageContentType.TEXT`. */
+            text?: string;
+            /** @description The url the prompt will use to generate the content of the message, only use if `type` is `PromptMessageContentType.WEBHOOK`. */
+            url?: string;
+            /** @description The mime type of the `data` member, only use if `type` is not `PromptMessageContentType.TEXT`. */
+            mimeType?: string;
+            /** @description The content of the message, only use if `type` is not `PromptMessageContentType.TEXT`. For images and audios, the base64 encoded data. */
+            data?: string;
+        };
+        PromptMessage: {
+            /** @description The content of the message. */
+            role: components["schemas"]["MessageRole"];
+            /** @description The content of the message. */
+            content: components["schemas"]["PromptMessageContent"];
+            /**
+             * @description The description of the message.
+             * @default null
+             */
+            description: string | null;
+        };
+        Prompt: {
+            /** @description The name of the prompt. */
+            name: string;
+            /** @description The title of the prompt. */
+            title: string;
+            /** @description The description of the prompt. */
+            description: string;
+            /** @description The arguments of the prompt. */
+            arguments: components["schemas"]["PromptArgument"][];
+            /** @description The messages of the prompt. */
+            messages: components["schemas"]["PromptMessage"][];
+        };
+        ResourceAnnotation: {
+            /**
+             * @description The role of the audience.
+             * @default null
+             */
+            audience: components["schemas"]["MessageRole"][] | null;
+            /**
+             * @description The priority of the audience.
+             * @default null
+             */
+            priority: number | null;
+            /**
+             * @description The last modified of the resource.
+             * @default null
+             */
+            lastModified: string | null;
+        };
+        Resource: {
+            /** @description The uri of the resource. */
+            uri: string;
+            /** @description The name of the resource. */
+            name: string;
+            /** @description The title of the resource. */
+            title: string;
+            /** @description The description of the resource. */
+            description: string;
+            /** @description The mime type of the resource. */
+            mimeType: string;
+            /**
+             * @description The size of the resource.
+             * @default null
+             */
+            size: number | null;
+            /**
+             * @description The text of the resource. Only for text/markdown or text mime types. Ups to 5MB.
+             * @default null
+             */
+            text: string | null;
+            /**
+             * @description The blob of the resource. Only for binary files, it must be base64 encoded.
+             * @default null
+             */
+            blob: string | null;
+            /**
+             * @description The annotations of the resource.
+             * @default null
+             */
+            annotations: components["schemas"]["ResourceAnnotation"] | null;
+            /** @description The id of the resource. UUID. */
+            id: string;
+        };
+        /**
+         * @description The placeholders to use for the execution strategy.
+         * @enum {string}
+         */
+        ToolLocalWorkingDirectoryType: "temp" | "workspace" | "repo_root" | "cwd" | "project_root";
+        /**
+         * @description The operating system to use for the execution strategy.
+         * @enum {string}
+         */
+        ToolLocalOs: "darwin" | "linux" | "windows";
+        /**
+         * @description The shell to use for the execution strategy.
+         * @enum {string}
+         */
+        ToolLocalShellType: "bash" | "powershell" | "cmd" | "zsh" | "sh";
+        ToolStrategyLocalEnvironment: {
+            /** @description The operating system to use for the execution strategy. */
+            os: components["schemas"]["ToolLocalOs"][];
+            /** @description The shell to use for the execution strategy. */
+            shell: components["schemas"]["ToolLocalShellType"];
+            /** @description The required applications to use for the execution strategy. */
+            requires: string[];
+        };
+        /**
+         * @description The format the response must be in to be considered successful.
+         * @enum {string}
+         */
+        ToolLocalOutputFormat: "raw" | "json" | "csv" | "file";
+        ToolStrategyLocalSuccessCriteria: {
+            /**
+             * @description The exit code the tool must return to be considered successful.
+             * @default null
+             */
+            exitCode: number | null;
+            /**
+             * @description The patterns the response must match to be considered successful.
+             * @default null
+             */
+            responseMatches: string[] | null;
+            /**
+             * @description The format the response must be in to be considered successful.
+             * @default null
+             */
+            outputFormat: components["schemas"]["ToolLocalOutputFormat"] | null;
+            /**
+             * @description The output file path the response must be in to be considered successful. Only use it if `outputFormat` is `ToolLocalOutputFormat.FILE`.
+             * @default null
+             */
+            outputFilePath: string | null;
+        };
+        ToolStrategyLocalConfig: {
+            /** @description The tags this strategy belongs to. */
+            tags: string[];
+            /** @description The tags must be invalidated when this strategy succeeds. */
+            invalidateTags: string[];
+            /** @description The maximum output size to use for the execution strategy. */
+            maxOutputSize: number;
+            /**
+             * @description Whether the tool is deterministic or not. Default: `false`.
+             * @default false
+             */
+            deterministic: boolean;
+            /** @description The placeholders to use for the execution strategy. */
+            placeholders: components["schemas"]["ToolLocalWorkingDirectoryType"][];
+            /**
+             * @description The output mapping for the execution strategy.
+             * @default null
+             */
+            outputMapping: {
+                [key: string]: string;
+            } | null;
+            /**
+             * @description The timeout to use for the execution strategy. In miliseconds.
+             * @default null
+             */
+            timeout: number | null;
+            /**
+             * @description Whether to run the tool in a shell or not. Default: `false`.
+             * @default false
+             */
+            runInShell: boolean;
+            /** @description The commands to execute the tool. Only use it if `runInShell` is `false`. */
+            commands: string[];
+            /** @description The environment to use for the execution strategy. */
+            environment: components["schemas"]["ToolStrategyLocalEnvironment"];
+            /**
+             * @description The working directory to use for the execution strategy.
+             * @default null
+             */
+            workingDirectory: string | null;
+            /**
+             * @description The success criteria to use for the execution strategy.
+             * @default null
+             */
+            successCriteria: components["schemas"]["ToolStrategyLocalSuccessCriteria"] | null;
+        };
+        ToolStrategyWebhookConfig: {
+            /** @description The webhook url to use for the execution strategy. */
+            url: string;
+        };
+        /**
+         * @description The http method to use in for the request.
+         * @enum {string}
+         */
+        ToolRequestMethod: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+        ToolKeyValue: {
+            /**
+             * @description Whether the header is enabled or not. Default: `true`.
+             * @default true
+             */
+            enabled: boolean;
+            /** @description The key of the header. */
+            key: string;
+            /** @description The value of the header. */
+            value: string;
+        };
+        /**
+         * @description The expected response type. Default: `ToolRequestResponseType.JSON`.
+         * @enum {string}
+         */
+        ToolRequestResponseType: "json" | "xml";
+        ToolRequestStrategyConfig: {
+            /** @description The tags this strategy belongs to. */
+            tags: string[];
+            /** @description The tags must be invalidated when this strategy succeeds. */
+            invalidateTags: string[];
+            /** @description The maximum output size to use for the execution strategy. */
+            maxOutputSize: number;
+            /**
+             * @description Whether the tool is deterministic or not. Default: `false`.
+             * @default false
+             */
+            deterministic: boolean;
+            /** @description The placeholders to use for the execution strategy. */
+            placeholders: components["schemas"]["ToolLocalWorkingDirectoryType"][];
+            /**
+             * @description The output mapping for the execution strategy.
+             * @default null
+             */
+            outputMapping: {
+                [key: string]: string;
+            } | null;
+            /**
+             * @description The timeout to use for the execution strategy. In miliseconds.
+             * @default null
+             */
+            timeout: number | null;
+            /** @description The URL to make the request. */
+            url: string;
+            /** @description The http method to use in for the request. */
+            method: components["schemas"]["ToolRequestMethod"];
+            /** @description The headers to use in the request. */
+            headers: components["schemas"]["ToolKeyValue"][];
+            /**
+             * @description The body to use in the request. Required if `method` is `ToolRequestMethod.POST`, `ToolRequestMethod.PATCH`, or `ToolRequestMethod.PUT`.
+             * @default null
+             */
+            body: {
+                [key: string]: unknown;
+            } | null;
+            /**
+             * @description The query to use in the request. Optional, only used if `method` is `ToolRequestMethod.GET`.
+             * @default null
+             */
+            query: components["schemas"]["ToolKeyValue"][] | null;
+            /**
+             * @description The expected response type. Default: `ToolRequestResponseType.JSON`.
+             * @default json
+             */
+            responseType: components["schemas"]["ToolRequestResponseType"];
+        };
+        /**
+         * @description The language to use for the execution strategy.
+         * @enum {string}
+         */
+        ToolLocalScriptStrategyLanguage: "ts";
+        ToolLocalScriptStrategyConfig: {
+            /** @description The tags this strategy belongs to. */
+            tags: string[];
+            /** @description The tags must be invalidated when this strategy succeeds. */
+            invalidateTags: string[];
+            /** @description The maximum output size to use for the execution strategy. */
+            maxOutputSize: number;
+            /**
+             * @description Whether the tool is deterministic or not. Default: `false`.
+             * @default false
+             */
+            deterministic: boolean;
+            /** @description The placeholders to use for the execution strategy. */
+            placeholders: components["schemas"]["ToolLocalWorkingDirectoryType"][];
+            /**
+             * @description The output mapping for the execution strategy.
+             * @default null
+             */
+            outputMapping: {
+                [key: string]: string;
+            } | null;
+            /**
+             * @description The timeout to use for the execution strategy. In miliseconds.
+             * @default null
+             */
+            timeout: number | null;
+            /** @description The language to use for the execution strategy. */
+            language: components["schemas"]["ToolLocalScriptStrategyLanguage"];
+            /** @description The code to execute. */
+            code: string;
+            /**
+             * @description Allow script to read the project files.
+             * @default true
+             */
+            allowReadProject: boolean;
+            /**
+             * @description Allow script to write the project files.
+             * @default false
+             */
+            allowWriteProject: boolean;
+            /** @description Allowed domains to make requests to. */
+            allowedDomains: string[];
+            /** @description Allowed packages/modules to import in the script. */
+            allowedPackages: string[];
+            /** @description Allowed environments to use. */
+            allowedEnvironments: string[];
+        };
+        /**
+         * @description The status of the tool.
+         * @enum {string}
+         */
+        ToolStatus: "active" | "inactive";
+        /**
+         * @description The type of execution strategy.
+         * @enum {string}
+         */
+        ToolExecutionType: "local" | "webhook" | "request" | "local-script";
+        ToolExecutionStrategy: {
+            /** @description The unique id of this execution strategy. */
+            id: string;
+            /** @description The type of execution strategy. */
+            type: components["schemas"]["ToolExecutionType"];
+            /** @description The configuration for the execution strategy. */
+            config: components["schemas"]["ToolStrategyLocalConfig"] | components["schemas"]["ToolLocalScriptStrategyConfig"] | components["schemas"]["ToolRequestStrategyConfig"];
+            /**
+             * @description The priority of the execution strategy. Number between 0 and 1.
+             * @default null
+             */
+            priority: number | null;
+        };
+        ToolAnnotation: {
+            /**
+             * @description The role of the audience.
+             * @default null
+             */
+            audience: components["schemas"]["MessageRole"][] | null;
+            /**
+             * @description The priority of the audience.
+             * @default null
+             */
+            priority: number | null;
+            /**
+             * @description The last modified of the resource.
+             * @default null
+             */
+            lastModified: string | null;
+        };
+        ToolPermissions: {
+            /** @description Whether the tool can access the network or not. */
+            network?: boolean;
+            /** @description Whether the tool can write to the filesystem or not. */
+            filesystemWrite?: boolean;
+            /** @description Whether the tool can read from the filesystem or not. */
+            filesystemRead?: boolean;
+            /** @description Whether the tool can run privileged commands or not. */
+            privileged?: boolean;
+        };
+        Tool: {
+            /** @description The tool's name. */
+            name: string;
+            /** @description The title of the tool, human readable. For display purposes. */
+            title: string;
+            /** @description The description of the resource, human readable. */
+            description: string;
+            /** @description The id of the resource. UUID. */
+            id: string;
+            /** @description The status of the tool. */
+            status: components["schemas"]["ToolStatus"];
+            /**
+             * @description The JSON schema defining expected parameters.
+             * @default null
+             */
+            inputSchema: Record<string, never> | null;
+            /**
+             * @description The JSON schema defining expected output format.
+             * @default null
+             */
+            outputSchema: Record<string, never> | null;
+            /** @description The execution strategies of the tool. */
+            execution: components["schemas"]["ToolExecutionStrategy"][];
+            /**
+             * @description The annotations of the tool.
+             * @default null
+             */
+            annotations: components["schemas"]["ToolAnnotation"] | null;
+            /** @description The permissions of the tool. */
+            permissions?: components["schemas"]["ToolPermissions"];
+            /** @description The cooldown time to use for the tool. Used to avoid LLM tool spam. */
+            cooldownMs: number;
+        };
+        Environment: {
+            /** @description The id of the environment. UUID. */
+            id: string;
+            /** @description The name of the environment variable. Must be in upper case snake case. */
+            name: string;
+            /** @description The description of the environment variable. */
+            description: string;
+            /**
+             * @description The default value of the environment variable. Required if `modifiable` is `false`.
+             * @default null
+             */
+            default: string | null;
+            /**
+             * @description Whether the environment variable is modifiable by the client or not. Default: `true`.
+             * @default true
+             */
+            modifiable: boolean;
+            /**
+             * @description Whetever the client is required to set the value of the environment variable. Default: `false`.
+             * @default false
+             */
+            required: boolean;
+        };
+        ContextVersion: {
+            /** @description The id of the entity. */
+            id: number;
+            /**
+             * Format: date-time
+             * @description The creation date of the entity.
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description The update date of the entity.
+             */
+            updatedAt: string;
+            /** @description The version of the context version. */
+            version: string;
+            /**
+             * @description The prompt that's going to be injected into the 'AGENTS.md' file.
+             * @default null
+             */
+            prompt: string | null;
+            /**
+             * @description The description of the context version.
+             * @default null
+             */
+            description: string | null;
+            /** @description The status of the context version. */
+            status: components["schemas"]["ContextVersionStatus"];
+            /** @description The prompts of the context version. */
+            prompts: components["schemas"]["Prompt"][];
+            /** @description The resources of the context version. */
+            resources: components["schemas"]["Resource"][];
+            /** @description The tools of the context version. */
+            tools: components["schemas"]["Tool"][];
+            /** @description The environments of the context version. */
+            variables: components["schemas"]["Environment"][];
+            /** @description The context id of the context. */
+            contextId: number;
+            /**
+             * @description The context of the context version.
+             * @default {}
+             */
+            context: components["schemas"]["Context"];
+        };
+        GetMarketplaceContextBySlugResponse: {
+            /** @description The context of the context version. */
+            context: components["schemas"]["Context"];
+            /** @description The context version of the context. */
+            contextVersion: components["schemas"]["ContextVersion"];
+            /** @description The versions of the context, for display reasons. */
+            contextVersions: components["schemas"]["MarketplaceContextVersion"][];
+        };
+        CreateContextVersionBody: {
+            /** @description The version of the context version. */
+            version: string;
+            /**
+             * @description The description of the context version.
+             * @default null
+             */
+            description: string | null;
+            /** @description The status of the context version. */
+            status: components["schemas"]["ContextVersionStatus"];
+            /** @description The prompts of the context version. */
+            prompts: components["schemas"]["Prompt"][];
+            /** @description The resources of the context version. */
+            resources: components["schemas"]["Resource"][];
+            /** @description The tools of the context version. */
+            tools: components["schemas"]["Tool"][];
+            /** @description The environments of the context version. */
+            variables: components["schemas"]["Environment"][];
+        };
+        ListContextVersionsResponse: {
+            /** @description The context versions. */
+            items: components["schemas"]["ContextVersion"][];
+            /** @description Whether there are more context versions. */
+            hasMore: boolean;
+            /** @description The next page url. */
+            nextUrl?: string;
+        };
+        UpdateContextVersionBody: {
+            /**
+             * @description The description of the context version.
+             * @default null
+             */
+            description: string | null;
+            /** @description The status of the context version. */
+            status?: components["schemas"]["ContextVersionStatus"];
+            /** @description The prompts of the context version. */
+            prompts?: components["schemas"]["Prompt"][];
+            /** @description The resources of the context version. */
+            resources?: components["schemas"]["Resource"][];
+            /** @description The tools of the context version. */
+            tools?: components["schemas"]["Tool"][];
+            /** @description The environments of the context version. */
+            variables?: components["schemas"]["Environment"][];
+        };
+        GenericResponse: {
+            /**
+             * @description The success of the operation.
+             * @example true
+             */
+            success: boolean;
+        };
+        /** @enum {string} */
+        MetricGranularity: "hour" | "day" | "month" | "year";
+        MetricSerieElement: {
+            /**
+             * Format: date-time
+             * @description The bucket time of the metric.
+             */
+            bucket: string;
+            /** @description The views of the metric. */
+            views: number;
+            /** @description The lists of the metric. */
+            lists: number;
+            /** @description The installations of the metric. */
+            installations: number;
+        };
+        GetContextVersionMetricResponse: {
+            /** @description The id of the context version. */
+            contextVersionId: number;
+            /** @description The granularity of the metric. */
+            granularity: components["schemas"]["MetricGranularity"];
+            /** @description The series of the metric. */
+            series: components["schemas"]["MetricSerieElement"][];
+        };
+        /**
+         * @description The access type of the token.
+         * @enum {string}
+         */
+        TokenAccessType: "mcp" | "api";
+        CreateTokenBody: {
+            /** @description The description of the token. */
+            description: string;
+            /** @description The access type of the token. */
+            accessType: components["schemas"]["TokenAccessType"];
+        };
+        Token: {
+            /** @description The id of the entity. */
+            id: number;
+            /**
+             * Format: date-time
+             * @description The creation date of the entity.
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description The update date of the entity.
+             */
+            updatedAt: string;
+            /** @description The description of the token. */
+            description: string;
+            /** @description The token. */
+            key: string;
+        };
+        ListTokensResponse: {
+            /** @description The tokens. */
+            items: components["schemas"]["Token"][];
+            /** @description Whether there are more tokens. */
+            hasMore: boolean;
+            /** @description The next page url. */
+            nextUrl?: string;
+        };
+        GetUserMetricsResponse: {
+            /** @description The granularity of the metric. */
+            granularity: components["schemas"]["MetricGranularity"];
+            /** @description The series of the metric. */
+            series: components["schemas"]["MetricSerieElement"][];
+            /** @description The amount of context versions. */
+            totalContextVersions: number;
+            /** @description The amount of contexts created by the user. */
+            totalContexts: number;
+            /**
+             * @description The amount of context versions by status.
+             * @example {
+             *       "draft": 5,
+             *       "published": 10,
+             *       "archived": 2,
+             *       "internal": 1
+             *     }
+             */
+            contextVersions: {
+                /** @example 0 */
+                draft?: number;
+                /** @example 0 */
+                internal?: number;
+                /** @example 0 */
+                published?: number;
+                /** @example 0 */
+                archived?: number;
+            };
+        };
+        /**
+         * @description The status of the catalog.
+         * @enum {string}
+         */
+        CatalogStatus: "active" | "inactive";
+        CreateCatalogBody: {
+            /** @description The name of the catalog. */
+            name: string;
+            /**
+             * @description The description of the catalog.
+             * @default null
+             */
+            description: string;
+            /** @description The slug of the catalog. */
+            slug: string;
+            /** @description The status of the catalog. */
+            status: components["schemas"]["CatalogStatus"];
+        };
+        Catalog: {
+            /** @description The id of the entity. */
+            id: number;
+            /**
+             * Format: date-time
+             * @description The creation date of the entity.
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description The update date of the entity.
+             */
+            updatedAt: string;
+            /** @description The name of the catalog. */
+            name: string;
+            /**
+             * @description The description of the catalog.
+             * @default null
+             */
+            description: string;
+            /** @description The slug of the catalog. */
+            slug: string;
+            /**
+             * @description The context versions id of the catalog.
+             * @default []
+             */
+            contextVersionsId: number[];
+            /** @description The status of the catalog. */
+            status: components["schemas"]["CatalogStatus"];
+            /**
+             * @description The context versions of the catalog. Only if the request was done with query `extended=yes`.
+             * @default []
+             */
+            contextVersions: components["schemas"]["ContextVersion"][];
+        };
+        /** @enum {string} */
+        ExtendType: "yes" | "no";
+        ListCatalogsResponse: {
+            /** @description The catalogs. */
+            items: components["schemas"]["Catalog"][];
+            /** @description Whether there are more catalogs. */
+            hasMore: boolean;
+            /** @description The next page url. */
+            nextUrl?: string;
+        };
+        UpdateCatalogBody: {
+            /** @description The name of the catalog. */
+            name?: string;
+            /**
+             * @description The description of the catalog.
+             * @default null
+             */
+            description: string;
+            /** @description The status of the catalog. */
+            status?: components["schemas"]["CatalogStatus"];
+        };
+        InsertContextVersionBody: {
+            /** @description The id of the context version. */
+            contextVersionId: number;
+        };
+        RegisterUserBody: {
+            /** @description The user's email. */
+            email: string;
+            /** @description The password of the new user account. */
+            password: string;
+        };
+        AuthenticateUserBody: {
+            /** @description The user's email. */
+            email: string;
+            /** @description The password of the new user account. */
+            password: string;
+        };
+        AuthenticateUserResponse: {
+            /** @description The access token of the authenticated user. */
+            accessToken: string;
+        };
+        VerifyUserBody: {
+            /** @description The code to use to try verify the user. */
+            code: string;
+        };
+        ResetPasswordBody: {
+            /** @description The new password of the user. */
+            password: string;
+            /** @description The confirmation password. */
+            confirmPassword: string;
+            /** @description The code to use to try validate the password reset. */
+            code: string;
+        };
     };
-    Context: {
-      /** @description The id of the entity. */
-      id: number;
-      /**
-       * Format: date-time
-       * @description The creation date of the entity.
-       */
-      createdAt: string;
-      /**
-       * Format: date-time
-       * @description The update date of the entity.
-       */
-      updatedAt: string;
-      /** @description The name of the context. */
-      name: string;
-      /** @description The description of the context. */
-      description: string;
-      /** @description The slug of the context. */
-      slug: string;
-      /** @description The type of the context. */
-      type: components["schemas"]["ContextType"];
-    };
-    ListContextsResponse: {
-      /** @description The contexts. */
-      items: components["schemas"]["Context"][];
-      /** @description Whether there are more contexts. */
-      hasMore: boolean;
-      /** @description The next page url. */
-      nextUrl?: string;
-    };
-    UpdateContextBody: {
-      /** @description The name of the context. */
-      name: string;
-      /** @description The description of the context. */
-      description: string;
-    };
-    PromptArgument: {
-      /** @description The name of the argument. */
-      name: string;
-      /** @description The description of the argument. */
-      description?: string;
-      /**
-       * @description The required status of the argument.
-       * @default false
-       */
-      required: boolean;
-    };
-    MarketplaceContextVersionPrompt: {
-      /** @description The name of the prompt. */
-      name: string;
-      /** @description The title of the prompt. */
-      title: string;
-      /** @description The description of the prompt. */
-      description: string;
-      /** @description The arguments of the prompt. */
-      arguments: components["schemas"]["PromptArgument"][];
-    };
-    MarketplaceContextVersionResource: {
-      /** @description The uri of the resource. */
-      uri: string;
-      /** @description The name of the resource. */
-      name: string;
-      /** @description The title of the resource. */
-      title: string;
-      /** @description The description of the resource. */
-      description: string;
-      /** @description The mime type of the resource. */
-      mimeType: string;
-      /**
-       * @description The size of the resource.
-       * @default null
-       */
-      size: number | null;
-      /** @description The id of the resource. UUID. */
-      id: string;
-    };
-    MarketplaceContextVersionTool: {
-      /** @description The tool's name. */
-      name: string;
-      /** @description The title of the tool, human readable. For display purposes. */
-      title: string;
-      /** @description The description of the resource, human readable. */
-      description: string;
-      /** @description The id of the resource. UUID. */
-      id: string;
-    };
-    MarketplaceContextVersion: {
-      /** @description The id of the entity. */
-      id: number;
-      /** @description The version of the context version. */
-      version: string;
-      /**
-       * @description The description of the context version.
-       * @default null
-       */
-      description: string | null;
-      /** @description The prompts of the context version. */
-      prompts: components["schemas"]["MarketplaceContextVersionPrompt"][];
-      /** @description The resources of the context version. */
-      resources: components["schemas"]["MarketplaceContextVersionResource"][];
-      /** @description The tools of the context version. */
-      tools: components["schemas"]["MarketplaceContextVersionTool"][];
-    };
-    MarketplaceContext: {
-      /** @description The id of the entity. */
-      id: number;
-      /**
-       * Format: date-time
-       * @description The creation date of the entity.
-       */
-      createdAt: string;
-      /**
-       * Format: date-time
-       * @description The update date of the entity.
-       */
-      updatedAt: string;
-      /** @description The name of the context. */
-      name: string;
-      /** @description The description of the context. */
-      description: string;
-      /** @description The slug of the context. */
-      slug: string;
-      /** @description The type of the context. */
-      type: components["schemas"]["ContextType"];
-      /** @description The versions of the context. */
-      contextVersions: components["schemas"]["MarketplaceContextVersion"][];
-    };
-    ListMarketplaceItemsResponse: {
-      /** @description The marketplace contexts. */
-      items: components["schemas"]["MarketplaceContext"][];
-      /** @description Whether there are more marketplace contexts. */
-      hasMore: boolean;
-      /** @description The next page url. */
-      nextUrl?: string;
-    };
-    /**
-     * @description The status of the context version.
-     * @enum {string}
-     */
-    ContextVersionStatus: "draft" | "internal" | "published" | "archived";
-    /**
-     * @description The content of the message.
-     * @enum {string}
-     */
-    MessageRole: "user" | "assistant";
-    /**
-     * @description The content of the message.
-     * @enum {string}
-     */
-    PromptMessageContentType:
-      | "text"
-      | "image"
-      | "audio"
-      | "resource"
-      | "webhook";
-    PromptMessageContent: {
-      /** @description The content of the message. */
-      type: components["schemas"]["PromptMessageContentType"];
-      /** @description The content of the message, only use if `type` is `PromptMessageContentType.TEXT`. */
-      text?: string;
-      /** @description The url the prompt will use to generate the content of the message, only use if `type` is `PromptMessageContentType.WEBHOOK`. */
-      url?: string;
-      /** @description The mime type of the `data` member, only use if `type` is not `PromptMessageContentType.TEXT`. */
-      mimeType?: string;
-      /** @description The content of the message, only use if `type` is not `PromptMessageContentType.TEXT`. For images and audios, the base64 encoded data. */
-      data?: string;
-    };
-    PromptMessage: {
-      /** @description The content of the message. */
-      role: components["schemas"]["MessageRole"];
-      /** @description The content of the message. */
-      content: components["schemas"]["PromptMessageContent"];
-      /**
-       * @description The description of the message.
-       * @default null
-       */
-      description: string | null;
-    };
-    Prompt: {
-      /** @description The name of the prompt. */
-      name: string;
-      /** @description The title of the prompt. */
-      title: string;
-      /** @description The description of the prompt. */
-      description: string;
-      /** @description The arguments of the prompt. */
-      arguments: components["schemas"]["PromptArgument"][];
-      /** @description The messages of the prompt. */
-      messages: components["schemas"]["PromptMessage"][];
-    };
-    ResourceAnnotation: {
-      /**
-       * @description The role of the audience.
-       * @default null
-       */
-      audience: components["schemas"]["MessageRole"][] | null;
-      /**
-       * @description The priority of the audience.
-       * @default null
-       */
-      priority: number | null;
-      /**
-       * @description The last modified of the resource.
-       * @default null
-       */
-      lastModified: string | null;
-    };
-    Resource: {
-      /** @description The uri of the resource. */
-      uri: string;
-      /** @description The name of the resource. */
-      name: string;
-      /** @description The title of the resource. */
-      title: string;
-      /** @description The description of the resource. */
-      description: string;
-      /** @description The mime type of the resource. */
-      mimeType: string;
-      /**
-       * @description The size of the resource.
-       * @default null
-       */
-      size: number | null;
-      /**
-       * @description The text of the resource. Only for text/markdown or text mime types. Ups to 5MB.
-       * @default null
-       */
-      text: string | null;
-      /**
-       * @description The blob of the resource. Only for binary files, it must be base64 encoded.
-       * @default null
-       */
-      blob: string | null;
-      /**
-       * @description The annotations of the resource.
-       * @default null
-       */
-      annotations: components["schemas"]["ResourceAnnotation"] | null;
-      /** @description The id of the resource. UUID. */
-      id: string;
-    };
-    /**
-     * @description The placeholders to use for the execution strategy.
-     * @enum {string}
-     */
-    ToolLocalWorkingDirectoryType:
-      | "temp"
-      | "workspace"
-      | "repo_root"
-      | "cwd"
-      | "project_root";
-    /**
-     * @description The operating system to use for the execution strategy.
-     * @enum {string}
-     */
-    ToolLocalOs: "darwin" | "linux" | "windows";
-    /**
-     * @description The shell to use for the execution strategy.
-     * @enum {string}
-     */
-    ToolLocalShellType: "bash" | "powershell" | "cmd" | "zsh" | "sh";
-    ToolStrategyLocalEnvironment: {
-      /** @description The operating system to use for the execution strategy. */
-      os: components["schemas"]["ToolLocalOs"][];
-      /** @description The shell to use for the execution strategy. */
-      shell: components["schemas"]["ToolLocalShellType"];
-      /** @description The required applications to use for the execution strategy. */
-      requires: string[];
-    };
-    /**
-     * @description The format the response must be in to be considered successful.
-     * @enum {string}
-     */
-    ToolLocalOutputFormat: "raw" | "json" | "csv" | "file";
-    ToolStrategyLocalSuccessCriteria: {
-      /**
-       * @description The exit code the tool must return to be considered successful.
-       * @default null
-       */
-      exitCode: number | null;
-      /**
-       * @description The patterns the response must match to be considered successful.
-       * @default null
-       */
-      responseMatches: string[] | null;
-      /**
-       * @description The format the response must be in to be considered successful.
-       * @default null
-       */
-      outputFormat: components["schemas"]["ToolLocalOutputFormat"] | null;
-      /**
-       * @description The output file path the response must be in to be considered successful. Only use it if `outputFormat` is `ToolLocalOutputFormat.FILE`.
-       * @default null
-       */
-      outputFilePath: string | null;
-    };
-    ToolStrategyLocalConfig: {
-      /** @description The tags this strategy belongs to. */
-      tags: string[];
-      /** @description The tags must be invalidated when this strategy succeeds. */
-      invalidateTags: string[];
-      /** @description The maximum output size to use for the execution strategy. */
-      maxOutputSize: number;
-      /**
-       * @description Whether the tool is deterministic or not. Default: `false`.
-       * @default false
-       */
-      deterministic: boolean;
-      /** @description The placeholders to use for the execution strategy. */
-      placeholders: components["schemas"]["ToolLocalWorkingDirectoryType"][];
-      /**
-       * @description The output mapping for the execution strategy.
-       * @default null
-       */
-      outputMapping: {
-        [key: string]: string;
-      } | null;
-      /**
-       * @description The timeout to use for the execution strategy. In miliseconds.
-       * @default null
-       */
-      timeout: number | null;
-      /**
-       * @description Whether to run the tool in a shell or not. Default: `false`.
-       * @default false
-       */
-      runInShell: boolean;
-      /** @description The commands to execute the tool. Only use it if `runInShell` is `false`. */
-      commands: string[];
-      /** @description The environment to use for the execution strategy. */
-      environment: components["schemas"]["ToolStrategyLocalEnvironment"];
-      /**
-       * @description The working directory to use for the execution strategy.
-       * @default null
-       */
-      workingDirectory: string | null;
-      /**
-       * @description The success criteria to use for the execution strategy.
-       * @default null
-       */
-      successCriteria:
-        | components["schemas"]["ToolStrategyLocalSuccessCriteria"]
-        | null;
-    };
-    ToolStrategyWebhookConfig: {
-      /** @description The webhook url to use for the execution strategy. */
-      url: string;
-    };
-    /**
-     * @description The http method to use in for the request.
-     * @enum {string}
-     */
-    ToolRequestMethod: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-    ToolKeyValue: {
-      /**
-       * @description Whether the header is enabled or not. Default: `true`.
-       * @default true
-       */
-      enabled: boolean;
-      /** @description The key of the header. */
-      key: string;
-      /** @description The value of the header. */
-      value: string;
-    };
-    /**
-     * @description The expected response type. Default: `ToolRequestResponseType.JSON`.
-     * @enum {string}
-     */
-    ToolRequestResponseType: "json" | "xml";
-    ToolRequestStrategyConfig: {
-      /** @description The tags this strategy belongs to. */
-      tags: string[];
-      /** @description The tags must be invalidated when this strategy succeeds. */
-      invalidateTags: string[];
-      /** @description The maximum output size to use for the execution strategy. */
-      maxOutputSize: number;
-      /**
-       * @description Whether the tool is deterministic or not. Default: `false`.
-       * @default false
-       */
-      deterministic: boolean;
-      /** @description The placeholders to use for the execution strategy. */
-      placeholders: components["schemas"]["ToolLocalWorkingDirectoryType"][];
-      /**
-       * @description The output mapping for the execution strategy.
-       * @default null
-       */
-      outputMapping: {
-        [key: string]: string;
-      } | null;
-      /**
-       * @description The timeout to use for the execution strategy. In miliseconds.
-       * @default null
-       */
-      timeout: number | null;
-      /** @description The URL to make the request. */
-      url: string;
-      /** @description The http method to use in for the request. */
-      method: components["schemas"]["ToolRequestMethod"];
-      /** @description The headers to use in the request. */
-      headers: components["schemas"]["ToolKeyValue"][];
-      /**
-       * @description The body to use in the request. Required if `method` is `ToolRequestMethod.POST`, `ToolRequestMethod.PATCH`, or `ToolRequestMethod.PUT`.
-       * @default null
-       */
-      body: {
-        [key: string]: unknown;
-      } | null;
-      /**
-       * @description The query to use in the request. Optional, only used if `method` is `ToolRequestMethod.GET`.
-       * @default null
-       */
-      query: components["schemas"]["ToolKeyValue"][] | null;
-      /**
-       * @description The expected response type. Default: `ToolRequestResponseType.JSON`.
-       * @default json
-       */
-      responseType: components["schemas"]["ToolRequestResponseType"];
-    };
-    /**
-     * @description The language to use for the execution strategy.
-     * @enum {string}
-     */
-    ToolLocalScriptStrategyLanguage: "ts";
-    ToolLocalScriptStrategyConfig: {
-      /** @description The tags this strategy belongs to. */
-      tags: string[];
-      /** @description The tags must be invalidated when this strategy succeeds. */
-      invalidateTags: string[];
-      /** @description The maximum output size to use for the execution strategy. */
-      maxOutputSize: number;
-      /**
-       * @description Whether the tool is deterministic or not. Default: `false`.
-       * @default false
-       */
-      deterministic: boolean;
-      /** @description The placeholders to use for the execution strategy. */
-      placeholders: components["schemas"]["ToolLocalWorkingDirectoryType"][];
-      /**
-       * @description The output mapping for the execution strategy.
-       * @default null
-       */
-      outputMapping: {
-        [key: string]: string;
-      } | null;
-      /**
-       * @description The timeout to use for the execution strategy. In miliseconds.
-       * @default null
-       */
-      timeout: number | null;
-      /** @description The language to use for the execution strategy. */
-      language: components["schemas"]["ToolLocalScriptStrategyLanguage"];
-      /** @description The code to execute. */
-      code: string;
-      /**
-       * @description Allow script to read the project files.
-       * @default true
-       */
-      allowReadProject: boolean;
-      /**
-       * @description Allow script to write the project files.
-       * @default false
-       */
-      allowWriteProject: boolean;
-      /** @description Allowed domains to make requests to. */
-      allowedDomains: string[];
-      /** @description Allowed packages/modules to import in the script. */
-      allowedPackages: string[];
-      /** @description Allowed environments to use. */
-      allowedEnvironments: string[];
-    };
-    /**
-     * @description The status of the tool.
-     * @enum {string}
-     */
-    ToolStatus: "active" | "inactive";
-    /**
-     * @description The type of execution strategy.
-     * @enum {string}
-     */
-    ToolExecutionType: "local" | "webhook" | "request" | "local-script";
-    ToolExecutionStrategy: {
-      /** @description The unique id of this execution strategy. */
-      id: string;
-      /** @description The type of execution strategy. */
-      type: components["schemas"]["ToolExecutionType"];
-      /** @description The configuration for the execution strategy. */
-      config:
-        | components["schemas"]["ToolStrategyLocalConfig"]
-        | components["schemas"]["ToolLocalScriptStrategyConfig"]
-        | components["schemas"]["ToolRequestStrategyConfig"];
-      /**
-       * @description The priority of the execution strategy. Number between 0 and 1.
-       * @default null
-       */
-      priority: number | null;
-    };
-    ToolAnnotation: {
-      /**
-       * @description The role of the audience.
-       * @default null
-       */
-      audience: components["schemas"]["MessageRole"][] | null;
-      /**
-       * @description The priority of the audience.
-       * @default null
-       */
-      priority: number | null;
-      /**
-       * @description The last modified of the resource.
-       * @default null
-       */
-      lastModified: string | null;
-    };
-    ToolPermissions: {
-      /** @description Whether the tool can access the network or not. */
-      network?: boolean;
-      /** @description Whether the tool can write to the filesystem or not. */
-      filesystemWrite?: boolean;
-      /** @description Whether the tool can read from the filesystem or not. */
-      filesystemRead?: boolean;
-      /** @description Whether the tool can run privileged commands or not. */
-      privileged?: boolean;
-    };
-    Tool: {
-      /** @description The tool's name. */
-      name: string;
-      /** @description The title of the tool, human readable. For display purposes. */
-      title: string;
-      /** @description The description of the resource, human readable. */
-      description: string;
-      /** @description The id of the resource. UUID. */
-      id: string;
-      /** @description The status of the tool. */
-      status: components["schemas"]["ToolStatus"];
-      /**
-       * @description The JSON schema defining expected parameters.
-       * @default null
-       */
-      inputSchema: Record<string, never> | null;
-      /**
-       * @description The JSON schema defining expected output format.
-       * @default null
-       */
-      outputSchema: Record<string, never> | null;
-      /** @description The execution strategies of the tool. */
-      execution: components["schemas"]["ToolExecutionStrategy"][];
-      /**
-       * @description The annotations of the tool.
-       * @default null
-       */
-      annotations: components["schemas"]["ToolAnnotation"] | null;
-      /** @description The permissions of the tool. */
-      permissions?: components["schemas"]["ToolPermissions"];
-      /** @description The cooldown time to use for the tool. Used to avoid LLM tool spam. */
-      cooldownMs: number;
-    };
-    Environment: {
-      /** @description The id of the environment. UUID. */
-      id: string;
-      /** @description The name of the environment variable. Must be in upper case snake case. */
-      name: string;
-      /** @description The description of the environment variable. */
-      description: string;
-      /**
-       * @description The default value of the environment variable. Required if `modifiable` is `false`.
-       * @default null
-       */
-      default: string | null;
-      /**
-       * @description Whether the environment variable is modifiable by the client or not. Default: `true`.
-       * @default true
-       */
-      modifiable: boolean;
-      /**
-       * @description Whetever the client is required to set the value of the environment variable. Default: `false`.
-       * @default false
-       */
-      required: boolean;
-    };
-    ContextVersion: {
-      /** @description The id of the entity. */
-      id: number;
-      /**
-       * Format: date-time
-       * @description The creation date of the entity.
-       */
-      createdAt: string;
-      /**
-       * Format: date-time
-       * @description The update date of the entity.
-       */
-      updatedAt: string;
-      /** @description The version of the context version. */
-      version: string;
-      /**
-       * @description The description of the context version.
-       * @default null
-       */
-      description: string | null;
-      /** @description The status of the context version. */
-      status: components["schemas"]["ContextVersionStatus"];
-      /** @description The prompts of the context version. */
-      prompts: components["schemas"]["Prompt"][];
-      /** @description The resources of the context version. */
-      resources: components["schemas"]["Resource"][];
-      /** @description The tools of the context version. */
-      tools: components["schemas"]["Tool"][];
-      /** @description The environments of the context version. */
-      variables: components["schemas"]["Environment"][];
-      /** @description The context id of the context. */
-      contextId: number;
-      /**
-       * @description The context of the context version.
-       * @default {}
-       */
-      context: components["schemas"]["Context"];
-    };
-    GetMarketplaceContextBySlugResponse: {
-      /** @description The context of the context version. */
-      context: components["schemas"]["Context"];
-      /** @description The context version of the context. */
-      contextVersion: components["schemas"]["ContextVersion"];
-      /** @description The versions of the context, for display reasons. */
-      contextVersions: components["schemas"]["MarketplaceContextVersion"][];
-    };
-    CreateContextVersionBody: {
-      /** @description The version of the context version. */
-      version: string;
-      /**
-       * @description The description of the context version.
-       * @default null
-       */
-      description: string | null;
-      /** @description The status of the context version. */
-      status: components["schemas"]["ContextVersionStatus"];
-      /** @description The prompts of the context version. */
-      prompts: components["schemas"]["Prompt"][];
-      /** @description The resources of the context version. */
-      resources: components["schemas"]["Resource"][];
-      /** @description The tools of the context version. */
-      tools: components["schemas"]["Tool"][];
-      /** @description The environments of the context version. */
-      variables: components["schemas"]["Environment"][];
-    };
-    ListContextVersionsResponse: {
-      /** @description The context versions. */
-      items: components["schemas"]["ContextVersion"][];
-      /** @description Whether there are more context versions. */
-      hasMore: boolean;
-      /** @description The next page url. */
-      nextUrl?: string;
-    };
-    UpdateContextVersionBody: {
-      /**
-       * @description The description of the context version.
-       * @default null
-       */
-      description: string | null;
-      /** @description The status of the context version. */
-      status?: components["schemas"]["ContextVersionStatus"];
-      /** @description The prompts of the context version. */
-      prompts?: components["schemas"]["Prompt"][];
-      /** @description The resources of the context version. */
-      resources?: components["schemas"]["Resource"][];
-      /** @description The tools of the context version. */
-      tools?: components["schemas"]["Tool"][];
-      /** @description The environments of the context version. */
-      variables?: components["schemas"]["Environment"][];
-    };
-    GenericResponse: {
-      /**
-       * @description The success of the operation.
-       * @example true
-       */
-      success: boolean;
-    };
-    /** @enum {string} */
-    MetricGranularity: "hour" | "day" | "month" | "year";
-    MetricSerieElement: {
-      /**
-       * Format: date-time
-       * @description The bucket time of the metric.
-       */
-      bucket: string;
-      /** @description The views of the metric. */
-      views: number;
-      /** @description The lists of the metric. */
-      lists: number;
-      /** @description The installations of the metric. */
-      installations: number;
-    };
-    GetContextVersionMetricResponse: {
-      /** @description The id of the context version. */
-      contextVersionId: number;
-      /** @description The granularity of the metric. */
-      granularity: components["schemas"]["MetricGranularity"];
-      /** @description The series of the metric. */
-      series: components["schemas"]["MetricSerieElement"][];
-    };
-    /**
-     * @description The access type of the token.
-     * @enum {string}
-     */
-    TokenAccessType: "mcp" | "api";
-    CreateTokenBody: {
-      /** @description The description of the token. */
-      description: string;
-      /** @description The access type of the token. */
-      accessType: components["schemas"]["TokenAccessType"];
-    };
-    Token: {
-      /** @description The id of the entity. */
-      id: number;
-      /**
-       * Format: date-time
-       * @description The creation date of the entity.
-       */
-      createdAt: string;
-      /**
-       * Format: date-time
-       * @description The update date of the entity.
-       */
-      updatedAt: string;
-      /** @description The description of the token. */
-      description: string;
-      /** @description The token. */
-      key: string;
-    };
-    ListTokensResponse: {
-      /** @description The tokens. */
-      items: components["schemas"]["Token"][];
-      /** @description Whether there are more tokens. */
-      hasMore: boolean;
-      /** @description The next page url. */
-      nextUrl?: string;
-    };
-    GetUserMetricsResponse: {
-      /** @description The granularity of the metric. */
-      granularity: components["schemas"]["MetricGranularity"];
-      /** @description The series of the metric. */
-      series: components["schemas"]["MetricSerieElement"][];
-      /** @description The amount of context versions. */
-      totalContextVersions: number;
-      /** @description The amount of contexts created by the user. */
-      totalContexts: number;
-      /**
-       * @description The amount of context versions by status.
-       * @example {
-       *       "draft": 5,
-       *       "published": 10,
-       *       "archived": 2,
-       *       "internal": 1
-       *     }
-       */
-      contextVersions: {
-        /** @example 0 */
-        draft?: number;
-        /** @example 0 */
-        internal?: number;
-        /** @example 0 */
-        published?: number;
-        /** @example 0 */
-        archived?: number;
-      };
-    };
-    /**
-     * @description The status of the catalog.
-     * @enum {string}
-     */
-    CatalogStatus: "active" | "inactive";
-    CreateCatalogBody: {
-      /** @description The name of the catalog. */
-      name: string;
-      /**
-       * @description The description of the catalog.
-       * @default null
-       */
-      description: string;
-      /** @description The slug of the catalog. */
-      slug: string;
-      /** @description The status of the catalog. */
-      status: components["schemas"]["CatalogStatus"];
-    };
-    Catalog: {
-      /** @description The id of the entity. */
-      id: number;
-      /**
-       * Format: date-time
-       * @description The creation date of the entity.
-       */
-      createdAt: string;
-      /**
-       * Format: date-time
-       * @description The update date of the entity.
-       */
-      updatedAt: string;
-      /** @description The name of the catalog. */
-      name: string;
-      /**
-       * @description The description of the catalog.
-       * @default null
-       */
-      description: string;
-      /** @description The slug of the catalog. */
-      slug: string;
-      /**
-       * @description The context versions id of the catalog.
-       * @default []
-       */
-      contextVersionsId: number[];
-      /** @description The status of the catalog. */
-      status: components["schemas"]["CatalogStatus"];
-      /**
-       * @description The context versions of the catalog. Only if the request was done with query `extended=yes`.
-       * @default []
-       */
-      contextVersions: components["schemas"]["ContextVersion"][];
-    };
-    /** @enum {string} */
-    ExtendType: "yes" | "no";
-    ListCatalogsResponse: {
-      /** @description The catalogs. */
-      items: components["schemas"]["Catalog"][];
-      /** @description Whether there are more catalogs. */
-      hasMore: boolean;
-      /** @description The next page url. */
-      nextUrl?: string;
-    };
-    UpdateCatalogBody: {
-      /** @description The name of the catalog. */
-      name?: string;
-      /**
-       * @description The description of the catalog.
-       * @default null
-       */
-      description: string;
-      /** @description The status of the catalog. */
-      status?: components["schemas"]["CatalogStatus"];
-    };
-    InsertContextVersionBody: {
-      /** @description The id of the context version. */
-      contextVersionId: number;
-    };
-    RegisterUserBody: {
-      /** @description The user's email. */
-      email: string;
-      /** @description The password of the new user account. */
-      password: string;
-    };
-    AuthenticateUserBody: {
-      /** @description The user's email. */
-      email: string;
-      /** @description The password of the new user account. */
-      password: string;
-    };
-    AuthenticateUserResponse: {
-      /** @description The access token of the authenticated user. */
-      accessToken: string;
-    };
-    VerifyUserBody: {
-      /** @description The code to use to try verify the user. */
-      code: string;
-    };
-    ResetPasswordBody: {
-      /** @description The new password of the user. */
-      password: string;
-      /** @description The confirmation password. */
-      confirmPassword: string;
-      /** @description The code to use to try validate the password reset. */
-      code: string;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  ContextsController_listContexts_v1: {
-    parameters: {
-      query: {
-        /** @description The previous query last item id. */
-        lastId?: number;
-        /** @description The limit of the page. */
-        size: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description The contexts of the user. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ListContextsResponse"];
-        };
-      };
-    };
-  };
-  ContextsController_createContext_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateContextBody"];
-      };
-    };
-    responses: {
-      /** @description The created context. */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CreateContextBody"];
-        };
-      };
-    };
-  };
-  ContextsController_getContext_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        contextId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description The context. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Context"];
-        };
-      };
-      /** @description Context not found. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ContextsController_updateContext_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        contextId: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateContextBody"];
-      };
-    };
-    responses: {
-      /** @description The context. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Context"];
-        };
-      };
-    };
-  };
-  MarketplaceController_listMarketplaceItems_v1: {
-    parameters: {
-      query: {
-        /** @description The previous query last item id. */
-        lastId?: number;
-        /** @description The limit of the page. */
-        size: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description The contexts. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json":
-            components["schemas"]["ListMarketplaceItemsResponse"];
-        };
-      };
-    };
-  };
-  MarketplaceController_getMarketplaceContextBySlug_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        slugId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description The contexts. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json":
-            components["schemas"]["GetMarketplaceContextBySlugResponse"];
-        };
-      };
-    };
-  };
-  ContextVersionsController_listContextVersions_v1: {
-    parameters: {
-      query: {
-        /** @description The previous query last item id. */
-        lastId?: number;
-        /** @description The limit of the page. */
-        size: number;
-      };
-      header?: never;
-      path: {
-        contextId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description The context versions. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json":
-            components["schemas"]["ListContextVersionsResponse"];
-        };
-      };
-    };
-  };
-  ContextVersionsController_createContextVersion_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        contextId: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateContextVersionBody"];
-      };
-    };
-    responses: {
-      /** @description The created context version. */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CreateContextVersionBody"];
-        };
-      };
-    };
-  };
-  ContextVersionsController_deleteContextVersion_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        contextVersionId: number;
-        contextId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Whetever the context version was deleted. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["GenericResponse"];
-        };
-      };
-    };
-  };
-  ContextVersionsController_updateContextVersion_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        contextId: number;
-        contextVersionId: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateContextVersionBody"];
-      };
-    };
-    responses: {
-      /** @description The updated context version. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ContextVersion"];
-        };
-      };
-      /** @description Cannot update a published context version. */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ContextVersionsController_getContextVersionMetrics_v1: {
-    parameters: {
-      query: {
-        granularity: components["schemas"]["MetricGranularity"];
-        /** @description The time since which the metrics must be retrieved. */
-        since: string;
-        /** @description The time until which the metrics must be retrieved. */
-        until: string;
-      };
-      header?: never;
-      path: {
-        contextVersionId: number;
-        contextId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description The metrics of the context version. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json":
-            components["schemas"]["GetContextVersionMetricResponse"];
-        };
-      };
-    };
-  };
-  TokensController_listTokens_v1: {
-    parameters: {
-      query: {
-        /** @description The previous query last item id. */
-        lastId?: number;
-        /** @description The limit of the page. */
-        size: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description The created tokens. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ListTokensResponse"];
-        };
-      };
-    };
-  };
-  TokensController_createToken_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateTokenBody"];
-      };
-    };
-    responses: {
-      /** @description The created token. */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Token"];
-        };
-      };
-    };
-  };
-  TokensController_deleteToken_v1: {
-    parameters: {
-      query: {
-        tokenId: number;
-      };
-      header?: never;
-      path: {
-        tokenId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Wathever the token was deleted or not. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["GenericResponse"];
-        };
-      };
-    };
-  };
-  MetricsController_getUserMetrics_v1: {
-    parameters: {
-      query: {
-        granularity: components["schemas"]["MetricGranularity"];
-        /** @description The time since which the metrics must be retrieved. */
-        since: string;
-        /** @description The time until which the metrics must be retrieved. */
-        until: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description The user metrics. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["GetUserMetricsResponse"];
-        };
-      };
-    };
-  };
-  CatalogsController_listCatalog_v1: {
-    parameters: {
-      query: {
-        /** @description Whatever the response must arrives with extended information or not. */
-        extend?: components["schemas"]["ExtendType"];
-        /** @description The previous query last item id. */
-        lastId?: number;
-        /** @description The limit of the page. */
-        size: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description The catalogs of the user. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ListCatalogsResponse"];
-        };
-      };
-    };
-  };
-  CatalogsController_createCatalog_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateCatalogBody"];
-      };
-    };
-    responses: {
-      /** @description The catalogs of the user. */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Catalog"];
-        };
-      };
-    };
-  };
-  CatalogsController_deleteCatalog_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        catalogId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description The catalogs of the user. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["GenericResponse"];
-        };
-      };
-    };
-  };
-  CatalogsController_updateCatalog_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        catalogId: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateCatalogBody"];
-      };
-    };
-    responses: {
-      /** @description The updated catalog. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Catalog"];
-        };
-      };
-    };
-  };
-  CatalogContextsController_insertContextVersion_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        catalogId: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["InsertContextVersionBody"];
-      };
-    };
-    responses: {
-      /** @description The updated catalog. */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Catalog"];
-        };
-      };
-    };
-  };
-  CatalogContextsController_deleteContextVersion_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        contextVersionId: number;
-        catalogId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description The updated catalog. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Catalog"];
-        };
-      };
-    };
-  };
-  AuthController_registerUser_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["RegisterUserBody"];
-      };
-    };
-    responses: {
-      /** @description User registered successfully. */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["GenericResponse"];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AuthController_authenticateUser_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["AuthenticateUserBody"];
-      };
-    };
-    responses: {
-      /** @description User authenticated successfully. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["AuthenticateUserResponse"];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AuthController_requestValidation_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Validation request sent successfully. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["GenericResponse"];
-        };
-      };
-    };
-  };
-  AuthController_verifyUser_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["VerifyUserBody"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["AuthenticateUserResponse"];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AuthController_checkUser_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["GenericResponse"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AuthController_requestResetPassword_v1: {
-    parameters: {
-      query: {
-        /** @description The user's email. */
-        email: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["GenericResponse"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AuthController_resetPassword_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ResetPasswordBody"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["GenericResponse"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  McpController_listInformation_v1: {
-    parameters: {
-      query: {
-        /** @description The catalog slug. */
-        catalogSlug: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description The catalog information */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Catalog"];
-        };
-      };
-    };
-  };
-  McpController_listPrompts_v1: {
-    parameters: {
-      query: {
-        /** @description The catalog slug. */
-        catalogSlug: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Every prompt within the catalog */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Prompt"][];
-        };
-      };
-    };
-  };
-  McpController_listTools_v1: {
-    parameters: {
-      query: {
-        /** @description The catalog slug. */
-        catalogSlug: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Every tool within the catalog */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Tool"][];
-        };
-      };
-    };
-  };
-  McpController_listResources_v1: {
-    parameters: {
-      query: {
-        /** @description The catalog slug. */
-        catalogSlug: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Every resource within the catalog */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Resource"][];
-        };
-      };
-    };
-  };
-  McpController_readResource_v1: {
-    parameters: {
-      query: {
-        /** @description The catalog slug. */
-        catalogSlug: string;
-      };
-      header?: never;
-      path: {
-        resourceId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description The resource was found. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Resource"];
-        };
-      };
-      /** @description The resource was not found. */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  McpController_downloadContext_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        slugId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description The context version. */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ContextVersion"];
-        };
-      };
-    };
-  };
+    ContextsController_listContexts_v1: {
+        parameters: {
+            query: {
+                /** @description The previous query last item id. */
+                lastId?: number;
+                /** @description The limit of the page. */
+                size: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The contexts of the user. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListContextsResponse"];
+                };
+            };
+        };
+    };
+    ContextsController_createContext_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateContextBody"];
+            };
+        };
+        responses: {
+            /** @description The created context. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateContextBody"];
+                };
+            };
+        };
+    };
+    ContextsController_getContext_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contextId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The context. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Context"];
+                };
+            };
+            /** @description Context not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ContextsController_updateContext_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contextId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateContextBody"];
+            };
+        };
+        responses: {
+            /** @description The context. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Context"];
+                };
+            };
+        };
+    };
+    MarketplaceController_listMarketplaceItems_v1: {
+        parameters: {
+            query: {
+                /** @description The previous query last item id. */
+                lastId?: number;
+                /** @description The limit of the page. */
+                size: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The contexts. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListMarketplaceItemsResponse"];
+                };
+            };
+        };
+    };
+    MarketplaceController_getMarketplaceContextBySlug_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slugId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The contexts. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetMarketplaceContextBySlugResponse"];
+                };
+            };
+        };
+    };
+    ContextVersionsController_listContextVersions_v1: {
+        parameters: {
+            query: {
+                /** @description The previous query last item id. */
+                lastId?: number;
+                /** @description The limit of the page. */
+                size: number;
+            };
+            header?: never;
+            path: {
+                contextId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The context versions. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListContextVersionsResponse"];
+                };
+            };
+        };
+    };
+    ContextVersionsController_createContextVersion_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contextId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateContextVersionBody"];
+            };
+        };
+        responses: {
+            /** @description The created context version. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateContextVersionBody"];
+                };
+            };
+        };
+    };
+    ContextVersionsController_deleteContextVersion_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contextVersionId: number;
+                contextId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Whetever the context version was deleted. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenericResponse"];
+                };
+            };
+        };
+    };
+    ContextVersionsController_updateContextVersion_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contextId: number;
+                contextVersionId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateContextVersionBody"];
+            };
+        };
+        responses: {
+            /** @description The updated context version. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContextVersion"];
+                };
+            };
+            /** @description Cannot update a published context version. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ContextVersionsController_getContextVersionMetrics_v1: {
+        parameters: {
+            query: {
+                granularity: components["schemas"]["MetricGranularity"];
+                /** @description The time since which the metrics must be retrieved. */
+                since: string;
+                /** @description The time until which the metrics must be retrieved. */
+                until: string;
+            };
+            header?: never;
+            path: {
+                contextVersionId: number;
+                contextId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The metrics of the context version. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetContextVersionMetricResponse"];
+                };
+            };
+        };
+    };
+    TokensController_listTokens_v1: {
+        parameters: {
+            query: {
+                /** @description The previous query last item id. */
+                lastId?: number;
+                /** @description The limit of the page. */
+                size: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The created tokens. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListTokensResponse"];
+                };
+            };
+        };
+    };
+    TokensController_createToken_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTokenBody"];
+            };
+        };
+        responses: {
+            /** @description The created token. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Token"];
+                };
+            };
+        };
+    };
+    TokensController_deleteToken_v1: {
+        parameters: {
+            query: {
+                tokenId: number;
+            };
+            header?: never;
+            path: {
+                tokenId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Wathever the token was deleted or not. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenericResponse"];
+                };
+            };
+        };
+    };
+    MetricsController_getUserMetrics_v1: {
+        parameters: {
+            query: {
+                granularity: components["schemas"]["MetricGranularity"];
+                /** @description The time since which the metrics must be retrieved. */
+                since: string;
+                /** @description The time until which the metrics must be retrieved. */
+                until: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The user metrics. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetUserMetricsResponse"];
+                };
+            };
+        };
+    };
+    CatalogsController_listCatalog_v1: {
+        parameters: {
+            query: {
+                /** @description Whatever the response must arrives with extended information or not. */
+                extend?: components["schemas"]["ExtendType"];
+                /** @description The previous query last item id. */
+                lastId?: number;
+                /** @description The limit of the page. */
+                size: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The catalogs of the user. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListCatalogsResponse"];
+                };
+            };
+        };
+    };
+    CatalogsController_createCatalog_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCatalogBody"];
+            };
+        };
+        responses: {
+            /** @description The catalogs of the user. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Catalog"];
+                };
+            };
+        };
+    };
+    CatalogsController_deleteCatalog_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                catalogId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The catalogs of the user. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenericResponse"];
+                };
+            };
+        };
+    };
+    CatalogsController_updateCatalog_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                catalogId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCatalogBody"];
+            };
+        };
+        responses: {
+            /** @description The updated catalog. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Catalog"];
+                };
+            };
+        };
+    };
+    CatalogContextsController_insertContextVersion_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                catalogId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InsertContextVersionBody"];
+            };
+        };
+        responses: {
+            /** @description The updated catalog. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Catalog"];
+                };
+            };
+        };
+    };
+    CatalogContextsController_deleteContextVersion_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contextVersionId: number;
+                catalogId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The updated catalog. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Catalog"];
+                };
+            };
+        };
+    };
+    AuthController_registerUser_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegisterUserBody"];
+            };
+        };
+        responses: {
+            /** @description User registered successfully. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenericResponse"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AuthController_authenticateUser_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AuthenticateUserBody"];
+            };
+        };
+        responses: {
+            /** @description User authenticated successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticateUserResponse"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AuthController_requestValidation_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Validation request sent successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenericResponse"];
+                };
+            };
+        };
+    };
+    AuthController_verifyUser_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyUserBody"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticateUserResponse"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AuthController_checkUser_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenericResponse"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AuthController_requestResetPassword_v1: {
+        parameters: {
+            query: {
+                /** @description The user's email. */
+                email: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenericResponse"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AuthController_resetPassword_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResetPasswordBody"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenericResponse"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AuthController_refresh_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticateUserResponse"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    McpController_listInformation_v1: {
+        parameters: {
+            query: {
+                /** @description The catalog slug. */
+                catalogSlug: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The catalog information */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Catalog"];
+                };
+            };
+        };
+    };
+    McpController_listPrompts_v1: {
+        parameters: {
+            query: {
+                /** @description The catalog slug. */
+                catalogSlug: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Every prompt within the catalog */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Prompt"][];
+                };
+            };
+        };
+    };
+    McpController_listTools_v1: {
+        parameters: {
+            query: {
+                /** @description The catalog slug. */
+                catalogSlug: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Every tool within the catalog */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Tool"][];
+                };
+            };
+        };
+    };
+    McpController_listResources_v1: {
+        parameters: {
+            query: {
+                /** @description The catalog slug. */
+                catalogSlug: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Every resource within the catalog */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Resource"][];
+                };
+            };
+        };
+    };
+    McpController_readResource_v1: {
+        parameters: {
+            query: {
+                /** @description The catalog slug. */
+                catalogSlug: string;
+            };
+            header?: never;
+            path: {
+                resourceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The resource was found. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Resource"];
+                };
+            };
+            /** @description The resource was not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    McpController_downloadContext_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slugId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The context version. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContextVersion"];
+                };
+            };
+        };
+    };
 }
