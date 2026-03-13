@@ -9,6 +9,7 @@ import { initCommand } from "./src/commands/init.command.ts";
 import {
   installMcpCommand,
   InstallMCPTarget,
+  McpScope,
 } from "./src/commands/install-mcp.command.ts";
 import { CONFIG_FILE_PATH } from "./src/constants/config-file-path.constant.ts";
 
@@ -55,10 +56,17 @@ program
 // program
 //   .addOption(new Option('--connect-to <target>', 'Connects the MCPB MCP server to an AI tool.').choices(['ClaudeCode', 'OpenCode']))
 
+const closeInQuotes = (text: string) => `\`${text}\``;
 const connectToChoises = Object.values(InstallMCPTarget);
-const availableTargets = connectToChoises.map((choise) => `\`${choise}\``).join(
-  ", ",
-);
+const availableTargets = connectToChoises.map(closeInQuotes).join(", ");
+const scopeChoises = Object.values(McpScope);
+const availableScopes = scopeChoises.join(", ");
+const scopeOption = new Option(
+  "--scope <scope>",
+  `The scope where the MCP will be installed.`,
+)
+  .default(McpScope.PROJECT)
+  .choices(scopeChoises);
 
 program
   .command("install-mcp")
@@ -67,6 +75,7 @@ program
     `Installs the MCPB MCP server to an AI tool.\nAvailable targets: ${availableTargets}.`,
   )
   .option("--mcp-name <name>", "The name of the MCP server.")
+  .addOption(scopeOption)
   .action(installMcpCommand);
 
 program
