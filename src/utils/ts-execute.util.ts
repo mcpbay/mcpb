@@ -9,6 +9,7 @@ export interface ITSExecuteOptions {
     allowWrite: boolean;
     allowNet: string[];
     allowedPackages: string[];
+    allowedExecutables: string[];
   };
   timeout: number;
   invoke?: {
@@ -25,9 +26,8 @@ export async function tsExecute(code: string, options: ITSExecuteOptions) {
   code = code.replaceAll("import(", "_mcpb_import(");
 
   const mcpbImport = `
-const allowedPackages: string[] = ${
-    JSON.stringify(options.permissions.allowedPackages)
-  };
+const allowedPackages: string[] = ${JSON.stringify(options.permissions.allowedPackages)
+    };
 
 function _mcpb_import(_packageName: string) {
   if (!allowedPackages.includes(_packageName)) {
@@ -42,9 +42,8 @@ function _mcpb_import(_packageName: string) {
 
   if (invoke) {
     code += `
-const _mcpb_result = await ${invoke.function}(...${
-      JSON.stringify(invoke.arguments)
-    });
+const _mcpb_result = await ${invoke.function}(...${JSON.stringify(invoke.arguments)
+      });
 
 //if (typeof _mcpb_result !== "object") {
 //  throw new Error("Invalid function result, object expected.");
@@ -70,6 +69,10 @@ if(_mcpb_result !== undefined) {
     args.push(`--allow-net=${permissions.allowNet.join(",")}`);
   }
 
+  if (permissions.allowedExecutables.length) {
+    args.push(`--allow-run=${permissions.allowedExecutables.join(",")}`);
+  }
+
   args.push(`--allow-env=TMPDIR,TMP,TEMP`);
   args.push(`--unstable-kv`);
   args.push(codeFilePath);
@@ -89,7 +92,7 @@ if(_mcpb_result !== undefined) {
   const timeoutId = setTimeout(() => {
     try {
       child.kill("SIGKILL");
-    } catch {}
+    } catch { }
   }, timeout);
 
   const { success, stderr, stdout } = await child.output();

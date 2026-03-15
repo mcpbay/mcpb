@@ -958,6 +958,8 @@ export interface components {
             allowWriteProject: boolean;
             /** @description Allowed domains to make requests to. */
             allowedDomains: string[];
+            /** @description Allowed apps to execute in the script. */
+            allowedAppsToExecute?: string[];
             /** @description Allowed packages/modules to import in the script. */
             allowedPackages: string[];
             /** @description Allowed environments to use. */
@@ -1124,6 +1126,11 @@ export interface components {
             /** @description The version of the context version. */
             version: string;
             /**
+             * @description The prompt that's going to be injected into the 'AGENTS.md' file.
+             * @default null
+             */
+            prompt: string | null;
+            /**
              * @description The description of the context version.
              * @default null
              */
@@ -1148,6 +1155,11 @@ export interface components {
             nextUrl?: string;
         };
         UpdateContextVersionBody: {
+            /**
+             * @description The prompt that's going to be injected into the 'AGENTS.md' file.
+             * @default null
+             */
+            prompt: string | null;
             /**
              * @description The description of the context version.
              * @default null
