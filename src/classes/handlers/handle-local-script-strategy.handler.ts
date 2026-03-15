@@ -68,6 +68,7 @@ export async function handleLocalScriptStrategy(
           allowWrite: config.allowWriteProject,
           allowNet: config.allowedDomains,
           allowedPackages: config.allowedPackages,
+          allowedExecutables: config.allowedAppsToExecute ?? []
         },
         invoke: {
           function: "toolHandler",
@@ -90,9 +91,8 @@ export async function handleLocalScriptStrategy(
     } catch (e) {
       crashIfNot(false, {
         code: INTERNAL_ERROR,
-        message: `Error executing "${tool.name}" script: ${
-          (e as Error).message
-        }`,
+        message: `Error executing "${tool.name}" script: ${(e as Error).message
+          }`,
       });
     }
   }
