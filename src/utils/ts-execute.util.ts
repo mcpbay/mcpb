@@ -71,6 +71,7 @@ if(_mcpb_result !== undefined) {
   }
 
   args.push(`--allow-env=TMPDIR,TMP,TEMP`);
+  args.push(`--unstable-kv`);
   args.push(codeFilePath);
 
   const command = new Deno.Command("deno", {
