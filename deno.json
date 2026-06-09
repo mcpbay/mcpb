@@ -1,5 +1,5 @@
 {
-  "version": "1.2.9",
+  "version": "1.2.12",
   "tasks": {
     "build:generic": {
       "description": "Used as common structure for all build commands.",
@@ -15,7 +15,7 @@
     "test": "deno test -A ./tests"
   },
   "imports": {
-    "@mcpbay/contexts-manager": "jsr:@mcpbay/contexts-manager@^1.0.4",
+    "@mcpbay/contexts-manager": "jsr:@mcpbay/contexts-manager@^1.0.7",
     "@mcpbay/easy-mcp-server": "jsr:@mcpbay/easy-mcp-server@^1.2.2",
     "@online/get-string-uid": "jsr:@online/get-string-uid@^1.0.1",
     "@online/is": "jsr:@online/is@^0.0.6",

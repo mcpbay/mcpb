@@ -79,8 +79,8 @@ program
   .action(installMcpCommand);
 
 program
-  .command("add <slug>")
-  .description("Install a new context.")
+  .command("add <source>")
+  .description("Install a new context from a slug or GitHub URL. Supports GitHub HTTPS, SSH, and github:// URIs.")
   .addOption(configOption)
   .addOption(forceOption)
   .action(addCommand);
