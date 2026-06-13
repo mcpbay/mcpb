@@ -39,6 +39,7 @@ import { LOAD_CONTEXTS_TOOL_NAME } from "../constants/load-contexts-tool-name.co
 import { RESOURCE_SCHEMA } from "./schemas/resource.schema.ts";
 import { TOOL_SCHEMA } from "./schemas/tool.schema.ts";
 import { PROMPT_SCHEMA } from "./schemas/prompts.schema.ts";
+import denoJson from "../../deno.json" with { type: "json" };
 
 interface IExecuteShellCommandOptions {
   cwd: string;
@@ -55,7 +56,7 @@ export enum ToolLocalWorkingDirectoryType {
   PROJECT_ROOT = "project_root",
 }
 
-type LocalResource = IResource & { id: string };
+type LocalResource = IResource & { id: string; };
 
 const workspacePath = {
   type: "string",
@@ -198,7 +199,6 @@ export class McpServerContext implements IContextModel {
 
     writeLog("Placeholders");
     writeLog(Object.fromEntries(this.placeholders.entries()));
-
     writeLog(Deno.env.toObject());
   }
 
@@ -218,7 +218,7 @@ export class McpServerContext implements IContextModel {
   async onInitialize() {
     this.serverInformation = {
       name: "MCPBay Server!",
-      version: "1.0.0",
+      version: denoJson.version,
     };
 
     writeLog("Initialized");

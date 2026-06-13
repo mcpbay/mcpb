@@ -1,3 +1,4 @@
+import { type IImport } from "../interfaces/mcp-package.interface.ts";
 import { ContextVersion } from "../types/context-version.type.ts";
 import { loadContext } from "./load-context.util.ts";
 import { writeLog } from "./write-log.util.ts";
@@ -15,10 +16,16 @@ export async function loadContextsFromConfigFile(
   writeLog("config");
   writeLog(config);
 
-  for (const [slug, version] of Object.entries(config.imports)) {
-    const context = (await loadContext(slug, version, { configPath, doNotDownload: true }))!;
+  for (const [slug, versionOrImport] of Object.entries(config.imports)) {
+    const context = (await loadContext(
+      slug,
+      versionOrImport as string | IImport,
+      { configPath, doNotDownload: true },
+    ))!;
 
-    contexts.push(context);
+    if (context) {
+      contexts.push(context);
+    }
   }
 
   return contexts;
