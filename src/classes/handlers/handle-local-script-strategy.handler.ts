@@ -60,9 +60,12 @@ export async function handleLocalScriptStrategy(
     writeLog(fixedArgs);
 
     try {
+      const configFilePath = (config as Record<string, unknown>).configFilePath as string | undefined;
+
       const { outMessage, codeFilePath } = await tsExecute(config.code, {
         timeout: config.timeout ?? 10_000,
         cwd: new URL(workspacePath),
+        configFilePath,
         permissions: {
           allowRead: config.allowReadProject,
           allowWrite: config.allowWriteProject,

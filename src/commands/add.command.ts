@@ -1,7 +1,9 @@
 import { loadConfigFile } from "../utils/load-config-file.util.ts";
 import { downloadAndInstallContextBySlug } from "../utils/download-and-install-context-by-slug.util.ts";
 import { downloadAndInstallContextByGitHub } from "../utils/download-and-install-context-by-github.util.ts";
+import { installContextFromDisk } from "../utils/install-context-from-disk.util.ts";
 import { isGitHubUrl } from "../utils/parse-github-source.util.ts";
+import { exists } from "../utils/exists.util.ts";
 import { getDirname } from "../utils/get-dirname.util.ts";
 import { UniversalAppChecker } from "../classes/universal-app-checker.class.ts";
 import { getForEveryOS } from "../utils/get-for-every-os.util.ts";
@@ -16,6 +18,17 @@ export async function addCommand(source: string, options: Record<string, any>) {
 
   if (isGitHubUrl(source)) {
     hasTypeScriptScripts = (await downloadAndInstallContextByGitHub(
+      source,
+      {
+        config,
+        configPath,
+        silent,
+        contextModulesPath,
+        force,
+      },
+    )).hasTypeScriptScripts;
+  } else if (exists(`${source}/context.json`)) {
+    hasTypeScriptScripts = (await installContextFromDisk(
       source,
       {
         config,

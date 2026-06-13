@@ -74,15 +74,19 @@ export async function downloadAndInstallContextBySlug(
 
   const { slug: realSlug, version: realVersion, fullSlug } = normalizeSlug(slug);
   const currentContextVersion = config.imports[realSlug];
+  const isCurrentVersionAString = typeof currentContextVersion === "string";
 
-  /**
-   * Alex: pre-verify the versions.
-   */
   if (isContextPresent && !force) {
+
+    if (!isCurrentVersionAString) {
+      log(`Context "${slug}" was installed from a different source. Use --force to reinstall.`);
+
+      return { hasTypeScriptScripts: false };
+    }
 
     if (realVersion !== "latest") {
       const comparison = compareVersions({
-        current: currentContextVersion,
+        current: currentContextVersion as string,
         latest: realVersion,
       });
 
@@ -146,7 +150,7 @@ export async function downloadAndInstallContextBySlug(
 
   saveContext(contextVersion, contextVersionPath);
   log(`Context "${slug}" added successfully.`);
-  saveConfiFile(config);
+  saveConfiFile(config, options.configPath);
 
   const agentsMdPath = getAgentsMdPath();
   const mdManager = new MdManager(agentsMdPath);

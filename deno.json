@@ -1,5 +1,5 @@
 {
-  "version": "1.2.12",
+  "version": "1.2.17",
   "tasks": {
     "build:generic": {
       "description": "Used as common structure for all build commands.",
@@ -15,7 +15,7 @@
     "test": "deno test -A ./tests"
   },
   "imports": {
-    "@mcpbay/contexts-manager": "jsr:@mcpbay/contexts-manager@^1.0.7",
+    "@mcpbay/contexts-manager": "jsr:@mcpbay/contexts-manager@^1.1.3",
     "@mcpbay/easy-mcp-server": "jsr:@mcpbay/easy-mcp-server@^1.2.2",
     "@online/get-string-uid": "jsr:@online/get-string-uid@^1.0.1",
     "@online/is": "jsr:@online/is@^0.0.6",
@@ -24,7 +24,7 @@
     "@std/path": "jsr:@std/path@^1.1.5",
     "@std/testing": "jsr:@std/testing@^1.0.19",
     "commander": "npm:commander@^15.0.0",
-    "semver": "npm:semver@^7.8.3"
+    "semver": "npm:semver@^7.8.4"
   },
   "publish": {
     "exclude": [
@@ -44,7 +44,8 @@
       "icon.ico",
       "mcp-config.json",
       "opencode.jsonc",
-      "version-cache.json"
+      "version-cache.json",
+      "context"
     ]
   }
 }

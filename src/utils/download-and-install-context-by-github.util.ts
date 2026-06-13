@@ -125,7 +125,7 @@ export async function downloadAndInstallContextByGitHub(
     throw new Error("The context.json must have a valid `name` field.");
   }
 
-  if ((config.imports as Record<string, string>)[slug] && !force) {
+  if (config.imports[slug] && !force) {
     logMessage(`Context "${slug}" already exists.`);
     logMessage(`Use \`--force\` to force the context installation.`);
     context.dispose();
@@ -153,8 +153,8 @@ export async function downloadAndInstallContextByGitHub(
 
   copyDir(contextRoot, contextFolderPath);
 
-  config.imports[slug] = version;
-  saveConfiFile(config);
+  config.imports[slug] = { version, ref: githubUri, type: "remote" };
+  saveConfiFile(config, configPath);
 
   logMessage(`Context "${slug}" (${version}) added successfully from ${githubUri}.`);
 

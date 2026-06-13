@@ -1,5 +1,6 @@
 import { Argument, Command, Option } from "commander";
 import { addCommand } from "./src/commands/add.command.ts";
+import { contextsInfoCommand } from "./src/commands/contexts-info.command.ts";
 import { startMcpCommand } from "./src/commands/start-mcp.command.ts";
 import { selfUpdateCommand } from "./src/commands/self-update.command.ts";
 import { clearUpdateScriptFile } from "./src/utils/generate-update-script-file.util.ts";
@@ -84,6 +85,12 @@ program
   .addOption(configOption)
   .addOption(forceOption)
   .action(addCommand);
+
+program
+  .command("contexts-info")
+  .description("Displays information about all installed contexts, tools, prompts, resources, names, versions, and permissions.")
+  .addOption(configOption)
+  .action(contextsInfoCommand);
 
 program
   .command("start-mcp")

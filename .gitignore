@@ -1,13 +1,9 @@
 .claude
-context_modules
 dist
 logs
 .mcp.json
-mcp-config.json
-opencode.jsonc
 .env.mcpbay
 version-cache.json
-AGENTS.md
 CLAUDE.md
 vendor
-local_scripts
+node_modules

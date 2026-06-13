@@ -1,0 +1,127 @@
+{
+  "id": 9,
+  "createdAt": "2026-03-15T00:09:44.009Z",
+  "updatedAt": "2026-03-15T02:00:37.465Z",
+  "deletedAt": null,
+  "version": "1.0.0",
+  "prompt": "1. Everytime you finish a task: Use the `append` action of the `git_changelog_manager` tool to register your latest changes into the branch changelog.\n2. Do never read the changelog (`read` action) until you going to push the changes to the remote repository.\n3. When you're going to push the local project changes to the remote repository, read the whole changelog, summarize it and use the resume as the argument for the command `git commit -m`.",
+  "description": "The first version of Git Changelog Manager.",
+  "status": "published",
+  "prompts": [],
+  "resources": [],
+  "tools": [
+    {
+      "id": "ea0ec0e4-5f5d-4871-9f9f-37708aed79de",
+      "name": "git_changelog_manager",
+      "title": "Git Changelog Manager",
+      "status": "active",
+      "execution": [
+        {
+          "id": "55e79ae8-dcae-4878-9476-0ad6d6b1f748",
+          "type": "local-script",
+          "config": {
+            "code": "const kv = await Deno.openKv();\n\nexport enum GitChangelogManagerInputAction {\n  READ = \"read\",\n  APPEND = \"append\",\n  WRITE = \"write\",\n}\n\nexport enum GitChangelogManagerOutputStatus {\n  SUCCESS = \"success\",\n  ERROR = \"error\",\n}\n\nexport interface IGitChangelogManagerInput {\n  /** The text to write or append into the changelog. Required if `action` is `append` or `write`. */\n  text?: string;\n  /** The action to perform. */\n  action: GitChangelogManagerInputAction;\n}\n\nexport interface IGitChangelogManagerOutput {\n  /** The changelog content. */\n  text?: string;\n  /** The status of the execution. */\n  status: GitChangelogManagerOutputStatus;\n}\n\nexport async function toolHandler(args: IGitChangelogManagerInput): Promise<IGitChangelogManagerOutput> {\n  const { action, text } = args;\n\n  try {\n    const currentBranchName = await getCurrentBranchName();\n    const changelogKey = buildChangelogKey(currentBranchName);\n    const isReadAction = action === GitChangelogManagerInputAction.READ;\n    const isAppendAction = action === GitChangelogManagerInputAction.APPEND;\n    const isWriteAction = action === GitChangelogManagerInputAction.WRITE;\n\n    switch (true) {\n      case isReadAction: {\n        const changelogText = await readChangelog(changelogKey);\n        const output = buildSuccessOutput(changelogText);\n\n        return output;\n      }\n      case isAppendAction: {\n        const ensuredText = ensureText(text, action);\n        const currentChangelog = await readChangelog(changelogKey);\n        const updatedChangelog = appendChangelog(currentChangelog, ensuredText);\n\n        await kv.set(changelogKey, updatedChangelog);\n\n        const output = buildSuccessOutput(updatedChangelog);\n\n        return output;\n      }\n      case isWriteAction: {\n        const ensuredText = ensureText(text, action);\n\n        await kv.set(changelogKey, ensuredText);\n\n        const output = buildSuccessOutput(ensuredText);\n\n        return output;\n      }\n      default: {\n        throw new Error(\"Unsupported changelog action.\");\n      }\n    }\n  } catch (error) {\n    const errorMessage = getErrorMessage(error);\n    const output = buildErrorOutput(errorMessage);\n\n    return output;\n  }\n}\n\nasync function getCurrentBranchName() {\n  const command = new Deno.Command(\"git\", {\n    args: [\"rev-parse\", \"--abbrev-ref\", \"HEAD\"],\n    cwd: Deno.cwd(),\n    stdout: \"piped\",\n    stderr: \"piped\",\n  });\n  const { code, stdout, stderr } = await command.output();\n  const stdoutText = new TextDecoder().decode(stdout).trim();\n  const stderrText = new TextDecoder().decode(stderr).trim();\n  const hasFailed = code !== 0;\n\n  if (hasFailed) {\n    const errorSuffix = buildGitErrorSuffix(stdoutText, stderrText);\n    const errorMessage = `Failed to read git branch.${errorSuffix}`;\n\n    throw new Error(errorMessage);\n  }\n\n  const isBranchNameMissing = stdoutText.length === 0;\n\n  if (isBranchNameMissing) {\n    throw new Error(\"Git branch name is empty.\");\n  }\n\n  return stdoutText;\n}\n\nfunction buildGitErrorSuffix(stdoutText: string, stderrText: string) {\n  const isStderrEmpty = stderrText.length === 0;\n  const isStdoutEmpty = stdoutText.length === 0;\n  const shouldReturnEmptySuffix = isStderrEmpty && isStdoutEmpty;\n\n  if (shouldReturnEmptySuffix) {\n    return \"\";\n  }\n\n  const errorSuffix = isStderrEmpty ? ` ${stdoutText}` : ` ${stderrText}`;\n\n  return errorSuffix;\n}\n\nfunction buildChangelogKey(branchName: string) {\n  const key = [\"git-changelog\", branchName];\n\n  return key;\n}\n\nasync function readChangelog(changelogKey: Deno.KvKey) {\n  const changelogEntry = await kv.get<string>(changelogKey);\n  const changelogText = changelogEntry.value ?? \"\";\n\n  return changelogText;\n}\n\nfunction ensureText(text: string | undefined, action: GitChangelogManagerInputAction) {\n  const isTextMissing = text === undefined;\n\n  if (isTextMissing) {\n    throw new Error(`Missing 'text' for '${action}' action.`);\n  }\n\n  return text;\n}\n\nfunction appendChangelog(currentChangelog: string, newEntry: string) {\n  const isCurrentEmpty = currentChangelog.length === 0;\n  const separator = isCurrentEmpty ? \"\" : \"\\n\";\n  const updatedChangelog = `${currentChangelog}${separator}${newEntry}`;\n\n  return updatedChangelog;\n}\n\nfunction buildSuccessOutput(text: string): IGitChangelogManagerOutput {\n  const output = {\n    text,\n    status: GitChangelogManagerOutputStatus.SUCCESS,\n  };\n\n  return output;\n}\n\nfunction buildErrorOutput(text: string): IGitChangelogManagerOutput {\n  const output = {\n    text,\n    status: GitChangelogManagerOutputStatus.ERROR,\n  };\n\n  return output;\n}\n\nfunction getErrorMessage(error: unknown) {\n  const isErrorInstance = error instanceof Error;\n\n  if (isErrorInstance) {\n    return error.message;\n  }\n\n  return \"Unknown error.\";\n}",
+            "tags": [],
+            "timeout": 30000,
+            "language": "ts",
+            "placeholders": [],
+            "deterministic": false,
+            "maxOutputSize": 1048576,
+            "outputMapping": {},
+            "allowedDomains": [],
+            "invalidateTags": [],
+            "allowedPackages": [],
+            "allowReadProject": true,
+            "allowWriteProject": true,
+            "allowedEnvironments": []
+          },
+          "priority": null
+        }
+      ],
+      "cooldownMs": 1000,
+      "annotations": null,
+      "description": "Allows the LLM to write logs into a changelog related with the current branch.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The text to write or append into the changelog. Required if `action` is `append` or `write`."
+          },
+          "action": {
+            "type": "string",
+            "oneOf": [
+              {
+                "const": "read",
+                "title": "Read changelog",
+                "description": "Reads the whole changelog content."
+              },
+              {
+                "const": "append",
+                "title": "Append into changelog",
+                "description": "Inserts a new line into the changelog."
+              },
+              {
+                "const": "write",
+                "title": "Write changelog",
+                "description": "Replaces the whole content of the changelog."
+              }
+            ],
+            "description": "The action to perform."
+          }
+        }
+      },
+      "permissions": {
+        "network": false,
+        "privileged": false,
+        "filesystemRead": false,
+        "filesystemWrite": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The changelog content."
+          },
+          "status": {
+            "type": "string",
+            "oneOf": [
+              {
+                "const": "success"
+              },
+              {
+                "const": "error"
+              }
+            ],
+            "description": "The status of the execution."
+          }
+        }
+      }
+    }
+  ],
+  "variables": [],
+  "contextId": 5,
+  "catalogsId": [],
+  "context": {
+    "id": 5,
+    "createdAt": "2026-03-14T23:57:57.917Z",
+    "updatedAt": "2026-03-14T23:57:57.917Z",
+    "deletedAt": null,
+    "name": "Git Changelog",
+    "description": "It allows the LLM to register summaries of code updates to publish them in the pull request summary.",
+    "slug": "git-changelog",
+    "type": "public",
+    "contextVersionsId": [],
+    "authorId": 2
+  },
+  "authorId": 2
+}

@@ -1,0 +1,26 @@
+{
+  "name": "mcpbay-mcpb",
+  "version": "1.0.0",
+  "description": "Complete guide for the MCPB CLI — a Deno-based CLI tool and MCP server for installing, managing, and serving MCP contexts from the MCPBay ecosystem.",
+  "author": "mcpbay",
+  "tags": ["mcp", "mcpbay", "cli", "context-manager", "mcp-server"],
+  "contextType": "mcpbay-contexts-manager",
+  "deno": {
+    "permissions": {
+      "allowedPackages": [
+        "jsr:@std/assert",
+        "npm:zod",
+        "jsr:@std/path",
+        "jsr:@online/is",
+        "jsr:@std/yaml"
+      ],
+      "allowedExecutables": [],
+      "allowedEnvironments": [],
+      "allowedReadDirs": [],
+      "allowedWriteDirs": [],
+      "allowNetDomains": []
+    },
+    "extraArguments": [],
+    "timeout": 30000
+  }
+}
