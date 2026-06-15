@@ -6,6 +6,7 @@ import { writeLog } from "./write-log.util.ts";
 import { getDirname } from "./get-dirname.util.ts";
 import { readJsonFromFile } from "./read-json-from-file.util.ts";
 import { type IContextConfig, MCPContext } from "@mcpbay/contexts-manager";
+import { isContextProjectFolder } from "@mcpbay/contexts-manager";
 
 export interface ILoadContextOptions {
   configPath: string;
@@ -14,7 +15,7 @@ export interface ILoadContextOptions {
 
 function parseFrontMatter(
   content: string,
-): { data: Record<string, unknown>; content: string } {
+): { data: Record<string, unknown>; content: string; } {
   const lines = content.split("\n");
   if (lines[0]?.trim() !== "---") {
     return { data: {}, content };
@@ -189,7 +190,7 @@ async function loadContextFromDirectory(contextPath: string): Promise<ContextVer
           return filePath;
         }
       }
-    } catch {}
+    } catch { }
 
     return undefined;
   };
@@ -234,6 +235,7 @@ async function loadContextFromDirectory(contextPath: string): Promise<ContextVer
   } as unknown as ContextVersion;
 }
 
+
 export async function loadContext(
   context: string,
   versionOrImport: string | IImport,
@@ -248,14 +250,16 @@ export async function loadContext(
   const contextModulesPath = `${cwd}/context_modules`;
   const contextJsonPath = `${contextModulesPath}/${context}/${version}.json`;
   const contextDirPath = `${contextModulesPath}/${context}/${version}`;
-  writeLog({ contextModulesPath, contextJsonPath });
+  writeLog({ contextModulesPath, contextJsonPath, contextDirPath });
 
   if (exists(contextJsonPath)) {
+    writeLog("exists(contextJsonPath)");
     return readJsonFromFile<ContextVersion>(contextJsonPath);
   }
 
-  if (exists(contextDirPath, true)) {
-    return loadContextFromDirectory(contextDirPath);
+  if (isContextProjectFolder(contextDirPath)) {
+    writeLog("exists(contextDirPath, true)");
+    return await loadContextFromDirectory(contextDirPath);
   }
 
   if (options.doNotDownload) {

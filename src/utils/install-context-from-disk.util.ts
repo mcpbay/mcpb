@@ -5,6 +5,7 @@ import { loadConfigFile } from "./load-config-file.util.ts";
 import { saveConfiFile } from "./save-config-file.util.ts";
 import { getAgentsMdPath } from "./get-agents-md-path.util.ts";
 import { MdManager } from "../classes/md-manager.class.ts";
+import { resolvePath } from "./resolve-path.util.ts";
 
 export interface IInstallContextFromDiskOptions {
   configPath: string;
@@ -34,8 +35,8 @@ function copyDir(src: string, dest: string) {
 }
 
 function findContextRoot(context: {
-  tools?: { path?: string; configFilePath?: string }[];
-  resources?: { path?: string; configFilePath?: string }[];
+  tools?: { path?: string; configFilePath?: string; }[];
+  resources?: { path?: string; configFilePath?: string; }[];
 }): string | null {
   for (const tool of context.tools ?? []) {
     if (tool.path) {
@@ -82,10 +83,9 @@ export async function installContextFromDisk(
   };
 
   logMessage(`Loading context from "${source}"...`);
-
   const context = new MCPContext();
 
-  await context.loadContext(source, {
+  const contextConfig = await context.loadContext(source, {
     importsCwd: Deno.cwd(),
     projectCwd: Deno.cwd(),
     permissions: {
@@ -100,25 +100,8 @@ export async function installContextFromDisk(
     timeout: 30000,
   });
 
-  let contextRoot = findContextRoot(context);
-
-  if (!contextRoot) {
-    const nestedContextPath = `${source}/context`;
-    const isNestedContext = exists(nestedContextPath, true) && exists(`${nestedContextPath}/context.json`);
-
-    contextRoot = isNestedContext ? nestedContextPath : source;
-  }
-
-  const contextJsonPath = `${contextRoot}/context.json`;
-
-  if (!exists(contextJsonPath)) {
-    context.dispose();
-    throw new Error(`The source path "${source}" does not contain a valid context.json file.`);
-  }
-
-  const contextJson = JSON.parse(Deno.readTextFileSync(contextJsonPath));
-  const slug = contextJson.name;
-  const version = contextJson.version ?? "1.0.0";
+  const slug = contextConfig.name;
+  const version = contextConfig.version ?? "1.0.0";
 
   if (!slug) {
     context.dispose();
@@ -152,7 +135,7 @@ export async function installContextFromDisk(
   }
 
   Deno.mkdirSync(contextFolderPath, { recursive: true });
-  copyDir(contextRoot, contextFolderPath);
+  copyDir(source, contextFolderPath);
 
   config.imports[slug] = { version, ref: source, type: "local" };
   saveConfiFile(config, configPath);
