@@ -239,8 +239,9 @@ Deno.test("loadContextsFromConfigFile - should handle mixed string and IImport i
     assertExists(gitChangelog);
     assertEquals(gitChangelog.version, "1.0.0");
 
-    const exampleContext = contexts.find((c) => c.version === "1.0.0" && c.tools.length === 0)!;
+    const exampleContext = contexts.find((c) => c.slug === "example-context")!;
     assertExists(exampleContext);
+    assertEquals(exampleContext.version, "1.0.0");
   } finally {
     try {
       Deno.removeSync(new URL(configPath));
