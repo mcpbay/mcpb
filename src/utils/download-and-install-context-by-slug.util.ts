@@ -102,7 +102,7 @@ export async function downloadAndInstallContextBySlug(
           return { hasTypeScriptScripts: false };
         }
 
-        const hasTypeScriptScripts = checkToolScripts(contextVersion);
+        const hasTypeScriptScripts = contextVersion.tools.length > 0;
 
         return { hasTypeScriptScripts };
       } else if (comparison < 0) {

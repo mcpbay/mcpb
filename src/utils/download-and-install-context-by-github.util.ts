@@ -1,5 +1,5 @@
 import { loadContextFromGitHub } from "@mcpbay/contexts-manager";
-import type { ILoadContextFromGitHubArguments } from "@mcpbay/contexts-manager";
+import type { IContextConfig, ILoadContextFromGitHubArguments } from "@mcpbay/contexts-manager";
 import { toGithubUri } from "./parse-github-source.util.ts";
 import { loadConfigFile } from "./load-config-file.util.ts";
 import { saveConfiFile } from "./save-config-file.util.ts";
@@ -7,6 +7,7 @@ import { exists } from "./exists.util.ts";
 import { getAgentsMdPath } from "./get-agents-md-path.util.ts";
 import { MdManager } from "../classes/md-manager.class.ts";
 import type { IMcpPackage } from "../interfaces/mcp-package.interface.ts";
+import { readJsonFromFile } from "./read-json-from-file.util.ts";
 
 export interface IDownloadAndInstallContextByGitHubOptions {
   configPath: string;
@@ -36,8 +37,8 @@ function copyDir(src: string, dest: string) {
 }
 
 function findContextRoot(context: {
-  tools?: { path?: string; configFilePath?: string }[];
-  resources?: { path?: string; configFilePath?: string }[];
+  tools?: { path?: string; configFilePath?: string; }[];
+  resources?: { path?: string; configFilePath?: string; }[];
 }): string | null {
   for (const tool of context.tools ?? []) {
     if (tool.path) {
@@ -116,7 +117,7 @@ export async function downloadAndInstallContextByGitHub(
     throw new Error("Downloaded context does not contain a `context.json` file.");
   }
 
-  const contextJson = JSON.parse(Deno.readTextFileSync(contextJsonPath));
+  const contextJson = readJsonFromFile<IContextConfig>(contextJsonPath);
   const slug = contextJson.name;
   const version = contextJson.version || "1.0.0";
 

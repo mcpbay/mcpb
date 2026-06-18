@@ -9,17 +9,17 @@ Deno.test("loadContextsFromConfigFile - should load all old JSON format contexts
 
   assertEquals(contexts.length, 3);
 
-  const gitChangelog = contexts.find((c) => c.context.slug === "git-changelog")!;
+  const gitChangelog = contexts.find((c) => c.slug === "git-changelog")!;
   assertEquals(gitChangelog.version, "1.0.0");
   assertEquals(gitChangelog.tools.length, 1);
   assertEquals(gitChangelog.tools[0].name, "git_changelog_manager");
 
-  const projectMetadata = contexts.find((c) => c.context.slug === "project-metadata-manager")!;
+  const projectMetadata = contexts.find((c) => c.slug === "project-metadata-manager")!;
   assertEquals(projectMetadata.version, "1.0.0");
   assertEquals(projectMetadata.tools.length, 1);
   assertEquals(projectMetadata.tools[0].name, "project_metadata_manager");
 
-  const tsUtilities = contexts.find((c) => c.context.slug === "typescript-utilities")!;
+  const tsUtilities = contexts.find((c) => c.slug === "typescript-utilities")!;
   assertEquals(tsUtilities.version, "1.0.4");
   assertEquals(tsUtilities.resources.length, 3);
   assertEquals(tsUtilities.tools.length, 0);

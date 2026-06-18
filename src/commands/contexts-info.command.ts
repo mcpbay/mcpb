@@ -1,17 +1,14 @@
 import { loadContextsFromConfigFile } from "../utils/load-contexts-from-config-file.util.ts";
-import { loadConfigFile } from "../utils/load-config-file.util.ts";
-import type { ContextVersion } from "../types/context-version.type.ts";
+import type { ILoadableServerContext } from "../classes/mcp-server-context.class.ts";
 
 interface IContextSummary {
   name: string;
   slug: string;
   version: string;
   description: string;
-  type: string;
   tools: {
     name: string;
     description: string;
-    permissions: Record<string, boolean | undefined>;
   }[];
   prompts: {
     name: string;
@@ -28,63 +25,34 @@ interface IContextSummary {
     required: boolean;
     modifiable: boolean;
   }[];
-  permissions: {
-    allowedPackages: string[];
-    allowedExecutables: string[];
-    allowedEnvironments: string[];
-    allowedReadDirs: string[];
-    allowedWriteDirs: string[];
-    allowNetDomains: string[];
-  };
 }
 
-function extractContextInfo(contextVersion: ContextVersion, contextName: string, contextSlug: string): IContextSummary {
-  const tools = (contextVersion.tools ?? []).map((tool) => ({
+function extractContextInfo(context: ILoadableServerContext): IContextSummary {
+  const tools = (context.tools ?? []).map((tool) => ({
     name: tool.name,
     description: tool.description,
-    permissions: tool.permissions ?? {},
   }));
 
-  const prompts = (contextVersion.prompts ?? []).map((prompt) => ({
+  const prompts = (context.prompts ?? []).map((prompt) => ({
     name: prompt.name,
     description: prompt.description,
   }));
 
-  const resources = (contextVersion.resources ?? []).map((resource) => ({
+  const resources = (context.resources ?? []).map((resource) => ({
     name: resource.name,
     uri: resource.uri,
     mimeType: resource.mimeType,
   }));
 
-  const variables = (contextVersion.variables ?? []).map((variable) => ({
-    name: variable.name,
-    description: variable.description,
-    required: variable.required,
-    modifiable: variable.modifiable,
-  }));
-
-  const permissions = {
-    allowedPackages: [],
-    allowedExecutables: [],
-    allowedEnvironments: [],
-    allowedReadDirs: [],
-    allowedWriteDirs: [],
-    allowNetDomains: [],
-  };
-
   return {
-    name: contextName,
-    slug: contextSlug,
-    version: contextVersion.version,
-    description: contextVersion.description ?? "",
-    type: (contextVersion as Record<string, unknown>).context
-      ? ((contextVersion as Record<string, unknown>).context as Record<string, unknown>).type as string
-      : "unknown",
+    name: context.name,
+    slug: context.slug,
+    version: context.version,
+    description: context.description ?? "",
     tools,
     prompts,
     resources,
-    variables,
-    permissions,
+    variables: [],
   };
 }
 
@@ -95,9 +63,6 @@ function formatJson(data: Record<string, unknown>): string {
 export async function contextsInfoCommand(options: Record<string, any>) {
   const { config: configPath } = options;
 
-  const config = loadConfigFile(configPath, { create: false });
-  const importKeys = Object.keys(config.imports ?? {});
-
   const contexts = await loadContextsFromConfigFile(configPath, false);
 
   if (contexts.length === 0) {
@@ -105,13 +70,7 @@ export async function contextsInfoCommand(options: Record<string, any>) {
     return;
   }
 
-  const summaries: IContextSummary[] = contexts.map((cv, index) => {
-    const raw = cv as Record<string, unknown>;
-    const context = (raw.context ?? {}) as Record<string, unknown>;
-    const slug = (context.slug as string) || importKeys[index] || "unknown";
-    const name = (context.name as string) || slug;
-    return extractContextInfo(cv, name, slug);
-  });
+  const summaries: IContextSummary[] = contexts.map(extractContextInfo);
 
   const totalTools = summaries.reduce((acc, s) => acc + s.tools.length, 0);
   const totalPrompts = summaries.reduce((acc, s) => acc + s.prompts.length, 0);
@@ -127,7 +86,6 @@ export async function contextsInfoCommand(options: Record<string, any>) {
   for (const summary of summaries) {
     console.log(`--- ${summary.name} (${summary.slug}) ---`);
     console.log(`  Version: ${summary.version}`);
-    console.log(`  Type: ${summary.type}`);
     console.log(`  Description: ${summary.description}`);
     console.log("");
 
@@ -136,10 +94,6 @@ export async function contextsInfoCommand(options: Record<string, any>) {
       for (const tool of summary.tools) {
         console.log(`    - ${tool.name}`);
         console.log(`      Description: ${tool.description}`);
-        const permEntries = Object.entries(tool.permissions).filter(([, v]) => v);
-        if (permEntries.length > 0) {
-          console.log(`      Permissions: ${permEntries.map(([k, v]) => `${k}=${v}`).join(", ")}`);
-        }
       }
       console.log("");
     }
@@ -181,7 +135,6 @@ export async function contextsInfoCommand(options: Record<string, any>) {
       name: s.name,
       slug: s.slug,
       version: s.version,
-      type: s.type,
       description: s.description,
       toolsCount: s.tools.length,
       promptsCount: s.prompts.length,

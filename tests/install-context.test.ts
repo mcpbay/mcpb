@@ -184,6 +184,10 @@ Deno.test("loadContext - should load context with IImport version parameter (dir
       { configPath, doNotDownload: true },
     );
 
+    if (!context) {
+      throw new Error("Context should be loaded successfully");
+    }
+
     assertExists(context, "Context should be loaded successfully");
     assertEquals(context.version, "1.0.0");
   } finally {
@@ -204,6 +208,10 @@ Deno.test("loadContext - should load context with simple string version (JSON fo
       { configPath, doNotDownload: true },
     );
 
+    if (!context) {
+      throw new Error("Context should be loaded successfully");
+    }
+    
     assertExists(context, "Context should be loaded successfully");
     assertEquals(context.version, "1.0.0");
     assertEquals(context.tools.length, 1);
@@ -311,6 +319,6 @@ function assertReject(fn: () => Promise<unknown>): Promise<void> {
     () => {
       throw new Error("Expected function to throw");
     },
-    () => {},
+    () => { },
   );
 }

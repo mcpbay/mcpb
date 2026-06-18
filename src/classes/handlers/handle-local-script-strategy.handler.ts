@@ -10,14 +10,13 @@ import {
 import { objectPick } from "../../utils/object-pick.util.ts";
 import { isValidFileURI } from "../../validators/is-valid-file-uri.validator.ts";
 import { tsExecute } from "../../utils/ts-execute.util.ts";
-import { isObject } from "@online/is";
 import { LogLevel } from "@mcpbay/easy-mcp-server/enums";
 
 export async function handleLocalScriptStrategy(
   this: McpServerContext,
   context: StrategyHandlerContext,
 ) {
-  const { args, strategy, platform, catchLogs, tool, _tool } = context;
+  const { args, strategy, platform, catchLogs, tool } = context;
 
   if (strategy.type !== "local-script") {
     return true;

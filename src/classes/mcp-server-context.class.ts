@@ -165,44 +165,82 @@ const ReadResourceTool: ITool = {
   // }
 };
 
+const NATIVE_TOOL_MEMBERS = ["name", "title", "description", "inputSchema", "outputSchema", "execution", "annotations"] as (keyof ITool)[];
+const NATIVE_PROMPT_MEMBERS = ["name", "title", "description", "arguments"] as (keyof IPrompt)[];
+const NATIVE_RESOURCE_MEMBERS = ["name", "title", "description", "mimeType", "uri"] as (keyof IResource)[];
+
+export interface ComputablePrompt extends IPrompt {
+  id: string;
+  execute(args: Record<string, unknown>, serverContext: McpServerContext): Promise<PromptsGetResponse>;
+}
+
+export interface ComputableTool extends ITool {
+  id: string;
+  execute(args: Record<string, unknown>, options: IToolContextModelOptions, serverContext: McpServerContext): Promise<ToolCallResponse>;
+}
+
+export interface ComputableResource extends IResource {
+  id: string;
+  execute(serverContext: McpServerContext): Promise<IResourceContent[]>;
+}
+
+export interface ILoadableServerContext {
+  /**
+   * The id of the context. Mostly for MCPBay contexts. For project contexts, it may be 0.
+   */
+  id: number;
+  /**
+   * The name of the context. Not a slug nor unique.
+   */
+  name: string;
+  /**
+   * The slug of the context.
+   */
+  slug: string;
+  /**
+   * The version of the context.
+   */
+  version: string;
+  prompts: ComputablePrompt[];
+  resources: ComputableResource[];
+  tools: ComputableTool[];
+  /**
+   * An optional description of the context.
+   */
+  description?: string;
+}
+
 export class McpServerContext implements IContextModel {
   private serverInformation!: IServerClientInformation;
 
-  private prompts: Prompt[] = [];
-  private resources: Resource[] = [];
-  private tools: Tool[] = [];
-  protected contexts: ContextVersion[] = [];
-  private cooldowns: Map<string, number> = new Map();
-  private cache: Map<number, object> = new Map();
-  protected readonly appChecker: UniversalAppChecker =
-    new UniversalAppChecker();
+  private prompts: ComputablePrompt[] = [];
+  private resources: ComputableResource[] = [];
+  private tools: ComputableTool[] = [];
+
+  protected contexts: ILoadableServerContext[] = [];
+
+  private cooldowns = new Map<string, number>();
+  private cache = new Map<number, object>();
   protected placeholders = new Map<string, string>();
   private variables: Record<string, Record<string, string>> = {};
 
-  constructor(contexts: ContextVersion[]) {
+  protected readonly appChecker = new UniversalAppChecker();
+
+  constructor(contexts: ILoadableServerContext[]) {
     this.initializeInternals(contexts);
 
     this.placeholders.set(ToolLocalWorkingDirectoryType.TEMP, os.tmpdir());
     this.placeholders.set(ToolLocalWorkingDirectoryType.CWD, process.cwd());
-    this.placeholders.set(
-      ToolLocalWorkingDirectoryType.PROJECT_ROOT,
-      Deno.env.get("PROJECT_ROOT") ?? process.cwd(),
-    );
-    this.placeholders.set(
-      ToolLocalWorkingDirectoryType.WORKSPACE,
-      Deno.env.get("WORKSPACE") ?? process.cwd(),
-    );
-    this.placeholders.set(
-      ToolLocalWorkingDirectoryType.REPO_ROOT,
-      Deno.env.get("REPO_ROOT") ?? process.cwd(),
-    );
+    this.placeholders.set(ToolLocalWorkingDirectoryType.PROJECT_ROOT, Deno.env.get("PROJECT_ROOT") ?? process.cwd());
+    this.placeholders.set(ToolLocalWorkingDirectoryType.WORKSPACE, Deno.env.get("WORKSPACE") ?? process.cwd());
+    this.placeholders.set(ToolLocalWorkingDirectoryType.REPO_ROOT, Deno.env.get("REPO_ROOT") ?? process.cwd());
 
     writeLog("Placeholders");
     writeLog(Object.fromEntries(this.placeholders.entries()));
     writeLog(Deno.env.toObject());
   }
 
-  initializeInternals(contexts: ContextVersion[]) {
+  initializeInternals(contexts: ILoadableServerContext[]) {
     this.contexts = contexts;
 
     this.prompts = contexts
@@ -228,29 +266,29 @@ export class McpServerContext implements IContextModel {
       writeLog(_args);
     };
 
-    for (const context of this.contexts) {
-      for (const variable of context.variables ?? []) {
-        if (!variable.modifiable) {
-          this.variables[context.id][variable.name] = variable.default ?? "";
-          continue;
-        }
+    // for (const context of this.contexts) {
+    //   for (const variable of context.variables ?? []) {
+    //     if (!variable.modifiable) {
+    //       this.variables[context.id][variable.name] = variable.default ?? "";
+    //       continue;
+    //     }
 
-        if (variable.required) {
-          const value = Deno.env.get(variable.name);
+    //     if (variable.required) {
+    //       const value = Deno.env.get(variable.name);
 
-          crashIfNot(value, {
-            code: INVALID_PARAMS,
-            message:
-              `Missing required environment variable "${variable.name}": ${variable.description}.`,
-            catch: catchLogs,
-          });
+    //       crashIfNot(value, {
+    //         code: INVALID_PARAMS,
+    //         message:
+    //           `Missing required environment variable "${variable.name}": ${variable.description}.`,
+    //         catch: catchLogs,
+    //       });
 
-          this.variables[context.id][variable.name] = value;
-        } else {
-          this.variables[context.id][variable.name] = variable.default ?? "";
-        }
-      }
-    }
+    //       this.variables[context.id][variable.name] = value;
+    //     } else {
+    //       this.variables[context.id][variable.name] = variable.default ?? "";
+    //     }
+    //   }
+    // }
   }
 
   async onClientListInformation(
@@ -291,29 +329,12 @@ export class McpServerContext implements IContextModel {
     writeLog(`EVENT [onClientGetPrompt] Prompt`);
     writeLog(_prompt);
 
-    const messages = _prompt.messages.map((message) => {
-      if (message.content.type !== "text") {
-        return message;
-      }
-
-      message.content = {
-        ...message.content,
-        text: this.applyArgsPlaceholders(
-          this.applyPathPlaceholders(message.content.text!),
-          args,
-        ),
-      };
-
-      return message;
-    });
+    const promptResponse = await _prompt.execute(args, this);
 
     writeLog(`EVENT [onClientGetPrompt] Response`);
-    writeLog(messages);
+    writeLog(promptResponse);
 
-    return {
-      description: _prompt.description,
-      messages: messages as unknown as IPromptMessage[],
-    } satisfies PromptsGetResponse;
+    return promptResponse;
   }
 
   async onClientListResources(
@@ -322,15 +343,7 @@ export class McpServerContext implements IContextModel {
     writeLog(`EVENT: onClientListResources`);
 
     const resources = this.resources.map((resource) => {
-      return objectPick(resource, [
-        "id",
-        "uri",
-        "name",
-        "mimeType",
-        "size",
-        "description",
-        "title",
-      ]) as LocalResource;
+      return objectPick(resource, [...NATIVE_RESOURCE_MEMBERS, "id"]) as LocalResource;
     });
 
     writeLog(`EVENT [onClientListResources] Response`);
@@ -348,30 +361,38 @@ export class McpServerContext implements IContextModel {
     const resource = this.resources.find((resource) =>
       resource.uri === resourceUri
     );
-    const response = [{
-      mimeType: resource?.mimeType,
-      blob: resource?.blob ?? undefined,
-      text: resource?.text ?? undefined,
-      uri: resource?.uri,
-    }] as IResourceContent[];
 
-    writeLog(`EVENT [onClientReadResource] Response`);
-    writeLog(response);
+    crashIfNot(resource, {
+      code: INVALID_PARAMS,
+      message: `Resource '${resourceUri}' does not exist`,
+    });
 
-    return response;
+    try {
+      const response = await resource.execute(this);
+
+      writeLog(`EVENT [onClientReadResource] Response`);
+      writeLog(response);
+
+      return response;
+    } catch (e) {
+      crashIfNot(false, {
+        code: INTERNAL_ERROR,
+        message: (e as Error).message,
+      });
+    }
   }
 
   async onClientListTools(options: IContextModelOptions): Promise<ITool[]> {
     writeLog(`EVENT: onClientListTools`);
 
     const tools = this.tools.map((tool) => {
-      return objectPick(tool, ["name", "description", "inputSchema"]) as ITool;
+      return objectPick(tool, NATIVE_TOOL_MEMBERS) as ITool;
     });
 
     /**
      * Alex:
      * We do inject the `workspacePath` argument into all tools...
-     * MCP Clients does not provide any way to get information about project/workspace paths.
+     * MCP clients does not provide any way to get information about project/workspace paths.
      */
 
     for (const tool of tools) {
@@ -425,7 +446,7 @@ export class McpServerContext implements IContextModel {
      * Alex: I HATE THIS!! But all MCP clients are s***... I need to force them to call few tools on
      * each task to make the mcp load contexts on each project.
      *
-     * Yeah... MCP clients does not provide as minimum information as the workspace path to the MCP.
+     * Yeah... MCP clients doesn't provide minimum information like the workspace path.
      */
     if (tool.name === LoadContextsTool.name) {
       const workspacePath = args.workspacePath as string;
@@ -514,107 +535,16 @@ export class McpServerContext implements IContextModel {
       catch: catchLogs,
     });
 
-    const { execution } = _tool;
-    const platform = os.platform();
+    try {
+      const toolResult = await _tool.execute(args, options, this);
 
-    writeLog(`EVENT [onClientCallTool] Platform: ${platform}`);
-
-    crashIfNot(["darwin", "win32", "linux"].includes(platform), {
-      code: INTERNAL_ERROR,
-      message: `Invalid platform: ${platform}.`,
-      catch: catchLogs,
-    });
-
-    const checkCache = (strategy: Tool["execution"]["0"]) => {
-      const config = strategy.config as ToolStrategyLocalConfig;
-      const { id: strategyId } = strategy;
-      const { id: toolId } = _tool;
-
-      if (config.deterministic) {
-        const cachedResponse = this.getCachedResponse(toolId, strategyId, args);
-
-        if (cachedResponse) {
-          const response =
-            cachedResponse as IToolsCallResponse["result"]["content"];
-
-          writeLog(
-            `EVENT [onClientCallTool] Response (deterministic|cached)`,
-          );
-          writeLog(config);
-
-          return response;
-        }
-      }
-    };
-
-    for (const strategy of execution) {
-      writeLog(`EVENT [onClientCallTool] Strategy: ${strategy.type}`);
-      const context = {
-        strategy,
-        _tool,
-        args,
-        catchLogs,
-        platform,
-        tool,
-      };
-
-      if (strategy.type === "local") {
-        const cache = checkCache(strategy);
-
-        if (cache) {
-          return cache;
-        }
-
-        this.startCooldown(tool.name, _tool.cooldownMs);
-
-        const localStrategyResponse = await handleLocalStrategy.call(
-          this,
-          context,
-        );
-
-        if (localStrategyResponse === true || !localStrategyResponse) {
-          continue;
-        }
-
-        return localStrategyResponse;
-      } else if (strategy.type === "local-script") {
-        const cache = checkCache(strategy);
-
-        if (cache) {
-          return cache;
-        }
-
-        this.startCooldown(tool.name, _tool.cooldownMs);
-
-        const localScriptStrategyResponse = await handleLocalScriptStrategy
-          .call(this, context);
-
-        if (
-          localScriptStrategyResponse === true || !localScriptStrategyResponse
-        ) {
-          continue;
-        }
-
-        writeLog(localScriptStrategyResponse, LogLevel.INFO);
-
-        return {
-          content: [{
-            type: "text",
-            text: JSON.stringify(localScriptStrategyResponse),
-          }],
-          structuredContent: localScriptStrategyResponse as Record<
-            string,
-            unknown
-          >,
-        };
-      }
+      return toolResult;
+    } catch (e) {
+      crashIfNot(false, {
+        code: INTERNAL_ERROR,
+        message: (e as Error).message,
+      });
     }
-
-    crashIfNot(false, {
-      code: INTERNAL_ERROR,
-      message: `Any strategy satisfied.`,
-      catch: catchLogs,
-    });
   }
 
   applyPathPlaceholders(text: string) {
@@ -721,12 +651,3 @@ export class McpServerContext implements IContextModel {
     writeLog(`[INTERNAL] (${level.toUpperCase()}) ${message}`, level);
   }
 }
-
-// const context = new Context();
-// const server = new EasyMCPServer(new StdioTransport(), context, {
-//   server: {
-//     sendPromptsListChangedNotification: true,
-//   }
-// });
-
-// server.start();

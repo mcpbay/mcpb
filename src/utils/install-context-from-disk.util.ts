@@ -1,11 +1,12 @@
 import { type IMcpPackage } from "../interfaces/mcp-package.interface.ts";
-import { MCPContext } from "@mcpbay/contexts-manager";
+import { MCPContext, fixImports, type IDenoJson } from "@mcpbay/contexts-manager";
 import { exists } from "./exists.util.ts";
 import { loadConfigFile } from "./load-config-file.util.ts";
 import { saveConfiFile } from "./save-config-file.util.ts";
 import { getAgentsMdPath } from "./get-agents-md-path.util.ts";
 import { MdManager } from "../classes/md-manager.class.ts";
-import { resolvePath } from "./resolve-path.util.ts";
+import { readJsonFromFile } from "./read-json-from-file.util.ts";
+import { writeJsonToFile } from "./write-json-to-file.util.ts";
 
 export interface IInstallContextFromDiskOptions {
   configPath: string;
@@ -86,7 +87,7 @@ export async function installContextFromDisk(
   const context = new MCPContext();
 
   const contextConfig = await context.loadContext(source, {
-    importsCwd: Deno.cwd(),
+    importsCwd: source,
     projectCwd: Deno.cwd(),
     permissions: {
       allowedReadDirs: [],
@@ -136,6 +137,21 @@ export async function installContextFromDisk(
 
   Deno.mkdirSync(contextFolderPath, { recursive: true });
   copyDir(source, contextFolderPath);
+
+  const contextFolderDenoJsonPath = `${contextFolderPath}/deno.json`;
+
+  logMessage(contextFolderDenoJsonPath);
+
+  if (exists(contextFolderDenoJsonPath)) {
+    logMessage(`Updating 'deno.json' file...`);
+    logMessage(`exists(${contextFolderDenoJsonPath})`);
+    const denoJson = readJsonFromFile<IDenoJson>(contextFolderDenoJsonPath);
+
+    denoJson.imports = fixImports(denoJson.imports ?? {}, source);
+    logMessage(denoJson.imports);
+
+    writeJsonToFile(contextFolderDenoJsonPath, denoJson);
+  }
 
   config.imports[slug] = { version, ref: source, type: "local" };
   saveConfiFile(config, configPath);
