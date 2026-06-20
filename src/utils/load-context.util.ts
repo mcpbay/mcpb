@@ -23,22 +23,24 @@ import { Temporizer } from "../classes/temporizer.class.ts";
 import { StrategyHandlerContext } from "../classes/types/strategy-handler-context.type.ts";
 import { handleLocalScriptStrategy } from "../classes/handlers/handle-local-script-strategy.handler.ts";
 import { toSlug } from "./to-slug.util.ts";
+import { loadConfigFile } from "./load-config-file.util.ts";
+import { resolvePath } from "./resolve-path.util.ts";
 
 export interface ILoadContextOptions {
   configPath: string;
   doNotDownload: boolean;
 }
 
-async function loadContextFromDirectory(contextPath: string) {
+async function loadContextFromDirectory(contextPath: string, options: ILoadContextOptions) {
+  const mcpConfig = loadConfigFile(options.configPath, { reload: false });
   const contextJsonPath = `${contextPath}/context.json`;
-  writeLog(`loadContextFromDirectory: ${contextPath}`);
-  writeLog(`loadContextFromDirectory: ${contextJsonPath}`);
   const config = readJsonFromFile<IContextConfig>(contextJsonPath);
-  writeLog(`loadContextFromDirectory: after const config = readJsonFromFile<IContextConfig>(${contextJsonPath});`);
   const context = new MCPContext();
-  writeLog(`loadContextFromDirectory: after const context = new MCPContext();`);
-  writeLog(`CWD: ${Deno.cwd()}`);
+
+  writeLog({ envFilePath: mcpConfig.envFile ? resolvePath(mcpConfig.envFile) : void 0 });
+
   const tsOptions: ITSExecuteOptions = {
+    envFilePath: mcpConfig.envFile ? resolvePath(mcpConfig.envFile) : void 0,
     projectCwd: Deno.cwd(),
     importsCwd: contextPath,
     extraArguments: config.deno?.extraArguments ?? [],
@@ -257,7 +259,7 @@ export async function loadContext(
   if (isContextProjectFolder(contextDirPath)) {
     writeLog(`loadContext: isContextProjectFolder(${contextDirPath})`);
 
-    const { context, config: contextFile, options: tsOptions } = await loadContextFromDirectory(contextDirPath);
+    const { context, config: contextFile, options: tsOptions } = await loadContextFromDirectory(contextDirPath, options);
 
     writeLog(`loadContext: after const context = await loadContextFromDirectory(${contextDirPath});`);
     writeLog(`loadContext: close return of (${contextDirPath})`);

@@ -61,7 +61,7 @@ type LocalResource = IResource & { id: string; };
 const workspacePath = {
   type: "string",
   description: "file:// URI pointing to a workspace directory.",
-  pattern: `^file:\\/\\/\\/?[^<>:"|?*\\r\\n]+$`,
+  // pattern: '^file:\\/\\/\\/?(?:[a-zA-Z]:)?(?:[\\/\\][^\\/\\\\:*?"<>|\\r\\n]+)+$',
 };
 
 const LoadContextsTool: ITool = {
