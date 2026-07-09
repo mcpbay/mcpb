@@ -497,8 +497,8 @@ export class McpServerContext implements IContextModel {
        * ñ_ñ
        */
 
-      // Hacky... just for now...
       const resources = await this.onClientListResources(
+        // Hacky... just for now...
         void 0 as unknown as IContextModelOptions,
       );
 
