@@ -17,7 +17,7 @@
     "diagnose": "deno run -A scripts/diagnose-load-contexts.ts"
   },
   "imports": {
-    "@mcpbay/contexts-manager": "file://E:/Git/profit/node/mcpbay/mcpbay-mcpb-core/main.ts",
+    "@mcpbay/contexts-manager": "jsr:@mcpbay/contexts-manager@^1.1.11",
     "@mcpbay/easy-mcp-server": "jsr:@mcpbay/easy-mcp-server@^1.2.2",
     "@online/get-string-uid": "jsr:@online/get-string-uid@^1.0.1",
     "@online/is": "jsr:@online/is@^0.0.6",
