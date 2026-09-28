@@ -1,0 +1,24 @@
+{
+  "imports": {
+    "contexts-manager-api-reference": {
+      "version": "1.0.0",
+      "ref": "github://mcpbay/contexts-manager",
+      "type": "remote"
+    },
+    "project-metadata-manager": {
+      "version": "1.0.0",
+      "ref": "local",
+      "type": "local"
+    },
+    "git-changelog": {
+      "version": "1.0.0",
+      "ref": "local",
+      "type": "local"
+    },
+    "typescript-utilities": {
+      "version": "1.0.4",
+      "ref": "local",
+      "type": "local"
+    }
+  }
+}

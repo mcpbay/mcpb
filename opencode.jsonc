@@ -1,0 +1,24 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "mcpbay": {
+      "enabled": true,
+      "type": "local",
+      "command": [
+        "deno",
+        "run",
+        "-A",
+        "main.ts",
+        "start-mcp",
+        "--config",
+        "mcp-config.json"
+      ],
+      "environment": {
+        "ENABLE_LOGS": "true",
+        "LOGS_FOLDER_PATH": "./logs",
+        "ACCESS_KEY": "USRsMW4e8r0HDwsn4ojX",
+        "MCPBAY_HOST": "http://localhost:3000/v1"
+      }
+    }
+  },
+}

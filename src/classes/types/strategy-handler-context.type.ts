@@ -6,6 +6,6 @@ export interface StrategyHandlerContext {
   args: Record<string, unknown>;
   platform: string;
   catchLogs: (_args: CrashIfNotArguments) => void;
-  tool: ITool;
-  _tool: Tool;
+  // tool: ITool;
+  tool: Tool;
 }

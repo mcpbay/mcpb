@@ -1,0 +1,151 @@
+{
+  "id": 5,
+  "createdAt": "2026-03-14T08:41:54.676Z",
+  "updatedAt": "2026-03-14T08:47:59.842Z",
+  "deletedAt": null,
+  "version": "1.0.0",
+  "prompt": "1. Instead of read a file directly, try to use the metadata tool to get information of the file, if it does not exists, read the file and write the metadata. Keep the metadata of the file updated.",
+  "description": "First version that allows write and read metadata for files.",
+  "status": "published",
+  "prompts": [],
+  "resources": [],
+  "tools": [
+    {
+      "id": "46cddd35-744a-4f21-8985-1c9761ce8ba0",
+      "name": "project_metadata_manager",
+      "title": "Project Metadata Manager",
+      "status": "active",
+      "execution": [
+        {
+          "id": "f086877d-a7dd-4ecb-8a34-9425fd87de94",
+          "type": "local-script",
+          "config": {
+            "code": "/**\n * Yeah... I wrote this by hand...\n **/\n\nconst { isUndefined } = await import(\"jsr:@online/is\");\nconst { existsSync } = await import(\"jsr:@std/fs/exists\");\n\nenum ResultStatus {\n  FILE_NOT_FOUND = \"file_not_found\",\n  SUCCESS = \"success\",\n  COMPLETED  = \"completed\",\n  FAILED = \"failed\"\n}\n\nfunction getMetadataPath() {\n  const cwd = Deno.cwd();\n  const metadataPath = `${cwd}/project-metadata.json`;\n  \n  return metadataPath;\n}\n\nfunction loadMetadata() {\n  console.log(\"LoadMetadata\");\n  \n  const metadataPath = getMetadataPath();\n  const isMetadataFilePresent = existsSync(metadataPath, { isFile: true });\n  \n  console.log({ isMetadataFilePresent });\n  \n  if(!isMetadataFilePresent) {\n    console.log(\"Metadata file not present.\");\n    return saveMetadata({});\n  }\n\n  const metadataContent = Deno.readTextFileSync(metadataPath);\n\n  return JSON.parse(metadataContent);\n}\n\nfunction saveMetadata(metadata: Record<string, unknown>) {\n  console.log(\"saveMetadata\");\n  const metadataPath = getMetadataPath();\n\n  console.log(\"Before writeTextFileSync\");\n  Deno.writeTextFileSync(metadataPath, JSON.stringify(metadata, null, 2), { create: true });\n  console.log(\"After writeTextFileSync\");\n  \n  return metadata;\n}\n\nexport function toolHandler(args: Record<string, unknown>) {\n  const { path, action, metadata } = args;\n  const fullMetadata = loadMetadata();\n\n  console.log(fullMetadata);\n  \n  switch(action) {\n    case \"write\":\n      if(isUndefined(metadata)) {\n        return { status: ResultStatus.FAILED, error_description: \"`metadata` is `undefined`. Value required.\" };\n      } else if (metadata === \"\") {\n        return { status: ResultStatus.FAILED, error_description: \"`metadata` is empty. Value required.\" };\n      }\n      \n      fullMetadata[path] = metadata;\n\n      saveMetadata(fullMetadata);\n\n      return { status: ResultStatus.COMPLETED };\n    case \"read\": {\n      const fileMetadata = fullMetadata[path];\n\n      if(isUndefined(fileMetadata)) {\n        return { status: ResultStatus.FILE_NOT_FOUND };\n      }\n\n      return { status: ResultStatus.SUCCESS, metadata: fileMetadata };\n    }\n  }\n}",
+            "tags": [],
+            "timeout": 30000,
+            "language": "ts",
+            "placeholders": [],
+            "deterministic": false,
+            "maxOutputSize": 1048576,
+            "outputMapping": {},
+            "allowedDomains": [],
+            "invalidateTags": [],
+            "allowedPackages": [
+              "jsr:@online/is",
+              "jsr:@std/fs/exists"
+            ],
+            "allowReadProject": true,
+            "allowWriteProject": true,
+            "allowedEnvironments": []
+          },
+          "priority": null
+        }
+      ],
+      "cooldownMs": 1000,
+      "annotations": null,
+      "description": "This tool is a file metadata manager, designed to store and manage relevant information about files for use across multiple LLM sessions.\n\nThis prevents the LLM from having to read files with large amounts of code.\n\nUsage:\n\nWhen you need to know how a file works, try reading its metadata first with this tool. This will prevent you from having to read the entire file's code to understand its function and contents. If the metadata doesn't exist, read the file and create the relevant metadata for future sessions.\n\nWhen you create a file, use this tool to store relevant metadata about it, such as function names, interface or type names, enums, function descriptions, classes, usage, and functionality descriptions. You can also add tags if you wish.\n\nWhen you update a file, update its metadata with your settings.",
+      "inputSchema": {
+        "type": "object",
+        "_rawMode": true,
+        "required": [
+          "path",
+          "action"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 3,
+            "description": "The path of the file to get or set the metadata"
+          },
+          "action": {
+            "type": "string",
+            "oneOf": [
+              {
+                "const": "write",
+                "title": "Write Metadata",
+                "description": "Writes metadata in a file."
+              },
+              {
+                "const": "read",
+                "title": "Read Metadata",
+                "description": "Reads the file metadata."
+              }
+            ],
+            "description": "The action to perform. `read` to read the file metadata. `write` to write the metadata on the file."
+          },
+          "metadata": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The metadata message, in markdown format. Required if `action` argument is equal to `write`. Anything you think is relevant about the `path` file. It may include: Function names, logic description, usage manners, and arbitrary tags."
+          }
+        }
+      },
+      "permissions": {
+        "network": false,
+        "privileged": false,
+        "filesystemRead": false,
+        "filesystemWrite": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "_rawMode": true,
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "oneOf": [
+              {
+                "const": "completed",
+                "title": "Completed Action",
+                "description": "The action was completed succesfully. Returned if the tool stored the metadata correctly."
+              },
+              {
+                "const": "failed",
+                "title": "Action Filed",
+                "description": "The action failed. Returned if there ocurred some error storing the file metadata."
+              },
+              {
+                "const": "success",
+                "title": "Success Action",
+                "description": "Success. Returned if the file metadata was returned with success."
+              },
+              {
+                "const": "file_not_found",
+                "title": "File Not Found",
+                "description": "File not found in metadata database. The LLM never wrote metadata for this file."
+              }
+            ],
+            "description": "The status of the execution."
+          },
+          "metadata": {
+            "type": "string",
+            "description": "The metadata content of the file. Only available if `status` is equal to `success`."
+          },
+          "error_description": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The error description, if `status` equal `failed`."
+          }
+        }
+      }
+    }
+  ],
+  "variables": [],
+  "contextId": 3,
+  "catalogsId": [],
+  "context": {
+    "id": 3,
+    "createdAt": "2026-03-14T08:40:25.839Z",
+    "updatedAt": "2026-03-14T08:40:58.865Z",
+    "deletedAt": null,
+    "name": "Project Metadata Manager",
+    "description": "Write metadata of your projects and avoid make LLM to read huge files to understand what's there.",
+    "slug": "project-metadata-manager",
+    "type": "public",
+    "contextVersionsId": [],
+    "authorId": 1
+  },
+  "authorId": 1
+}

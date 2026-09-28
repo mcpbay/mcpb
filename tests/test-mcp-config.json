@@ -1,0 +1,7 @@
+{
+  "imports": {
+    "git-changelog": "1.0.0",
+    "project-metadata-manager": "1.0.0",
+    "typescript-utilities": "1.0.4"
+  }
+}

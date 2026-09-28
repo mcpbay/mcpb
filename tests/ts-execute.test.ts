@@ -4,7 +4,7 @@ import {
   assertRejects,
   assertStringIncludes,
 } from "@std/assert";
-import { tsExecute } from "../src/utils/ts-execute.util.ts";
+import { ITSExecuteOptions, tsExecute } from "../src/utils/ts-execute.util.ts";
 
 Deno.test("tsExecute", async (test) => {
   await test.step("should execute basic TypeScript code", async () => {
@@ -16,9 +16,10 @@ Deno.test("tsExecute", async (test) => {
         allowWrite: false,
         allowNet: [],
         allowedPackages: [],
+        allowedExecutables: [],
       },
       timeout: 5000,
-    };
+    } satisfies ITSExecuteOptions;
 
     const { outMessage } = await tsExecute(code, options);
 
@@ -33,17 +34,17 @@ Deno.test("tsExecute", async (test) => {
         allowWrite: false,
         allowNet: [],
         allowedPackages: [],
+        allowedExecutables: []
       },
       timeout: 5000,
-    };
+    } satisfies ITSExecuteOptions;
 
     // Create a temporary file for testing read permissions
     const tempFilePath = await Deno.makeTempFile({ suffix: ".txt" });
     await Deno.writeTextFile(tempFilePath, "test content");
 
-    const code = `Deno.readTextFileSync("${
-      tempFilePath.replaceAll("\\", "/")
-    }");`;
+    const code = `Deno.readTextFileSync("${tempFilePath.replaceAll("\\", "/")
+      }");`;
 
     await assertRejects(
       async () => {
@@ -65,9 +66,10 @@ Deno.test("tsExecute", async (test) => {
         allowWrite: true,
         allowNet: [],
         allowedPackages: [],
+        allowedExecutables: []
       },
       timeout: 5000,
-    };
+    } satisfies ITSExecuteOptions;
 
     const { outMessage } = await tsExecute(code, options);
 
@@ -90,9 +92,10 @@ Deno.test("tsExecute", async (test) => {
         allowWrite: false,
         allowNet: ["example.com"],
         allowedPackages: [],
+        allowedExecutables: []
       },
       timeout: 5000,
-    };
+    } satisfies ITSExecuteOptions;
 
     const { outMessage } = await tsExecute(code, options);
 
@@ -108,13 +111,14 @@ Deno.test("tsExecute", async (test) => {
         allowWrite: false,
         allowNet: [],
         allowedPackages: [],
+        allowedExecutables: []
       },
       timeout: 5000,
       invoke: {
         function: "add",
         arguments: [1, 2],
       },
-    };
+    } satisfies ITSExecuteOptions;
 
     const { outMessage } = await tsExecute(code, options);
 
@@ -131,13 +135,14 @@ Deno.test("tsExecute", async (test) => {
         allowWrite: false,
         allowNet: [],
         allowedPackages: [],
+        allowedExecutables: []
       },
       timeout: 5000,
       invoke: {
         function: "greet",
         arguments: ["Deno"],
       },
-    };
+    } satisfies ITSExecuteOptions;
 
     const { outMessage } = await tsExecute(code, options);
 
@@ -179,9 +184,10 @@ Deno.test("tsExecute", async (test) => {
         allowWrite: false,
         allowNet: [],
         allowedPackages: ["jsr:@std/assert"],
+        allowedExecutables: []
       },
       timeout: 5000,
-    };
+    } satisfies ITSExecuteOptions;
 
     const { outMessage } = await tsExecute(code, options);
 
@@ -198,9 +204,10 @@ Deno.test("tsExecute", async (test) => {
         allowWrite: false,
         allowNet: [],
         allowedPackages: [],
+        allowedExecutables: []
       },
       timeout: 5000,
-    };
+    } satisfies ITSExecuteOptions;
 
     await assertRejects(
       async () => {
@@ -220,9 +227,10 @@ Deno.test("tsExecute", async (test) => {
         allowWrite: false,
         allowNet: [],
         allowedPackages: [],
+        allowedExecutables: []
       },
       timeout: 5000,
-    };
+    } satisfies ITSExecuteOptions;
 
     await assertRejects(
       async () => {

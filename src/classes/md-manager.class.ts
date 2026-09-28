@@ -114,8 +114,10 @@ export class MdManager {
     const onCreated = options?.onCreated;
 
     if (existingSection) {
+      const finalLevel = level ?? existingSection.level;
+      const shiftedContent = this.shiftHeadings(content, 2);
       const normalizedCurrent = this.normalizeContent(existingSection.content);
-      const normalizedNext = this.normalizeContent(content);
+      const normalizedNext = this.normalizeContent(shiftedContent);
       const isSameContent = normalizedCurrent === normalizedNext;
 
       if (isSameContent) {
@@ -126,7 +128,6 @@ export class MdManager {
         return result;
       }
 
-      const finalLevel = level ?? existingSection.level;
       const updatedContent = this.replaceSectionContent(
         currentContent,
         existingSection,
@@ -287,8 +288,15 @@ export class MdManager {
 
     for (let index = 0; index < sections.length; index += 1) {
       const section = sections[index];
-      const nextSection = sections[index + 1];
-      const endLine = nextSection ? nextSection.startLine : lines.length;
+      let endLine = lines.length;
+
+      for (let j = index + 1; j < sections.length; j += 1) {
+        if (sections[j].level <= section.level) {
+          endLine = sections[j].startLine;
+          break;
+        }
+      }
+
       const contentLines = lines.slice(section.startLine + 1, endLine);
       const sectionContent = contentLines.join("\n");
 
@@ -301,11 +309,21 @@ export class MdManager {
     return result;
   }
 
+  private shiftHeadings(content: string, shift: number) {
+    const headingRegex = /^(#{1,6})(\s+.*)$/gm;
+    const result = content.replace(headingRegex, (_, hashes: string, rest: string) => {
+      const newLevel = Math.min(hashes.length + shift, 6);
+      return `${"#".repeat(newLevel)}${rest}`;
+    });
+    return result;
+  }
+
   private buildSectionText(title: string, content: string, level: number) {
     const fixedLevel = this.normalizeLevel(level);
+    const shiftedContent = this.shiftHeadings(content, 2);
     const headingPrefix = "#".repeat(fixedLevel);
     const headingLine = `${headingPrefix} ${title}`;
-    const normalizedContent = content.trimEnd();
+    const normalizedContent = shiftedContent.trimEnd();
     const hasContent = normalizedContent.length > 0;
     const sectionText = hasContent
       ? `${headingLine}\n${normalizedContent}`

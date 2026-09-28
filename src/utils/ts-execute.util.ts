@@ -12,6 +12,7 @@ export interface ITSExecuteOptions {
     allowedExecutables: string[];
   };
   timeout: number;
+  configFilePath?: string;
   invoke?: {
     function: string;
     arguments: unknown[];
@@ -19,10 +20,12 @@ export interface ITSExecuteOptions {
 }
 
 export async function tsExecute(code: string, options: ITSExecuteOptions) {
-  const { permissions, timeout, invoke } = options;
+  const { permissions, timeout, invoke, configFilePath } = options;
   const args: string[] = ["run"];
 
-  code = removeStaticImports(code);
+  if (!configFilePath) {
+    code = removeStaticImports(code);
+  }
   code = code.replaceAll("import(", "_mcpb_import(");
 
   const mcpbImport = `
@@ -71,6 +74,10 @@ if(_mcpb_result !== undefined) {
 
   if (permissions.allowedExecutables.length) {
     args.push(`--allow-run=${permissions.allowedExecutables.join(",")}`);
+  }
+
+  if (configFilePath) {
+    args.push(`--config=${configFilePath}`);
   }
 
   args.push(`--allow-env=TMPDIR,TMP,TEMP`);

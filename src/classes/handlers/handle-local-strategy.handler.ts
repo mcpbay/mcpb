@@ -1,6 +1,5 @@
 import {
-  IToolsCallResponse,
-  ToolCallResponse,
+  ToolCallResponse
 } from "@mcpbay/easy-mcp-server/types";
 import { ToolStrategyLocalConfig } from "../../types/tool-strategy-local-config.type.ts";
 import { writeLog } from "../../utils/write-log.util.ts";
@@ -14,7 +13,6 @@ import { StrategyHandlerContext } from "../types/strategy-handler-context.type.t
 import { isJson } from "../../validators/is-json.validator.ts";
 import { JsonSchemaMapper } from "../json-schema-mapper.class.ts";
 import { IObjectJsonSchema } from "../../validators/is-object-json-schema.validator.ts";
-import { Role } from "@mcpbay/easy-mcp-server/enums";
 import { exists } from "../../utils/exists.util.ts";
 import { basename } from "@std/path/basename";
 import { fileNameToMime } from "../../utils/file-name-to-mime.util.ts";
@@ -23,7 +21,7 @@ export async function handleLocalStrategy(
   this: McpServerContext,
   context: StrategyHandlerContext,
 ) {
-  const { args, strategy, platform, catchLogs, tool, _tool } = context;
+  const { args, strategy, platform, catchLogs, tool } = context;
 
   if (strategy.type !== "local") {
     return true;
@@ -59,12 +57,10 @@ export async function handleLocalStrategy(
 
   crashIfNot(requiredAppsStatus.every((status) => status.exists), {
     code: INTERNAL_ERROR,
-    message: `Required apps not found: ${
-      requiredAppsStatus
-        .filter((status) => !status.exists)
-        .map((status) => status.name)
-        .join(", ")
-    }`,
+    message: `Required apps not found: ${requiredAppsStatus
+      .filter((status) => !status.exists)
+      .map((status) => status.name)
+      .join(", ")}`,
     catch: catchLogs,
   });
 
@@ -80,17 +76,12 @@ export async function handleLocalStrategy(
   writeLog(`EVENT [onClientCallTool] Before Execution`);
 
   const execution = await (async () => {
-    const workingDirectory = config.workingDirectory ||
-      this.placeholders.get(ToolLocalWorkingDirectoryType.CWD)!;
-    const command = this.applyVariables(
-      this.applyArgsPlaceholders(
-        this.applyPathPlaceholders(config.commands[0]),
-        args,
-      ),
-      this.contexts.find((c) => c.tools.some((t) => t.id === _tool.id))!
-        .id,
-    );
     const timeout = config.timeout ?? 1000 * 15;
+    const workingDirectory = config.workingDirectory || this.placeholders.get(ToolLocalWorkingDirectoryType.CWD)!;
+    const command = this.applyVariables(
+      this.applyArgsPlaceholders(this.applyPathPlaceholders(config.commands[0]), args),
+      this.contexts.find((c) => c.tools.some((t) => t.id === tool.id))!.id,
+    );
 
     if (config.runInShell) {
       const shellExists = await this.appChecker.checkApp(
@@ -167,7 +158,7 @@ export async function handleLocalStrategy(
     const jsonOutput = (() => {
       try {
         return JSON.parse(stdoutStr) as object;
-      } catch {}
+      } catch { }
 
       return null;
     })();
@@ -189,7 +180,7 @@ export async function handleLocalStrategy(
 
         if (tool.outputSchema) {
           const jsonSchemaMapper = new JsonSchemaMapper(
-            tool.outputSchema as IObjectJsonSchema,
+            tool.outputSchema as unknown as IObjectJsonSchema,
             config.outputMapping!,
             jsonOutput as Record<string, unknown>,
           );
