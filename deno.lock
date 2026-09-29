@@ -1,6 +1,7 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@mcpbay/contexts-manager@^1.1.11": "1.1.11",
     "jsr:@mcpbay/easy-mcp-server@*": "1.2.2",
     "jsr:@mcpbay/easy-mcp-server@^1.2.2": "1.2.2",
     "jsr:@online/get-string-uid@^1.0.1": "1.0.1",
@@ -15,14 +16,30 @@
     "jsr:@std/path@*": "1.1.5",
     "jsr:@std/path@^1.1.5": "1.1.5",
     "jsr:@std/testing@^1.0.19": "1.0.19",
+    "npm:@jsr/mcpbay__easy-mcp-server@^1.2.2": "1.2.2",
+    "npm:@jsr/online__is@^0.0.6": "0.0.6",
     "npm:@jsr/online__runtime@~0.1.2": "0.1.2",
+    "npm:@jsr/std__path@^1.1.5": "1.1.5",
     "npm:@jsr/std__yaml@^1.1.1": "1.1.1",
+    "npm:ai@^6.0.168": "6.0.205_zod@4.4.3",
     "npm:ai@^6.0.205": "6.0.205_zod@4.4.3",
     "npm:commander@15": "15.0.0",
     "npm:semver@^7.8.4": "7.8.4",
     "npm:zod@^4.4.3": "4.4.3"
   },
   "jsr": {
+    "@mcpbay/contexts-manager@1.1.11": {
+      "integrity": "f9e972376a733c95fd7df685fca318ae54de68700c999ff3666f4b11bcc4cc01",
+      "dependencies": [
+        "npm:@jsr/mcpbay__easy-mcp-server",
+        "npm:@jsr/online__is",
+        "npm:@jsr/online__runtime",
+        "npm:@jsr/std__path",
+        "npm:@jsr/std__yaml",
+        "npm:ai@^6.0.168",
+        "npm:zod"
+      ]
+    },
     "@mcpbay/easy-mcp-server@1.2.2": {
       "integrity": "7310ff43deeb62319bf3d0064bf781fbbee6ba825c5e5b8e3bc1241465e3408a",
       "dependencies": [
@@ -103,9 +120,36 @@
         "json-schema"
       ]
     },
+    "@jsr/mcpbay__easy-mcp-server@1.2.2": {
+      "integrity": "sha512-Q8Vi2HYS2zPUHa4QNBZd5Gx9Fi8BXkByMjlr0XsBCiP4aMq1mVa8wx8Fc0thjb0cliDCJwT0GzVZmRGa8Ag6Zw==",
+      "dependencies": [
+        "@jsr/online__get-string-uid",
+        "@jsr/online__is"
+      ],
+      "tarball": "https://npm.jsr.io/~/11/@jsr/mcpbay__easy-mcp-server/1.2.2.tgz"
+    },
+    "@jsr/online__get-string-uid@1.0.1": {
+      "integrity": "sha512-ldY+okKUwFjG9itasNMQaS5PXSTo3VJV6sZgJn5f8dgaiFMwE0IxWi3xzKeT3+3EQlgyd/bIe2iI0yA1wfeniQ==",
+      "tarball": "https://npm.jsr.io/~/11/@jsr/online__get-string-uid/1.0.1.tgz"
+    },
+    "@jsr/online__is@0.0.6": {
+      "integrity": "sha512-+uhuYWrP1AIOJMTPdIw18M7c8HJ5H1Pbt1DlZDmFeuxjNgO8euLmqcxFLu/1CeyWMGeJFEZ8c8e/6cw6X3z6vg==",
+      "tarball": "https://npm.jsr.io/~/11/@jsr/online__is/0.0.6.tgz"
+    },
     "@jsr/online__runtime@0.1.2": {
       "integrity": "sha512-tybqySKULKzHGNFHpHK/hvpnm8226IuVocaON+Fb+ug3qs5aCkEouCWZkJ3Y19jOFOuZq7KEIibDJmSbsjALdg==",
       "tarball": "https://npm.jsr.io/~/11/@jsr/online__runtime/0.1.2.tgz"
+    },
+    "@jsr/std__internal@1.0.14": {
+      "integrity": "sha512-JT8b/t40WcR9q0GDwRZUooY7aXeXnFal8iidE/5TckdAFtvpVAsaJ71/Xgf1SfoChs41s6CZkuCYM8toaNgdvA==",
+      "tarball": "https://npm.jsr.io/~/11/@jsr/std__internal/1.0.14.tgz"
+    },
+    "@jsr/std__path@1.1.5": {
+      "integrity": "sha512-3z/0rfvMEz6qiiaZ3quFpEv8BbWQgcpd+ASX29WEdecyJsdPN9uViQf1VxIua265cmGCdICk0WghMjGFoNZ5Ig==",
+      "dependencies": [
+        "@jsr/std__internal"
+      ],
+      "tarball": "https://npm.jsr.io/~/11/@jsr/std__path/1.1.5.tgz"
     },
     "@jsr/std__yaml@1.1.1": {
       "integrity": "sha512-OLgQ32rFaP5rFMOKorRnlvPgaxyUbd+ORpITxVUY2iy2ROVBtHHIJ4J7vRb7U1pMLorlGJVqCpga3DowyGV+cg==",
@@ -149,6 +193,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@mcpbay/contexts-manager@^1.1.11",
       "jsr:@mcpbay/easy-mcp-server@^1.2.2",
       "jsr:@online/get-string-uid@^1.0.1",
       "jsr:@online/is@^0.0.6",
