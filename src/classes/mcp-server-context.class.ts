@@ -386,7 +386,34 @@ export class McpServerContext implements IContextModel {
     writeLog(`EVENT: onClientListTools`);
 
     const tools = this.tools.map((tool) => {
-      return objectPick(tool, NATIVE_TOOL_MEMBERS) as ITool;
+      const pickedTool = objectPick(tool, NATIVE_TOOL_MEMBERS) as ITool;
+
+      /**
+       * Alex:
+       * Since MCP specification 2025-06-18, when a tool declares an
+       * `outputSchema` it MUST be a JSON Schema of type "object"
+       * (`{ type: "object", ... }`). Strict clients (like OpenCode, through
+       * the MCP TypeScript SDK) reject anything else with
+       * `Invalid input: expected "object"` at `outputSchema.type`.
+       *
+       * Contexts that don't declare an output schema are loaded with `{}`
+       * (see `load-context.util.ts`), which is not a valid object schema.
+       * We drop any `outputSchema` that isn't a valid object schema so
+       * already published contexts keep working without modifications.
+       */
+      const outputSchema = pickedTool.outputSchema as
+        | Record<string, unknown>
+        | undefined;
+
+      const isValidOutputSchema = isObject(outputSchema) &&
+        !Array.isArray(outputSchema) &&
+        outputSchema.type === "object";
+
+      if (!isValidOutputSchema) {
+        delete pickedTool.outputSchema;
+      }
+
+      return pickedTool;
     });
 
     /**
